@@ -7,19 +7,19 @@ The primary goal of this project is to develop two independent, yet interrelated
 1. A forecasting model for short-term weather conditions in **Fresno County**.
 2. A predictive model for **tomato and almond yields**. 
 
-The project will apply time series analysis to forecast **daily weather patterns** such as temperature and precipitation, using data from **1979 to the present**, and develop a model to estimate future crop yields. The goal is to evaluate how weather conditions affect crop production, and simulate potential scenarios that can assist farmers in optimizing planting, irrigation, and harvesting schedules.
+The project will apply time series analysis to forecast **daily weather patterns** such as temperature and precipitation, using data from **1980 to the present**, and develop a model to estimate future crop yields. The goal is to evaluate how weather conditions affect crop production, and simulate potential scenarios that can assist farmers in optimizing planting, irrigation, and harvesting schedules.
 
 ### **Specific Crops and Timeframe:**
 The project will focus on the following crops, selected due to their economic importance in **Fresno** and the availability of historical yield data:
 - **Almonds:** A major crop in Fresno, sensitive to temperature and water availability.
 - **Tomatoes:** Widely grown and sensitive to temperature fluctuations, with high economic value.
 
-The analysis will cover the period from **1979 to the present**, utilizing both historical crop yield data and weather data, focusing on **Fresno County**, but incorporating relevant insights from other nearby regions when necessary.
+The analysis will cover the period from **1980 to the present**, utilizing both historical crop yield data and weather data, focusing on **Fresno County**, but incorporating relevant insights from other nearby regions when necessary.
 
 ### **Key Features:**
 
 1. **Independent Weather Prediction Model:**
-   - A **SARIMA model** will predict daily weather conditions, focusing on key variables such as temperature and precipitation from 1979 to the present.
+   - A **SARIMA model** will predict daily weather conditions, focusing on key variables such as temperature and precipitation from 1980 to the present.
    - The system will forecast **future daily weather conditions** for a specific time period (e.g., the next 30 days or years), using advanced time series techniques to generate accurate short-term weather predictions, allowing farmers to plan agricultural activities accordingly.
    
 2. **Crop Yield Prediction Model:**
@@ -35,7 +35,7 @@ The analysis will cover the period from **1979 to the present**, utilizing both 
 - Farmers and agricultural planners can use this tool to make informed decisions about when and how to plant, irrigate, and harvest, optimizing their practices based on both weather forecasts and crop yield predictions.
 - By understanding the likely effects of different weather conditions on crop outcomes, the project will help **mitigate risks** associated with temperature and precipitation fluctuations, potentially improving overall agricultural productivity.
 
-The analysis will cover the period from **1979 to the present**, utilizing both historical crop yield data and weather data for each growing season in the Central California region, which includes Fresno County, and various other ``['Fresno', 'Sacramento', 'San Joaquin', 'Stanislaus', 'Merced', 'Madera', 'Kings', 'Tulare',
+The analysis will cover the period from **1980 to the present**, utilizing both historical crop yield data and weather data for each growing season in the Central California region, which includes Fresno County, and various other ``['Fresno', 'Sacramento', 'San Joaquin', 'Stanislaus', 'Merced', 'Madera', 'Kings', 'Tulare',
                'Kern', 'Yolo', 'Colusa', 'Sutter', 'Butte', 'Glenn', 'Tehama']``
 
 ---
@@ -62,7 +62,7 @@ The project will utilize the following key data sources:
 
 3. **USDA Crop Yield Data:**
    - Data Available: Provides historical crop yield data for **almonds** and **tomatoes** in Fresno County.
-   - Timeframe: Crop yield data from 1979 to the present.
+   - Timeframe: Crop yield data from 1980 to the present.
 
 
 Here's the revised section based on the new methods and approaches implemented in your project:
@@ -153,17 +153,17 @@ In this project, several key findings are anticipated based on the **independent
 
 **OpenWeatherMap API:**
 - Retrieve real-time weather data for specified California regions, capturing key variables such as temperature, precipitation, humidity, and atmospheric pressure.
-- Fetch historical weather data from 1979 to the present, allowing comparison with real-time data.
+- Fetch historical weather data from 1980 to the present, allowing comparison with real-time data.
 - No preprocessing will be done on dates; date parsing will remain flexible for time interval analysis.
 - The data will be aggregated by date, city, and other relevant attributes such as temperature, humidity, and precipitation.
 
 **NOAA Climate Data:**
-- Download historical weather records focusing on temperature and precipitation from 1979 to the present for California’s agricultural regions.
+- Download historical weather records focusing on temperature and precipitation from 1980 to the present for California’s agricultural regions.
 - Include relevant seasonal indicators such as temperature patterns and rainfall amounts during critical crop growth periods.
 - No specific date preprocessing; historical weather records will align with crop yield data for later correlation analysis.
 
 **USDA Crop Yield Data:**
-- Collect historical crop yield data for key crops (almonds, tomatoes, grapes, lettuce) from 1979 to the present.
+- Collect historical crop yield data for key crops (almonds, tomatoes, grapes, lettuce) from 1980 to the present.
 - Align the crop yield data with the corresponding weather conditions in the same regions and timeframes for correlation analysis.
 - Regions are assigned based on counties to facilitate regional crop yield comparisons with weather data.
 
@@ -328,186 +328,57 @@ The following sections should be used for the analysis planning. These are not r
 
 ## Data Analysis and Algorithms
 
-### Weather Data Model Usage
+In this project, two independent time series models will be developed for **weather data** and **crop yield data**, using advanced time series forecasting techniques such as **SARIMA**. Additionally, **scenario analysis** will be conducted to evaluate the impact of weather conditions on crop yield outcomes. Below are the specific analyses and algorithms that will be applied:
 
-#### Types of (Advanced) Analysis Conducted:
-This analysis leverages a combination of traditional machine learning techniques and advanced time series models to predict **temperature** and **crop-related outcomes** using **weather data**.
+### 1. **Time Series Analysis for Weather Forecasting (SARIMA Model)**
 
-1. **Data Preprocessing and Feature Selection**:
-   - **Weather data** was preprocessed by selecting relevant features such as **temperature**, **dew point**, **humidity**, and **wind speed**, among others.
-   - Missing values were handled by filling them with the column-wise mean, ensuring the dataset is ready for model training.
-   
-2. **Model Training and Evaluation**:
-   - Several models, including **Random Forest**, **Gradient Boosting**, **Linear Regression**, and **Support Vector Regressor (SVR)**, were trained and evaluated.
-   - The models were assessed based on **Mean Absolute Error (MAE)**, **Mean Squared Error (MSE)**, **Root Mean Squared Error (RMSE)**, and **R²** metrics to understand their performance.
-   - Model training was automated, and the best-performing model was saved for future use.
+#### **Algorithm: SARIMA (Seasonal AutoRegressive Integrated Moving Average)**
+- **Inputs**: 
+  - Historical daily weather data for **Fresno County**, including:
+    - **Temperature** (daily averages)
+    - **Precipitation** (daily rainfall)
+- **Outputs**: 
+  - Predicted daily weather patterns for **temperature** and **precipitation** over the next 30 days or any specified forecast period.
+  
+#### **Algorithmic Properties and Logic**:
+The **SARIMA model** is an extension of the ARIMA model, which incorporates seasonality. SARIMA is particularly well-suited for time series data with both trends and repeating seasonal patterns, such as annual temperature cycles. The model takes the following key components into account:
+  - **AutoRegressive (AR)**: Considers the relationship between an observation and previous observations (lags).
+  - **Integrated (I)**: Differencing the data to remove trends and make the time series stationary.
+  - **Moving Average (MA)**: Models the relationship between an observation and the residuals of previous observations.
+  - **Seasonal Component**: Captures repeating seasonal effects, such as yearly temperature cycles.
 
-3. **Visualization and Residual Analysis**:
-   - **Actual vs. Predicted** scatter plots were generated for each model, allowing for a visual comparison of model predictions.
-   - **Residual plots** were created to inspect the errors made by the models.
-   - Performance metrics were summarized in a bar plot to provide an easy comparison between models.
+By training this model on historical weather data, we will forecast future temperature and precipitation for short-term periods, which can then be used in the scenario analysis for crops.
 
-4. **Time Series Forecasting with Prophet**:
-   - **Prophet** was used to forecast temperature based on historical weather data. This approach was applied on a **city-by-city** basis.
-   - Performance metrics were computed for each city, allowing us to analyze how accurately the model could predict temperatures for specific locations.
-   - Future predictions were made using Prophet, with visualizations that showed the forecasted temperature trends.
+### 2. **Time Series Analysis for Crop Yield Forecasting**
 
-5. **LSTM for Sequential Data Prediction**:
-   - **Long Short-Term Memory (LSTM)** networks were used to capture sequential dependencies in weather data, particularly to predict temperature.
-   - The LSTM model was trained using sequences of weather data (with a lookback of 60 time steps), and performance metrics such as **MAE**, **RMSE**, and **R²** were calculated to evaluate the predictions.
-   - **Dropout layers** were incorporated in the LSTM model to prevent overfitting.
+#### **Algorithm: Time Series Model (SARIMA/ARIMA)**
+- **Inputs**: 
+  - Historical annual crop yield data for **Fresno County**, including:
+    - **Harvested Acres**
+    - **Yield**
+    - **Production** (for **tomatoes** and **almonds**)
+- **Outputs**: 
+  - Predicted crop yields (Harvested Acres, Yield, and Production) for **tomatoes** and **almonds** over the next several years.
 
----
+#### **Algorithmic Properties and Logic**:
+Similar to the weather forecasting model, the **SARIMA** model will be used to predict future crop yields based on historical trends in crop data. This model is ideal for handling seasonal trends in crop production, such as yearly growing cycles. The main difference here is that the SARIMA model for crops will focus on yearly data rather than daily data, making it easier to predict future crop outcomes over longer periods.
 
-### Explanation of Algorithmic Properties and Logic
+### 3. **Scenario Analysis: Impact of Weather on Crop Yields**
 
-#### 1. **Random Forest and Gradient Boosting**:
-   - **Inputs**: Selected weather variables (`temp`, `humidity`, `wind_speed`, etc.).
-   - **Outputs**: Predictions of temperature based on historical weather features.
-   - **Logic**: 
-     - **Random Forest** aggregates predictions from multiple decision trees, reducing variance and improving prediction accuracy.
-     - **Gradient Boosting** iteratively trains models by focusing on correcting errors made by previous models, resulting in improved performance.
-   - **Major Findings**: These models provided robust predictions with minimal overfitting, as seen from their test set performance.
+#### **Algorithm: Scenario Testing Using Predicted Weather and Crop Models**
+- **Inputs**: 
+  - Predicted daily weather conditions from the **SARIMA weather model**.
+  - Historical and forecasted crop yields from the **crop yield model**.
+- **Outputs**: 
+  - Estimated changes in crop yield under different weather scenarios (e.g., temperature increases, changes in rainfall).
 
-#### 2. **Support Vector Regressor (SVR)**:
-   - **Inputs**: Same weather variables.
-   - **Outputs**: Predictions of temperature.
-   - **Logic**: **SVR** attempts to find the hyperplane that best fits the data points in the feature space, minimizing the error margin for regression.
-   - **Major Findings**: SVR, while accurate, tended to underperform compared to Random Forest and Gradient Boosting due to its sensitivity to outliers.
+#### **Algorithmic Properties and Logic**:
+Once the independent weather and crop yield models are built, a **scenario analysis** will be performed to assess the indirect effects of weather on crops. By simulating different weather conditions (e.g., hotter summers, increased rainfall), the scenario analysis will help identify how predicted weather variations may impact **tomato** and **almond** yields in future growing seasons. This analysis will provide valuable insights into potential risks and opportunities for farmers, enabling them to adjust agricultural practices based on weather forecasts.
 
-#### 3. **Prophet Time Series Forecasting**:
-   - **Inputs**: Date (`ds`), temperature values (`y`), and weather features.
-   - **Outputs**: Forecasted temperature values for future dates.
-   - **Logic**: **Prophet** decomposes time-series data into trend and seasonality components, using historical weather patterns to predict future temperatures.
-   - **Major Findings**: The model accurately captured seasonal trends in temperature data and provided reliable forecasts for cities like Fresno.
-
-#### 4. **Long Short-Term Memory (LSTM)**:
-   - **Inputs**: Sequences of weather data (e.g., `temp`, `humidity`).
-   - **Outputs**: Temperature predictions.
-   - **Logic**: **LSTM** networks are designed to capture long-term dependencies in sequential data, making them particularly useful for time-series forecasting. LSTMs use memory cells to store relevant information over time, allowing for the prediction of future values.
-   - **Major Findings**: LSTM models showed strong predictive performance, especially for capturing subtle temporal dependencies in weather data.
-
----
-
-### Inputs and Outputs for Each Algorithm:
-
-1. **Random Forest, Gradient Boosting, Linear Regression, SVR**:
-   - **Inputs**: Weather features (e.g., temperature, humidity, wind speed, etc.).
-   - **Outputs**: Predictions for the target variable (temperature).
-   - **Major Findings**: Gradient Boosting provided the most accurate predictions, while Random Forest also performed well with reduced overfitting.
-
-2. **Prophet**:
-   - **Inputs**: Date (`ds`), temperature values (`y`), and optional weather regressors.
-   - **Outputs**: Forecasted temperature values.
-   - **Major Findings**: Prophet captured trends and seasonality effectively, making accurate predictions for future temperatures.
-
-3. **LSTM**:
-   - **Inputs**: Sequences of weather data over time.
-   - **Outputs**: Predictions for temperature.
-   - **Major Findings**: LSTM showed good performance in predicting future weather variables by learning from long-term dependencies in sequential weather data.
-
----
-
-### Expected Major Findings:
-
-- **Traditional Models**: Gradient Boosting and Random Forest are expected to provide accurate temperature predictions based on weather features.
-- **Prophet and LSTM**: Both models will provide robust time-series predictions for temperature, capturing seasonal and trend-based changes in weather patterns.
-
-### Crop Data Model Usage
-
-#### Types of Analysis Conducted:
-1. **Data Preprocessing and Resampling**:
-   - Crop data was **resampled** from yearly to daily intervals using **linear interpolation** to fill in missing data points.
-   - Weather data for **Fresno** was filtered to match the date range of interest (1980-2020) for further analysis and merged with crop data.
-
-2. **Exploratory Data Analysis (EDA)**:
-   - Time-series plots were generated for each feature in the crop dataset to visually explore relationships over time.
-
-3. **Feature Selection and Model Training**:
-   - A **feature selection methodology** was implemented using **Recursive Feature Elimination (RFE)** to automatically select the most relevant weather features for crop prediction.
-   - Several **candidate models** (Gradient Boosting, Linear Regression) were trained using the selected features.
-
-4. **Time Series Forecasting**:
-   - Two advanced time series models, **Prophet** and **LSTM**, were applied to the dataset to capture the temporal dynamics between weather and crop variables over time.
-
-### Explanation of Algorithmic Properties and Logic
-
-#### 1. **Data Preprocessing and Resampling**
-   - **Inputs**: Crop data (Yearly), Weather data (Daily).
-   - **Outputs**: Resampled daily crop data, merged with weather data by matching dates.
-   - **Description**: The crop data was resampled from yearly to daily frequency using linear interpolation, filling missing data points. The weather data was filtered to include only dates and regions relevant to crop analysis.
-
-#### 2. **Time Series Plots for EDA**
-   - **Inputs**: Resampled daily crop data, weather data.
-   - **Outputs**: Time series plots for each variable.
-   - **Description**: Visual plots were generated for each crop variable to inspect the trends over time and the relationship between weather conditions and crop outcomes.
-
-#### 3. **Feature Selection and Model Training**
-   - **Inputs**: Weather features (`temp`, `humidity`, `wind_speed`, etc.), crop targets (`Yield`, `Production`, `Harvested Acres`).
-   - **Outputs**: Trained models (Random Forest, Gradient Boosting, Linear Regression) with optimal hyperparameters.
-   - **Description**:
-     - Feature selection was performed using **RFE** with **Random Forest** as the base estimator. This method selects the most relevant features for each model.
-     - **GridSearchCV** was used to optimize hyperparameters and select the best-performing model using **cross-validation**.
-     - Each model was evaluated on the test set using performance metrics such as **RMSE** and **R²**.
-
-#### 4. **Prophet Time Series Forecasting**
-   - **Inputs**: Date (`ds`), crop variables (`y`), weather features as additional regressors.
-   - **Outputs**: Time-series forecasts for crop variables, performance metrics (RMSE, R²).
-   - **Description**: 
-     - The **Prophet** model was trained for each crop target (Yield, Production, Harvested Acres) using weather features as external regressors. 
-     - Prophet handles seasonality, trends, and missing data effectively, making it suitable for predicting agricultural variables that vary cyclically over time.
-     - The model was evaluated using standard metrics such as **RMSE** to assess its forecasting ability.
-
-#### 5. **LSTM for Time Series Prediction**
-   - **Inputs**: Sequences of weather data over time (`X`), crop targets (`y`).
-   - **Outputs**: LSTM model predictions, performance metrics (RMSE, R²).
-   - **Description**:
-     - The **LSTM** model was trained using sequences of weather variables, with each sequence predicting future crop yields. LSTMs excel at capturing long-term dependencies in time-series data.
-     - The LSTM architecture included two layers of LSTM units, followed by fully connected layers to output the crop predictions.
-
-### Advanced Algorithms and Logic
-
-#### 1. **Recursive Feature Elimination (RFE)**:
-   - **Logic**: RFE recursively removes the least important features based on the model’s performance, refining the feature set for the next iteration.
-   - **Inputs**: All weather variables (`temp`, `humidity`, `wind_speed`, etc.).
-   - **Outputs**: The best set of features for predicting crop variables.
-   - **Benefits**: RFE ensures that only the most relevant features are used for model training, reducing model complexity and improving performance.
-
-#### 2. **GridSearchCV**:
-   - **Logic**: It performs an exhaustive search over specified hyperparameter values for each model, using cross-validation to find the best combination of hyperparameters.
-   - **Inputs**: Hyperparameter grid, model pipeline.
-   - **Outputs**: The best model with optimized hyperparameters.
-   - **Benefits**: Ensures that the models are tuned for optimal performance by evaluating different hyperparameter configurations.
-
-#### 3. **Prophet**:
-   - **Logic**: Prophet decomposes time-series data into trend, seasonality, and holiday effects while also allowing external regressors (in this case, weather features).
-   - **Inputs**: Time (`ds`), crop target (`y`), weather regressors.
-   - **Outputs**: Time-series forecasts for each crop variable.
-   - **Benefits**: Prophet is robust to missing data and can handle seasonal and trend-based changes in time series, making it highly suitable for agricultural forecasting.
-
-#### 4. **LSTM (Long Short-Term Memory)**:
-   - **Logic**: LSTM networks use memory cells to store information over long periods, capturing temporal dependencies in time-series data.
-   - **Inputs**: Sequences of weather features.
-   - **Outputs**: Predictions for crop variables.
-   - **Benefits**: LSTM is particularly powerful for sequential data like time-series weather and crop data, as it can capture both short- and long-term dependencies.
-
-### Inputs and Outputs for Each Algorithm
-
-1. **Traditional Models (Random Forest, Gradient Boosting, Linear Regression)**:
-   - **Inputs**: Weather features (e.g., temperature, humidity), crop target variables.
-   - **Outputs**: Predictions for crop targets (`Yield`, `Production`, `Harvested Acres`).
-
-2. **Prophet**:
-   - **Inputs**: Date (`ds`), crop targets, weather features as regressors.
-   - **Outputs**: Forecasts for crop targets.
-
-3. **LSTM**:
-   - **Inputs**: Sequences of weather features, crop target variables.
-   - **Outputs**: Predictions for future crop variables.
-
-### Expected Major Findings:
-- **Traditional Models**: Identify the most important weather factors influencing crop yields.
-- **Prophet and LSTM**: Forecast crop production and yield based on weather patterns and trends, providing insights into seasonal variations and long-term weather impacts on agriculture.
+### 4. **Correlation and Exploratory Data Analysis**
+In addition to the time series modeling, **exploratory data analysis (EDA)** will be conducted to investigate any potential correlations between weather variables (e.g., temperature, precipitation) and crop outcomes. This will involve:
+- **Correlation analysis**: To identify any statistically significant relationships between weather conditions and crop yields.
+- **Feature Engineering**: Creating new weather-related features (e.g., temperature lag, seasonal averages) to improve the predictive power of the crop yield model.
 
 
 <!--- 
