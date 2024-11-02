@@ -4,10 +4,9 @@ import plotly.express as px
 import plotly.graph_objs as go
 
 # Load the datasets
-weather_data = pd.read_csv('./data/weather_data.csv')
-crop_data = pd.read_csv('./data/crop_data.csv')
+weather_data = pd.read_csv('./data/weather_monthly.csv')
+crop_data = pd.read_csv('./data/crops_yearly.csv')
 
-# Column explanations
 weather_column_explanations = {
     'date': 'Date and time of the weather observation',
     'city_name': 'Name of the city where the data was collected',
@@ -34,7 +33,16 @@ weather_column_explanations = {
     'weather_id': 'Weather condition ID',
     'weather_main': 'Group of weather parameters (e.g., Rain, Snow)',
     'weather_description': 'Weather condition within the group',
-    'weather_icon': 'Weather icon ID'
+    'weather_icon': 'Weather icon ID',
+    
+    # New extreme weather columns
+    'high_temp_days': 'Number of days with temperatures above a high threshold',
+    'low_temp_days': 'Number of days with temperatures below a low threshold',
+    'heavy_rain_days': 'Number of days with rainfall above a certain threshold',
+    'snow_days': 'Number of days with measurable snowfall',
+    'high_wind_days': 'Number of days with high wind speeds exceeding a threshold',
+    'low_visibility_days': 'Number of days with low visibility conditions',
+    'cloudy_days': 'Number of days with high cloud cover'
 }
 
 crop_column_explanations = {
@@ -48,7 +56,12 @@ crop_column_explanations = {
     'Production': 'Total production volume',
     'Price P/U': 'Price per unit of the crop',
     'Unit': 'Unit of measurement for the crop (e.g., tons, bushels)',
-    'Value': 'Total value of the crop production in dollars'
+    'Value': 'Total value of the crop production in dollars',
+    
+    # New per-acre columns
+    'Yield Per Acre': 'Average yield per harvested acre for the crop',
+    'Production Per Acre': 'Total production volume divided by harvested acres',
+    'Value Per Acre': 'Total value of production divided by harvested acres'
 }
 
 # Prepare data for tables
