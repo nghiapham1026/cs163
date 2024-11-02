@@ -4,7 +4,7 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
 # Import each page layout
-from pages import home, data, visualization, statistical_analysis, prediction
+from pages import home, data, statistical_analysis, prediction, weather_visualization, crops_visualization
 
 # Initialize the Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -18,7 +18,8 @@ app.layout = dbc.Container([
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact"),
                 dbc.NavLink("Data", href="/data", active="exact"),
-                dbc.NavLink("Visualization", href="/visualization", active="exact"),
+                dbc.NavLink("Weather Visualization", href="/weather_visualization", active="exact"),
+                dbc.NavLink("Crops Visualization", href="/crops_visualization", active="exact"),
                 dbc.NavLink("Statistical Analysis", href="/statistical_analysis", active="exact"),
                 dbc.NavLink("Prediction", href="/prediction", active="exact"),
             ], vertical=True, pills=True),
@@ -38,8 +39,10 @@ def display_page(pathname):
         return home.layout()
     elif pathname == "/data":
         return data.layout()
-    elif pathname == "/visualization":
-        return visualization.layout()
+    elif pathname == "/weather_visualization":
+        return weather_visualization.layout()
+    elif pathname == "/crops_visualization":
+        return crops_visualization.layout()
     elif pathname == "/statistical_analysis":
         return statistical_analysis.layout()
     elif pathname == "/prediction":
