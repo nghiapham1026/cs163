@@ -135,7 +135,7 @@ def layout():
             page_size=100  # Customize the number of rows per page
         ),
 
-        html.H1("Statistical Analysis Results"),
+        html.H1("Statistical Analysis Results - Some Additional Plots"),
         
         # Crop selection dropdown
         html.Label("Select a Crop:"),
@@ -164,6 +164,19 @@ def layout():
         # Coefficient Heatmap
         html.H3("Interactive Coefficient Heatmap by County"),
         dcc.Graph(id="coefficient-heatmap"),
+        
+        # Dropdown for selecting a crop
+        html.Label("Select a Crop:"),
+        dcc.Dropdown(
+            id="crop-r2-dropdown",
+            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
+            value=results['Crop'].unique()[0],  # Default to the first crop
+            clearable=False
+        ),
+
+        # R-Squared Plot
+        html.H3("R-Squared Values by County and Target"),
+        dcc.Graph(id="r-squared-barplot"),
     ])
     
 @callback(
@@ -377,6 +390,42 @@ def update_coefficient_heatmap(selected_crop):
         yaxis_title="County",
         height=500,  # Adjust for readability
         width=800   # Adjust for readability
+    )
+    
+    return fig
+
+@callback(
+    Output("r-squared-barplot", "figure"),
+    Input("crop-r2-dropdown", "value")
+)
+def update_r_squared_plot(selected_crop):
+    # Filter data for the selected crop
+    subset = results[results['Crop'] == selected_crop]
+
+    # Prepare R-squared data, ensuring each (County, Target) combination is unique
+    r_squared_data = subset.drop_duplicates(subset=['County', 'Target'])[['County', 'Target', 'R-Squared']]
+
+    # Create the bar plot
+    fig = px.bar(
+        r_squared_data,
+        x='Target',
+        y='R-Squared',
+        color='County',
+        barmode='group',
+        title=f"R-Squared Values by County for {selected_crop}",
+        labels={'R-Squared': 'R-Squared Value'},
+    )
+
+    # Set y-axis limit from 0 to 1 for R-squared values
+    fig.update_yaxes(range=[0, 1])
+
+    # Update layout for legend and titles
+    fig.update_layout(
+        xaxis_title="Outcome Variable (Target)",
+        yaxis_title="R-Squared Value",
+        legend_title="County",
+        height=500,
+        width=800
     )
     
     return fig
