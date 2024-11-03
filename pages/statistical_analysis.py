@@ -1,5 +1,5 @@
 import pandas as pd
-from dash import html, dcc, callback, Input, Output
+from dash import html, dcc, callback, Input, Output, dash_table
 import plotly.express as px
 import plotly.graph_objs as go
 import numpy as np
@@ -8,6 +8,7 @@ import numpy as np
 weather_data = pd.read_csv('./data/weather_data.csv')
 merged_yearly = pd.read_csv('./data/merged_yearly.csv')
 results = pd.read_csv('./data/results.csv')
+summary_data = pd.read_csv('./data/hypothesis_summary.csv')
 
 correlation_columns = [
     'Yield Per Acre', 'Production Per Acre', 'Value Per Acre', 'high_temp_days',
@@ -100,6 +101,39 @@ def layout():
         # R-Squared Plot
         html.H3("R-Squared Analysis"),
         dcc.Graph(id="r-squared-plot"),
+
+        html.H2("Hypothesis Summary Table"),
+        
+        dash_table.DataTable(
+            data=summary_data.to_dict("records"),
+            columns=[{"name": i, "id": i} for i in summary_data.columns],
+            style_table={'overflowX': 'auto'},
+            style_header={
+                'backgroundColor': 'rgb(230, 230, 230)',
+                'fontWeight': 'bold'
+            },
+            style_cell={
+                'textAlign': 'left',
+                'padding': '5px',
+                'whiteSpace': 'normal',
+                'height': 'auto'
+            },
+            style_data_conditional=[
+                {
+                    'if': {'filter_query': '{Hypothesis Conclusion} = "Reject H₀"', 'column_id': 'Hypothesis Conclusion'},
+                    'backgroundColor': 'tomato',
+                    'color': 'white'
+                },
+                {
+                    'if': {'filter_query': '{Hypothesis Conclusion} = "Fail to Reject H₀"', 'column_id': 'Hypothesis Conclusion'},
+                    'backgroundColor': 'lightgreen',
+                    'color': 'black'
+                }
+            ],
+            sort_action="native",
+            filter_action="native",
+            page_size=100  # Customize the number of rows per page
+        )
     ])
     
 @callback(

@@ -1,0 +1,49 @@
+ County   , Crop             , Outcome         , R-squared , Significant Predictors                                  , Effect Direction , Hypothesis Conclusion        
+ Alameda      , Grapes Wine          , Harvested Acres     , 0.310         , High Wind Days                                              , Negative             , Reject H₀                         
+ Alameda      , Grapes Wine          , Yield Per Acre      , 0.070         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Alameda      , Grapes Wine          , Production Per Acre , 0.240         , High Wind Days                                              , Negative             , Reject H₀                         
+ El Dorado    , Grapes Wine          , Harvested Acres     , 0.769         ," High Wind Days (+), Cloudy Days (-)                         ", Mixed                , Reject H₀                         
+ El Dorado    , Grapes Wine          , Yield Per Acre      , 0.537         , None                                                        , N/A                  , Fail to Reject H₀                 
+ El Dorado    , Grapes Wine          , Production Per Acre , 0.568         , Snow Days                                                   , Positive             , Reject H₀                         
+ Fresno       , Almonds              , Harvested Acres     , 0.762         ," High Temp Days (+), Low Visibility (-)                      ", Mixed                , Reject H₀                         
+ Fresno       , Almonds              , Yield Per Acre      , 0.539         , Low Visibility (Marginal)                                   , Negative             , Fail to Reject H₀                 
+ Fresno       , Almonds              , Production Per Acre , 0.580         ," Heavy Rain Days (-), Snow Days (+)                          ", Mixed                , Reject H₀                         
+ Fresno       , Grapes Wine          , Harvested Acres     , 0.228         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Fresno       , Grapes Wine          , Yield Per Acre      , 0.215         , Low Temp Days                                               , Positive             , Reject H₀                         
+ Fresno       , Grapes Wine          , Production Per Acre , 0.349         , High Wind Days                                              , Positive             , Reject H₀                         
+ Fresno       , Tomatoes Processing  , Harvested Acres     , 0.209         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Fresno       , Tomatoes Processing  , Yield Per Acre      , 0.313         ," High Wind Days, Cloudy Days                                 ", Positive             , Reject H₀                         
+ Fresno       , Tomatoes Processing  , Production Per Acre , 0.583         , High Wind Days                                              , Positive             , Reject H₀                         
+ Kings        , Almonds All          , Harvested Acres     , 0.756         ," High Temp Days, High Wind Days, Low Visibility Days         ", Mixed                , Reject H₀                         
+ Kings        , Almonds All          , Yield Per Acre      , 0.427         , High Temp Days                                              , Negative             , Reject H₀                         
+ Kings        , Almonds All          , Production Per Acre , 0.669         ," High Wind Days, Low Visibility Days                         ", Mixed                , Reject H₀                         
+ Kings        , Grapes Wine          , Harvested Acres     , 0.640         ," High Wind Days, Low Visibility Days                         ", Mixed                , Reject H₀                         
+ Kings        , Grapes Wine          , Yield Per Acre      , 0.458         , Low Visibility Days                                         , Positive             , Reject H₀                         
+ Kings        , Grapes Wine          , Production Per Acre , 0.459         , High Wind Days                                              , Positive             , Reject H₀                         
+ Kings        , Tomatoes Processing  , Harvested Acres     , 0.641         ," High Wind Days, Low Visibility Days, Heavy Rain Days (Marginal) ", Mixed           , Reject H₀                         
+ Kings        , Tomatoes Processing  , Yield Per Acre      , 0.304         , Low Visibility Days                                         , Positive             , Reject H₀                         
+ Kings        , Tomatoes Processing  , Production Per Acre , 0.593         , High Wind Days                                              , Positive             , Reject H₀                         
+ Mendocino    , Grapes Wine          , Harvested Acres     , 0.559         ," Low Temp Days, High Wind Days, Low Visibility Days          ", Mixed                , Reject H₀                         
+ Mendocino    , Grapes Wine          , Yield Per Acre      , 0.406         ," High Temp Days, High Wind Days, Low Visibility Days         ", Mixed                , Reject H₀                         
+ Mendocino    , Grapes Wine          , Production Per Acre , 0.100         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Napa         , Grapes Wine          , Harvested Acres     , 0.491         , High Wind Days                                              , Negative             , Reject H₀                         
+ Napa         , Grapes Wine          , Yield Per Acre      , 0.370         , High Wind Days                                              , Positive             , Reject H₀                         
+ Napa         , Grapes Wine          , Production Per Acre , 0.094         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Riverside      , Grapes Wine          , Harvested Acres     , 0.307         ," Heavy Rain Days, Low Visibility Days               ", Negative             , Reject H₀                       
+ Riverside      , Grapes Wine          , Yield Per Acre      , 0.289         , Low Visibility Days                                , Positive             , Reject H₀                       
+ Riverside      , Grapes Wine          , Production Per Acre , 0.151         , None                                               , N/A                  , Fail to Reject H₀               
+ Sonoma       , Grapes Wine          , Harvested Acres     , 0.460         , High Wind Days                                              , Negative             , Reject H₀                         
+ Sonoma       , Grapes Wine          , Yield Per Acre      , 0.364         , High Wind Days                                              , Positive             , Reject H₀                         
+ Sonoma       , Grapes Wine          , Production Per Acre , 0.026         , None                                                        , N/A                  , Fail to Reject H₀                 
+ Tulare       , Almonds All          , Harvested Acres     , 0.714         ," High Temp Days, High Wind Days, Low Visibility Days         ", Mixed                , Reject H₀                         
+ Tulare       , Almonds All          , Yield Per Acre      , 0.595         ," High Temp Days, High Wind Days                              ", Mixed                , Reject H₀                         
+ Tulare       , Almonds All          , Production Per Acre , 0.633         ," Heavy Rain Days, High Wind Days, Low Visibility Days        ", Mixed                , Reject H₀                         
+ Tulare       , Grapes Wine          , Harvested Acres     , 0.257         , High Temp Days                                              , Negative             , Reject H₀ (Marginal)             
+ Tulare       , Grapes Wine          , Yield Per Acre      , 0.534         ," High Temp Days, High Wind Days                              ", Mixed                , Reject H₀                         
+ Tulare       , Grapes Wine          , Production Per Acre , 0.738         ," High Temp Days, High Wind Days, Low Visibility Days         ", Mixed                , Reject H₀                         
+ Santa Clara    , Grapes Wine          , Harvested Acres     , 0.285         ," Heavy Rain Days, High Wind Days                    ", Mixed                , Reject H₀ (Marginal)           
+ Santa Clara    , Grapes Wine          , Yield Per Acre      , 0.268         ," High Temp Days, High Wind Days                     ", Negative             , Reject H₀                       
+ Santa Clara    , Grapes Wine          , Production Per Acre , 0.369         ," High Temp Days, High Wind Days                     ", Negative             , Reject H₀                       
+ Santa Clara    , Tomatoes Processing  , Harvested Acres     , 0.374         , High Wind Days                                     , Positive             , Reject H₀                       
+ Santa Clara    , Tomatoes Processing  , Yield Per Acre      , 0.215         , None                                               , N/A                  , Fail to Reject H₀               
+ Santa Clara    , Tomatoes Processing  , Production Per Acre , 0.432         , High Wind Days                                     , Negative             , Reject H₀                       
