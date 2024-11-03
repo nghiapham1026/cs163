@@ -1,6 +1,11 @@
 from dash import html, dcc
 import plotly.graph_objects as go
 import pandas as pd
+import json
+
+# Load California county boundaries GeoJSON
+with open('./data/California_County_Boundaries.geojson') as f:
+    california_counties = json.load(f)
 
 # City coordinates
 city_data = [
@@ -28,6 +33,16 @@ county_data = [
     {"name": "El Dorado", "lat": 38.7426, "lon": -120.4358}
 ]
 
+# Selected counties
+selected_counties = ["Sonoma", "Napa", "Santa Clara", "Alameda", "Tulare",
+                     "Kings", "Fresno", "Riverside", "Mendocino", "Nevada", "El Dorado"]
+
+# Filter GeoJSON data to only include selected counties
+filtered_counties = {
+    "type": "FeatureCollection",
+    "features": [feature for feature in california_counties["features"] if feature["properties"]["CountyName"] in selected_counties]
+}
+
 def layout():
     return html.Div([
         html.H1("California Crop and Weather Analysis"),
@@ -48,6 +63,8 @@ def layout():
             style={"width": "100%", "height": "auto", "margin-top": "20px"}
         ),
 
+        html.H1("Geographical Locations Used in Analysis"),
+
         # Map of California
         html.Div([
             dcc.Graph(
@@ -58,10 +75,26 @@ def layout():
     ])
 
 def california_map():
-    # Initialize the map
     fig = go.Figure()
 
-    # Add city markers
+    # Add county boundaries as filled areas from the filtered GeoJSON
+    fig.update_layout(mapbox=dict(
+        style="carto-positron",
+        center={"lat": 37.5, "lon": -119.5},
+        zoom=5.5
+    ))
+
+    # Add GeoJSON polygons for each selected county with a semi-transparent fill
+    fig.update_layout(mapbox_layers=[
+        {
+            "source": filtered_counties,
+            "type": "fill",
+            "below": "traces",
+            "color": "rgba(0, 128, 0, 0.3)"  # Semi-transparent green fill
+        }
+    ])
+
+    # Add city markers with labels
     for city in city_data:
         fig.add_trace(go.Scattermapbox(
             lat=[city["lat"]],
@@ -70,32 +103,27 @@ def california_map():
             marker=go.scattermapbox.Marker(size=10, color="blue"),
             text=city["name"],
             textposition="top right",
-            name="Cities",
-            hoverinfo="text"
+            hoverinfo="text",
+            name="Cities"
         ))
 
-    # Add county markers
+    # Add county labels at the centroids
     for county in county_data:
         fig.add_trace(go.Scattermapbox(
             lat=[county["lat"]],
             lon=[county["lon"]],
-            mode="markers+text",
-            marker=go.scattermapbox.Marker(size=8, color="green"),
+            mode="text",
             text=county["name"],
-            textposition="top right",
-            name="Counties",
-            hoverinfo="text"
+            textposition="middle center",
+            textfont=dict(size=12, color="green"),
+            hoverinfo="none",
+            name="Counties"
         ))
 
-    # Update layout with map style and centering
+    # Update layout settings
     fig.update_layout(
-        mapbox=dict(
-            style="carto-positron",  # Light-themed map style
-            center={"lat": 37.5, "lon": -119.5},  # Center on California
-            zoom=5.5  # Adjust zoom level as needed
-        ),
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        showlegend=True
+        showlegend=False
     )
 
     return fig
