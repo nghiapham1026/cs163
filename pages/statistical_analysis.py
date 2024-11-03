@@ -7,11 +7,17 @@ import numpy as np
 # Load the weather data
 weather_data = pd.read_csv('./data/weather_data.csv')
 merged_yearly = pd.read_csv('./data/merged_yearly.csv')
+results = pd.read_csv('./data/results.csv')
 
 correlation_columns = [
     'Yield Per Acre', 'Production Per Acre', 'Value Per Acre', 'high_temp_days',
     'low_temp_days', 'heavy_rain_days', 'high_wind_days', 'cloudy_days', 'low_visibility_days', 'snow_days'
 ]
+
+# Define targets and predictors
+targets = ['Harvested Acres', 'Yield Per Acre', 'Production Per Acre']
+predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days', 'snow_days',
+              'high_wind_days', 'low_visibility_days', 'cloudy_days']
 
 def layout():
     return html.Div([
@@ -61,6 +67,39 @@ def layout():
             ),
             dcc.Graph(id="correlation-matrix-plot"),
         ]),
+
+        html.H1("Statistical Analysis Results"),
+
+        # Dropdown for selecting multiple counties
+        html.Label("Select Counties:"),
+        dcc.Dropdown(
+            id="county-dropdown",
+            options=[{"label": county, "value": county} for county in results['County'].unique()],
+            value=[results['County'].unique()[0]],  # Default to the first county
+            multi=True,
+            clearable=False
+        ),
+
+        # Dropdown for selecting the target variable
+        html.Label("Select an Outcome Variable:"),
+        dcc.Dropdown(
+            id="target-dropdown",
+            options=[{"label": target, "value": target} for target in results['Target'].unique()],
+            value=results['Target'].unique()[0],
+            clearable=False
+        ),
+
+        # P-Value Plot
+        html.H3("P-Value Significance"),
+        dcc.Graph(id="p-value-plot"),
+
+        # Coefficient Plot
+        html.H3("Coefficient Analysis"),
+        dcc.Graph(id="coefficient-plot"),
+
+        # R-Squared Plot
+        html.H3("R-Squared Analysis"),
+        dcc.Graph(id="r-squared-plot"),
     ])
     
 @callback(
@@ -138,4 +177,78 @@ def plot_correlation_matrix(selected_county, selected_crop):
         xaxis=dict(tickmode="array", tickvals=list(range(len(correlation_columns))), ticktext=correlation_columns),
         yaxis=dict(tickmode="array", tickvals=list(range(len(correlation_columns))), ticktext=correlation_columns)
     )
+    return fig
+
+@callback(
+    Output("p-value-plot", "figure"),
+    Input("county-dropdown", "value"),
+    Input("target-dropdown", "value")
+)
+def plot_p_values(selected_counties, selected_target):
+    # Filter data for selected counties and target
+    filtered_data = results[(results["County"].isin(selected_counties)) & (results["Target"] == selected_target)]
+
+    # Plot p-values, grouped by county
+    fig = px.bar(
+        filtered_data,
+        x="Predictor",
+        y="P-Value",
+        color="County",
+        barmode="group",
+        title=f"P-Values for Selected Counties - {selected_target}",
+        labels={"P-Value": "P-Value", "County": "County"}
+    )
+    
+    # Add a significance line at p=0.05
+    fig.add_hline(y=0.05, line_dash="dash", line_color="blue", 
+                  annotation_text="Significance Level (0.05)", annotation_position="top left")
+    fig.update_layout(xaxis_title="Predictor", yaxis_title="P-Value")
+    
+    return fig
+
+@callback(
+    Output("coefficient-plot", "figure"),
+    Input("county-dropdown", "value"),
+    Input("target-dropdown", "value")
+)
+def plot_coefficients(selected_counties, selected_target):
+    # Filter data for selected counties, target, and significant predictors (p < 0.05)
+    filtered_data = results[(results["County"].isin(selected_counties)) & 
+                            (results["Target"] == selected_target) & 
+                            (results["P-Value"] < 0.05)]
+
+    # Plot coefficients, grouped by county
+    fig = px.bar(
+        filtered_data,
+        x="Predictor",
+        y="Coefficient",
+        color="County",
+        barmode="group",
+        title=f"Significant Coefficients for Selected Counties - {selected_target}",
+        labels={"Coefficient": "Coefficient", "County": "County"}
+    )
+    fig.update_layout(xaxis_title="Predictor", yaxis_title="Coefficient")
+    
+    return fig
+
+@callback(
+    Output("r-squared-plot", "figure"),
+    Input("county-dropdown", "value"),
+    Input("target-dropdown", "value")
+)
+def plot_r_squared(selected_counties, selected_target):
+    # Filter data for selected counties and target
+    filtered_data = results[(results["County"].isin(selected_counties)) & (results["Target"] == selected_target)]
+
+    # Plot R-squared values for each selected county
+    fig = px.bar(
+        filtered_data,
+        x="County",
+        y="R-Squared",
+        color="County",
+        title=f"R-Squared Values for Selected Counties - {selected_target}",
+        labels={"R-Squared": "R-Squared"}
+    )
+    fig.update_layout(xaxis_title="County", yaxis_title="R-Squared")
+    
     return fig
