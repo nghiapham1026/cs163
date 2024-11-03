@@ -149,6 +149,21 @@ def layout():
         # Coefficient Plot
         html.H3("Interactive Regression Coefficients by County"),
         dcc.Graph(id="coefficient-graph"),
+
+        html.H1("Statistical Analysis Results"),
+        
+        # Dropdown for selecting a crop
+        html.Label("Select a Crop:"),
+        dcc.Dropdown(
+            id="crop-heatmap-dropdown",
+            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
+            value=results['Crop'].unique()[0],  # Default to the first crop
+            clearable=False
+        ),
+
+        # Coefficient Heatmap
+        html.H3("Interactive Coefficient Heatmap by County"),
+        dcc.Graph(id="coefficient-heatmap"),
     ])
     
 @callback(
@@ -330,6 +345,38 @@ def update_coefficient_plot(selected_crop):
         xaxis_title="Predictor",
         yaxis_title="Coefficient",
         legend_title="County"
+    )
+    
+    return fig
+
+@callback(
+    Output("coefficient-heatmap", "figure"),
+    Input("crop-heatmap-dropdown", "value")
+)
+def update_coefficient_heatmap(selected_crop):
+    # Filter data for the selected crop across all counties
+    subset = results[results['Crop'] == selected_crop]
+
+    # Pivot data to create heatmap format
+    heatmap_data = subset.pivot_table(index='County', columns='Predictor', values='Coefficient')
+
+    # Create the interactive heatmap
+    fig = go.Figure(data=go.Heatmap(
+        z=heatmap_data.values,
+        x=heatmap_data.columns,
+        y=heatmap_data.index,
+        colorscale='RdBu',  # Red to Blue color scale
+        zmid=0,  # Center the color scale at 0
+        colorbar=dict(title="Coefficient")
+    ))
+
+    # Update layout with title and axis labels
+    fig.update_layout(
+        title=f"Coefficient Heatmap for {selected_crop}",
+        xaxis_title="Predictor",
+        yaxis_title="County",
+        height=500,  # Adjust for readability
+        width=800   # Adjust for readability
     )
     
     return fig
