@@ -133,7 +133,22 @@ def layout():
             sort_action="native",
             filter_action="native",
             page_size=100  # Customize the number of rows per page
-        )
+        ),
+
+        html.H1("Statistical Analysis Results"),
+        
+        # Crop selection dropdown
+        html.Label("Select a Crop:"),
+        dcc.Dropdown(
+            id="crop-dropdown",
+            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
+            value=results['Crop'].unique()[0],  # Default to the first crop
+            clearable=False
+        ),
+
+        # Coefficient Plot
+        html.H3("Interactive Regression Coefficients by County"),
+        dcc.Graph(id="coefficient-graph"),
     ])
     
 @callback(
@@ -284,5 +299,37 @@ def plot_r_squared(selected_counties, selected_target):
         labels={"R-Squared": "R-Squared"}
     )
     fig.update_layout(xaxis_title="County", yaxis_title="R-Squared")
+    
+    return fig
+
+@callback(
+    Output("coefficient-graph", "figure"),
+    Input("crop-dropdown", "value")
+)
+def update_coefficient_plot(selected_crop):
+    # Filter data for the selected crop
+    subset = results[results['Crop'] == selected_crop]
+
+    # Create the interactive bar plot
+    fig = px.bar(
+        subset,
+        x='Predictor',
+        y='Coefficient',
+        color='County',
+        title=f"Interactive Regression Coefficients by County for {selected_crop}",
+        labels={'Coefficient': 'Coefficient Value'},
+        hover_data={'P-Value': True, 'Target': True},
+        barmode='group'
+    )
+
+    # Add a horizontal line at y=0 for reference
+    fig.add_shape(type='line', x0=-0.5, y0=0, x1=len(subset['Predictor'].unique()) - 0.5, y1=0,
+                  line=dict(color="Gray", width=1, dash="dash"))
+
+    fig.update_layout(
+        xaxis_title="Predictor",
+        yaxis_title="Coefficient",
+        legend_title="County"
+    )
     
     return fig
