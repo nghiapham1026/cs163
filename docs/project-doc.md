@@ -1,4 +1,4 @@
-# Proposal: Fresno Weather Data Analysis and Forecasting
+# Proposal: Analyzing Weather Impacts on Crop Production in California Counties
 
 ### **Project Goals:**
 The primary goal of this project is to analyze the impact of extreme weather conditions on crop yields, production, and harvested acres across multiple counties in California. Specifically, the project aims to:
