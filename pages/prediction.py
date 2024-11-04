@@ -1,7 +1,9 @@
-from dash import html
+from dash import html, dcc
 
-def render_prediction_page():
+def layout():
     return html.Div([
-        html.H2("Prediction Page"),
-        # Your Prediction page content goes here
+        html.H1("Prediction"),
+        html.P("Predicted outcomes based on past data."),
+        dcc.Graph(id="prediction-plot"),
+        # Prediction model results or forecast plots go here
     ])
