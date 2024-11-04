@@ -468,9 +468,201 @@ Recursive Feature Elimination (RFE) and cross-validation are used to select the 
 The following sections should be used for the analysis outcome presentation. These are not required for the analysis plan submission.
 ----------
 -->
-# Analysis Outcomes
-<!--- Explain the analysis you conducted and show the results. Discuss how the data, your analysis, and/or visualization can support the claims or findings. What will be the recommendations or suggestions you can make based on the results? Use bullet points, tables, and figures (if possible) to increase the readability of the document. -->
+### Analysis Outcomes
 
+Our analysis assessed the impact of various extreme weather variables on crop yield, production per acre, and harvested acres across multiple counties and crop types. By evaluating R-squared values, significant predictors, and their effect directions, we derived insights into the relationship between weather conditions and crop outcomes. The table below highlights the key outcomes and summarizes the significance of predictors for each County-Crop combination.
+
+#### Key Findings
+
+1. **Influence of Weather Variables on Crop Outcomes**:
+   - **High Wind Days** emerged as a significant predictor in numerous County-Crop combinations, frequently associated with negative impacts on harvested acres and production per acre. This suggests that strong winds could hinder crop growth or damage crops, especially for crops like **Grapes Wine** in counties such as Alameda, Napa, and Sonoma.
+   - **Temperature Effects**: High temperatures, often accompanied by low visibility days, showed a mixed effect on crop outcomes. For instance, **High Temp Days** positively influenced almond production in some counties (e.g., Tulare and Kings) but negatively impacted yield per acre in others.
+   - **Rain and Visibility**: **Heavy Rain Days** and **Low Visibility Days** had notable impacts on crop yield and production in regions like Riverside and Kings. These conditions can influence water saturation and light exposure, essential for crop growth.
+
+2. **Lagged Effects**:
+   - Lagged variables for both weather and crop outcomes were incorporated into models, capturing delayed effects of weather patterns and past crop performance. This approach improved model accuracy and revealed dependencies on previous years’ weather and crop data, particularly in counties with volatile weather patterns.
+   - **Example**: In Fresno and Kings counties, lagged features such as **Yield Per Acre_lag1** and **Harvested Acres_lag2** were among the significant predictors, indicating that prior crop yield and acreage impact current outcomes.
+
+3. **Hypothesis Testing**:
+   - For each County-Crop combination, a hypothesis test was conducted to determine the statistical significance of weather effects on crop outcomes.
+   - **Hypothesis Conclusion**: For most County-Crop combinations, we rejected the null hypothesis (H₀), confirming that extreme weather variables significantly impact crop outcomes. However, in some cases (e.g., Yield Per Acre for Grapes Wine in Alameda), we failed to reject H₀, indicating no strong relationship between weather and yield.
+
+#### Summary of Regression Results
+
+| **County**   | **Crop**             | **Outcome**         | **R-squared** | **Significant Predictors**                                  | **Effect Direction** | **Hypothesis Conclusion**        |
+|--------------|----------------------|---------------------|---------------|-------------------------------------------------------------|-----------------------|-----------------------------------|
+| Alameda      | Grapes Wine          | Harvested Acres     | 0.310         | High Wind Days                                              | Negative             | Reject H₀                         |
+| El Dorado    | Grapes Wine          | Yield Per Acre      | 0.537         | None                                                        | N/A                  | Fail to Reject H₀                 |
+| Fresno       | Almonds              | Production Per Acre | 0.580         | Heavy Rain Days (-), Snow Days (+)                          | Mixed                | Reject H₀                         |
+| Kings        | Grapes Wine          | Yield Per Acre      | 0.458         | Low Visibility Days                                         | Positive             | Reject H₀                         |
+| Sonoma       | Grapes Wine          | Harvested Acres     | 0.460         | High Wind Days                                              | Negative             | Reject H₀                         |
+
+*(A sample of key results)*
+
+#### Recommendations and Insights
+
+- **Risk Mitigation for High Winds**: Given the frequent negative impact of high wind days across various crops, consider implementing windbreaks or protective covers, particularly in wind-prone areas such as Napa and Alameda.
+- **Targeted Irrigation and Drainage Improvements**: To counter the effects of **Heavy Rain Days** and **Low Visibility Days**—which were especially impactful for almond and tomato crops—regions like Fresno and Kings could benefit from improved drainage systems and adaptive irrigation strategies to manage excess water and light variability.
+- **Use of Lagged Variables for Forecasting**: The significance of lagged crop and weather variables suggests that monitoring prior years’ crop data and weather trends can improve yield and production forecasts, aiding farmers in resource allocation and seasonal planning.
+
+
+### Coefficient Plots
+
+![alt text](image-2.png)
+
+Our regression analysis across various counties and crops revealed distinct weather predictors that significantly impact crop outcomes. The interactive regression coefficient plot below illustrates the effect size and direction of key weather variables on **Grapes Wine** across counties.
+
+#### Key Insights from the Coefficient Plot
+
+1. **High Wind Days**:
+   - High wind days exhibit a significant impact, with both positive and negative effects depending on the county. For instance, in **Kings County**, high wind days have a strong positive coefficient, suggesting a possible association with improved production, whereas in **Mendocino** and **Alameda**, high wind days are negatively associated with harvested acres and production.
+   - This mixed effect indicates that the relationship between high wind days and crop outcomes may depend on other local factors, such as vineyard management practices and specific crop resilience to wind.
+
+2. **Temperature Effects**:
+   - **High Temp Days** tend to have varied effects, with a noticeable negative impact in **Fresno** and **Kings** counties, while other counties show smaller coefficients.
+   - **Low Temp Days** have more county-specific impacts, such as a strong positive influence in **El Dorado**, which could indicate that cooler temperatures benefit grape quality or yield in this region.
+
+3. **Heavy Rain and Low Visibility**:
+   - **Heavy Rain Days** show a negative impact in **Tulare** and **Mendocino**, possibly due to the risk of overwatering or flooding affecting grape growth.
+   - **Low Visibility Days** generally display minor effects but vary across counties, potentially tied to fog and its impact on grapevine microclimates.
+
+4. **Cloudy Days**:
+   - **Cloudy Days** have a noticeable positive impact in **Tulare** and **Santa Clara** counties, suggesting that moderate cloud cover may protect crops from excessive sunlight or extreme temperatures.
+
+#### Supporting Visualization
+
+The regression coefficient plot (above) provides a visual comparison of the strength and direction of each predictor across counties. This visualization enhances our understanding by showing the variability in predictor influence on crop outcomes based on location, reinforcing the need for tailored agricultural practices.
+
+#### Recommendations
+
+- **Wind Management**: Counties with negative coefficients for high wind days (e.g., Alameda and Mendocino) should consider wind mitigation strategies such as windbreaks.
+- **Temperature Monitoring**: Counties sensitive to high temperatures, such as Kings, may benefit from temperature control measures, particularly during extreme heat days.
+- **Rainwater Management**: For counties where heavy rain negatively impacts grape yield, improved drainage systems are recommended to reduce waterlogging risks.
+
+
+![alt text](image.png)![alt text](image-1.png)
+
+The regression analysis provides insights into the influence of weather variables on crop outcomes across different counties for Grapes Wine, Almonds All, and Tomatoes Processing. Each regression coefficient plot highlights the effect size and direction of significant weather predictors, demonstrating how these variables interact with specific crops in each region.
+
+#### Key Findings by Crop
+
+1. **Grapes Wine**:
+   - The analysis revealed that **high wind days** play a substantial role across counties, with negative impacts in counties like **Alameda** and **Sonoma**, likely due to wind damage to vines.
+   - **Low temperature days** had a notable positive influence in **El Dorado**, suggesting that cooler climates benefit grape production in this county.
+   - **Heavy rain days** and **cloudy days** also had variable impacts, showing mixed effects depending on the county, indicating that certain counties may benefit from cloud cover while others are adversely affected.
+
+2. **Almonds All**:
+   - **High temperature days** had a strong positive influence in **Fresno** and **Tulare** but were less impactful in **Kings**. This suggests that almonds in Fresno and Tulare counties may thrive under higher temperatures.
+   - **High wind days** and **low visibility days** generally showed negative coefficients in **Fresno** and **Kings**, indicating that wind and reduced visibility (likely due to dust or fog) could hinder almond production in these areas.
+   - **Heavy rain days** showed a strong negative impact in **Fresno**, which may be due to waterlogging or potential almond crop damage from excess rainfall.
+
+3. **Tomatoes Processing**:
+   - **Heavy rain days** had significant negative effects in both **Fresno** and **Kings**, potentially due to water sensitivity in tomatoes, as excessive rain can affect yield and quality.
+   - **High wind days** had mixed effects, with negative impacts in **Fresno** but positive in **Kings**. This could be due to regional differences in how wind affects tomato plants or different irrigation practices that interact with wind patterns.
+   - **Cloudy days** showed negative coefficients in **Fresno** and **Santa Clara**, indicating that extended cloud cover might reduce sunlight exposure, thereby affecting tomato growth in these regions.
+
+#### Supporting Visualizations
+
+- The interactive regression coefficient plots illustrate the variability in predictor effects across different counties, emphasizing that weather impacts are not uniform across regions.
+- **Grapes Wine Plot**: Highlights the differing impact of high wind days, where counties like **Alameda** are more negatively affected than others.
+- **Almonds All Plot**: Shows that high temperature days are highly beneficial for almond production in **Fresno**, while heavy rain days are detrimental.
+- **Tomatoes Processing Plot**: Demonstrates that heavy rain is a major limiting factor for tomatoes in **Fresno** and **Kings** counties, necessitating effective water management.
+
+#### Recommendations
+
+- **Wind Management**: Implement protective strategies in counties where high wind days have a negative effect (e.g., **Alameda** for Grapes Wine and **Fresno** for Tomatoes Processing).
+- **Temperature and Water Management**:
+   - For almond crops in **Fresno** and **Tulare**, capitalize on high temperature days by optimizing irrigation during warm periods.
+   - For tomato crops, reduce water exposure during heavy rain days, particularly in **Fresno** and **Kings**, where rain negatively impacts yield.
+- **Cloud Cover**: In regions where cloudy days negatively impact crop outcomes (e.g., **Santa Clara** for tomatoes), consider supplemental lighting or adaptive planting strategies to mitigate the effects of reduced sunlight.
+
+
+![alt text](image-3.png)![alt text](image-4.png)![alt text](image-5.png)
+
+Our analysis utilized regression models to explore the impact of extreme weather variables on crop outcomes across multiple counties for Grapes Wine, Almonds All, and Tomatoes Processing. The interactive coefficient heatmaps below illustrate the effect sizes and directions of each predictor for different counties, enhancing our understanding of how weather variables influence each crop.
+
+#### Key Findings by Crop
+
+1. **Grapes Wine**:
+   - **High Wind Days** and **Low Temperature Days**:
+     - The heatmap indicates a significant negative influence of high wind days on grape production in counties like **Fresno** and **Sonoma**.
+     - **Low temperature days** have a strong positive impact in **El Dorado**, highlighting the suitability of cooler climates for grape growth in this region.
+   - **Heavy Rain Days**:
+     - Counties like **Kings** and **Mendocino** show negative coefficients for heavy rain days, suggesting that excessive rain could be detrimental to grapevines in these areas, potentially due to water stress or disease risk.
+   - **Regional Differences**:
+     - The variability across counties emphasizes that the impact of each predictor depends on local climatic conditions and crop resilience, supporting the need for location-specific agricultural strategies.
+
+2. **Almonds All**:
+   - **High Temperature Days**:
+     - The heatmap for almonds shows that **Fresno** experiences a strong positive impact from high temperature days, which could indicate that almond crops in this area benefit from warmer weather conditions.
+   - **High Wind Days** and **Low Visibility Days**:
+     - Both high wind days and low visibility days have significant negative effects in **Fresno** and **Kings**. This may be due to the almond trees’ sensitivity to wind damage and potential issues with reduced light exposure during low visibility conditions.
+   - **Heavy Rain Days**:
+     - Similar to grapes, heavy rain days have a notable negative impact in **Fresno**, suggesting that overwatering and flooding risks might affect almond growth, especially during the harvest season.
+
+3. **Tomatoes Processing**:
+   - **Heavy Rain Days**:
+     - For tomatoes, **heavy rain days** are strongly negatively associated with yield in **Fresno** and **Kings** counties, as shown in the heatmap. This indicates that tomatoes may be particularly vulnerable to excess rainfall, which can cause root damage and decrease crop quality.
+   - **Cloudy Days**:
+     - Cloudy days have a consistent negative effect on tomatoes, particularly in **Fresno** and **Santa Clara**, which could be due to reduced sunlight affecting photosynthesis and growth rates.
+   - **High Wind Days**:
+     - The impact of high wind days varies, with **Fresno** showing a significant negative coefficient, likely due to the mechanical stress wind places on tomato plants.
+
+#### Supporting Visualizations
+
+The heatmaps offer a comparative view of the coefficient values across predictors and counties for each crop:
+
+- **Grapes Wine Heatmap**: Highlights the strong negative impact of high wind days in counties like **Sonoma** and **Fresno** and the positive impact of low temperature days in **El Dorado**.
+- **Almonds All Heatmap**: Reveals the importance of high temperature days in **Fresno**, contrasting with the negative effects of heavy rain and high wind days in the same county.
+- **Tomatoes Processing Heatmap**: Illustrates the pronounced negative effect of heavy rain and cloudy days on tomato yield, particularly in **Fresno** and **Kings** counties.
+
+#### Recommendations
+
+- **Wind Management**:
+   - High wind days have notable negative impacts across several crops and counties. **Windbreaks** or other protective measures could mitigate wind damage, especially for grapes in **Sonoma** and almonds in **Fresno**.
+- **Water and Drainage Management**:
+   - In counties where heavy rain negatively affects crops (e.g., almonds and tomatoes in **Fresno**), improved drainage systems could help manage excess water and reduce risks of overwatering.
+- **Adaptation to Temperature Variability**:
+   - For crops like almonds that benefit from higher temperatures in **Fresno**, optimizing planting times to align with warmer seasons could enhance yield. Meanwhile, for grapes in cooler regions like **El Dorado**, strategies to maintain cooler growing conditions may support crop quality.
+
+
+![alt text](image-6.png)![alt text](image-7.png)![alt text](image-8.png)
+
+Our regression analysis for **Grapes Wine**, **Almonds All**, and **Tomatoes Processing** assessed the relationship between weather variables and various crop outcomes, including harvested acres, yield per acre, and production per acre. The R-squared plots below illustrate the explanatory power of the models for each target variable across different counties.
+
+#### Model Performance (R-Squared Analysis)
+
+1. **Almonds All**:
+   - **Harvested Acres**: The R-squared values are consistently high across **Fresno**, **Kings**, and **Tulare**, indicating that the weather variables in the model explain a substantial portion of the variability in harvested acres.
+   - **Yield Per Acre**: The model shows moderate to low explanatory power for yield per acre, with **Kings** having a particularly low R-squared value. This suggests that additional factors, beyond weather, may influence yield.
+   - **Production Per Acre**: The model performs reasonably well, especially in **Kings** and **Tulare**, with R-squared values over 0.6. This implies that weather patterns contribute significantly to predicting production levels for almonds in these counties.
+
+2. **Tomatoes Processing**:
+   - **Harvested Acres**: The model shows moderate explanatory power for harvested acres, with **Kings** having the highest R-squared value, followed by **Santa Clara** and **Fresno**.
+   - **Yield Per Acre**: The R-squared values are generally low across all counties, particularly in **Santa Clara**, indicating that yield per acre for tomatoes may be influenced by factors other than weather.
+   - **Production Per Acre**: The model demonstrates improved explanatory power for production per acre, especially in **Fresno** and **Kings**, where R-squared values are close to 0.6. This highlights the significance of weather conditions in determining tomato production outcomes in these counties.
+
+3. **Grapes Wine**:
+   - **Harvested Acres**: The R-squared values vary widely among counties, with **El Dorado** and **Mendocino** showing the highest explanatory power. The variability in R-squared values suggests that weather impacts grapevine acreage differently depending on regional conditions.
+   - **Yield Per Acre**: The explanatory power of the model for yield per acre is generally lower than for other outcomes. This is especially noticeable in **Santa Clara** and **Fresno**, where R-squared values are below 0.3.
+   - **Production Per Acre**: For production per acre, counties like **El Dorado**, **Sonoma**, and **Tulare** exhibit higher R-squared values, indicating that the weather variables are better at predicting production levels in these regions.
+
+#### Insights and Interpretation
+
+- **High R-squared for Harvested Acres**: Across all crops, the model generally shows high explanatory power for harvested acres, suggesting that weather conditions strongly influence the area cultivated for these crops.
+- **Variability in Yield and Production Predictions**: The model’s explanatory power for yield and production per acre varies significantly by county and crop. This variability indicates that local conditions, crop management practices, and possibly other non-weather-related factors play a role in yield and production outcomes.
+- **County-Specific Patterns**:
+   - **Kings** and **Tulare** counties demonstrate higher R-squared values for production per acre across crops, which suggests that these areas are more directly influenced by weather patterns.
+   - Conversely, **Santa Clara** and **Fresno** often show lower R-squared values, indicating potential influences from factors not captured by the weather variables.
+
+#### Recommendations
+
+- **Enhanced Weather-Based Planning**:
+   - For counties with high R-squared values in production per acre (e.g., **Kings** and **Tulare**), farmers and agricultural managers could rely on weather forecasts to make data-driven decisions about planting and harvesting schedules.
+- **Further Analysis for Yield Prediction**:
+   - Given the lower R-squared values for yield per acre, additional research into non-weather factors (e.g., soil quality, irrigation practices, crop variety) may be necessary to improve prediction models.
+- **Location-Specific Adaptation**:
+   - The regional variability in R-squared values suggests that a one-size-fits-all approach may not be effective. Tailoring agricultural practices based on the specific sensitivities of each county can optimize crop outcomes.
 
 
 <!--- 
