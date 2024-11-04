@@ -665,6 +665,40 @@ Our regression analysis for **Grapes Wine**, **Almonds All**, and **Tomatoes Pro
    - The regional variability in R-squared values suggests that a one-size-fits-all approach may not be effective. Tailoring agricultural practices based on the specific sensitivities of each county can optimize crop outcomes.
 
 
+### Machine Learning Models With Lagged Features
+
+Our analysis explored the relationship between weather variables and crop outcomes across multiple counties for **Grapes Wine**, **Almonds All**, and **Tomatoes Processing** using regression models. To capture potential delayed effects of weather on crop production, we also experimented with machine learning models incorporating lagged features from both weather and crop data.
+
+#### Key Findings from Regression Analysis
+
+The regression analysis provided initial insights into the significant weather predictors affecting each crop, with R-squared values indicating the explanatory power of the models for each outcome:
+
+1. **High R-squared for Harvested Acres**: The models generally showed high explanatory power for harvested acres across all crops, suggesting that weather conditions play a significant role in determining the area under cultivation.
+2. **Variability in Yield and Production Predictions**: The models’ explanatory power for yield and production per acre varied by county and crop, highlighting the influence of local conditions and potentially other non-weather-related factors.
+3. **County-Specific Sensitivities**: Certain counties, such as **Kings** and **Tulare**, demonstrated higher R-squared values for production per acre, indicating a stronger influence of weather patterns, while others, such as **Santa Clara** and **Fresno**, showed lower values, suggesting the presence of additional factors.
+
+#### Experimenting with Machine Learning Models and Lagged Features
+
+To enhance the predictive power of the models, we applied machine learning techniques—including Random Forest, Lasso, Ridge, and Support Vector Regressor—incorporating lagged features from both weather and crop data. The objective was to capture delayed effects of weather conditions and historical crop performance on current outcomes. However, initial results indicate that these machine learning models, despite the inclusion of lagged variables, are not performing as well as the simpler regression models in terms of explanatory power (R-squared) and prediction accuracy.
+
+#### Insights and Interpretation
+
+- **Machine Learning Challenges**:
+   - The machine learning models with lagged features did not initially improve performance as expected. This may be due to the relatively limited data points or the complex, non-linear interactions between weather and crop outcomes that are difficult to capture with lagged variables alone.
+   - The complexity introduced by lagged features could be leading to overfitting, particularly with smaller datasets, which may explain the models’ reduced generalization ability.
+- **Value of Simpler Models**:
+   - The initial regression models demonstrated consistent, interpretable results, especially for predicting harvested acres. This suggests that while more advanced techniques are valuable, simpler models may sometimes offer more stable predictions for certain outcomes.
+
+#### Recommendations
+
+- **Enhanced Weather-Based Planning**:
+   - For counties with high R-squared values in production per acre (e.g., **Kings** and **Tulare**), agricultural practices could benefit from weather forecasts for better planning around planting and harvesting.
+- **Further Exploration of Lagged Effects**:
+   - To improve the performance of machine learning models, further exploration of different lag intervals, feature selection, or other relevant non-weather factors (e.g., soil conditions or irrigation) may be necessary.
+- **Adopting a Hybrid Approach**:
+   - Given the initial success of regression models and the potential of machine learning models, a hybrid approach—using regression for interpretability and machine learning for complex predictions—could optimize outcomes in future iterations.
+
+
 <!--- 
 ----------
 The following sections should be used for the visualization planning. These are not required for the analysis outcome presentation.
