@@ -1,57 +1,105 @@
 # Proposal: Fresno Weather Data Analysis and Forecasting
 
-## **Project Summary: Weather and Crop Data Analysis and Forecasting**
-
 ### **Project Goals:**
-The primary goal of this project is to develop two independent, yet interrelated, systems: 
-1. A forecasting model for short-term weather conditions in **Fresno County**.
-2. A predictive model for **tomato and almond yields**. 
+The primary goal of this project is to analyze the impact of extreme weather conditions on crop yields, production, and harvested acres across multiple counties in California. Specifically, the project aims to:
 
-The project will apply time series analysis to forecast **daily weather patterns** such as temperature and precipitation, using data from **1980 to the present**, and develop a model to estimate future crop yields. The goal is to evaluate how weather conditions affect crop production, and simulate potential scenarios that can assist farmers in optimizing planting, irrigation, and harvesting schedules.
+1. **Assess the Relationship Between Extreme Weather and Crop Outcomes:**
+   - Perform statistical analyses to test the hypothesis that extreme weather events significantly affect crop yield, production per acre, and harvested acres.
+   - Identify which weather variables have the most substantial impact on different crops and counties.
+
+2. **Develop Predictive Models for Crop Yields:**
+   - Build machine learning models capable of predicting future crop yields based on historical weather data and crop performance.
+   - Incorporate significant weather features, as well as lagged weather and crop variables, to enhance model accuracy.
+
+By achieving these goals, the project seeks to provide valuable insights and tools that can help farmers and agricultural planners mitigate risks associated with extreme weather events and optimize crop management strategies.
 
 ### **Specific Crops and Timeframe:**
-The project will focus on the following crops, selected due to their economic importance in **Fresno** and the availability of historical yield data:
-- **Almonds:** A major crop in Fresno, sensitive to temperature and water availability.
-- **Tomatoes:** Widely grown and sensitive to temperature fluctuations, with high economic value.
+The project focuses on a selection of economically important crops in California, utilizing data from **1980 to the present**. The crops and counties analyzed include:
 
-The analysis will cover the period from **1980 to the present**, utilizing both historical crop yield data and weather data, focusing on **Fresno County**, but incorporating relevant insights from other nearby regions when necessary.
+- **Almonds:**
+  - **Counties:** Fresno, Kings, Tulare
+  - **Sensitivity:** Highly sensitive to temperature extremes and water availability.
+
+- **Grapes (Wine):**
+  - **Counties:** Alameda, El Dorado, Fresno, Kings, Mendocino, Napa, Riverside, Santa Clara, Sonoma, Tulare
+  - **Sensitivity:** Affected by temperature fluctuations, rainfall patterns, and extreme weather events like high winds.
+
+- **Tomatoes (Processing):**
+  - **Counties:** Fresno, Kings, Santa Clara
+  - **Sensitivity:** Influenced by temperature variations and precipitation levels.
+
+The analysis covers these crops across the specified counties to capture a diverse range of climatic conditions and agricultural practices.
 
 ### **Key Features:**
 
-1. **Independent Weather Prediction Model:**
-   - A **SARIMA model** will predict daily weather conditions, focusing on key variables such as temperature and precipitation from 1980 to the present.
-   - The system will forecast **future daily weather conditions** for a specific time period (e.g., the next 30 days or years), using advanced time series techniques to generate accurate short-term weather predictions, allowing farmers to plan agricultural activities accordingly.
-   
-2. **Crop Yield Prediction Model:**
-   - A separate **time series model** will predict **future crop yields**, focusing on key crop metrics such as **Harvested Acres**, **Yield**, and **Production** for almonds and tomatoes.
-   - This model will utilize historical crop data combined with relevant weather variables (e.g., lagged temperature and precipitation) to provide insights into future crop productivity.
+1. **Data Integration and Feature Engineering:**
+   - Merged daily and yearly weather datasets with crop yield data based on date and location.
+   - Created new features to quantify extreme weather levels, using location-specific thresholds based on historical weather statistics.
+   - Calculated extreme weather metrics such as high-temperature days, heavy rain days, high wind days, and others for each year and location.
 
-3. **Integration of Weather and Crop Models:**
-   - Although the models for **weather** and **crop yields** are developed independently, the results from the weather prediction model will be used to **simulate different weather scenarios** and observe how they might affect future crop yields.
-   - By adjusting key weather factors (e.g., temperature rise, rainfall variations), the project will demonstrate the impact of potential climate changes on crop productivity in Fresno County.
+2. **Statistical Analysis and Hypothesis Testing:**
+   - Tested the hypothesis that extreme weather significantly affects crop outcomes using regression analyses for each county-crop combination.
+   - Identified significant weather predictors for harvested acres, yield per acre, and production per acre.
+   - Assessed the direction and magnitude of the impact of extreme weather variables on crop performance.
+
+3. **Development of Predictive Models:**
+   - Built machine learning models (Random Forest, Lasso, Ridge, Support Vector Regressor) to predict future crop yields based on significant weather features.
+   - Incorporated lagged weather and crop variables to capture temporal dependencies and improve model performance.
+   - Evaluated model performance using metrics such as R-squared and Root Mean Squared Error (RMSE), and compared results across different models, counties, and crops.
+
+4. **Visualization and Interpretation:**
+   - Generated correlation matrices and heatmaps to visualize the relationships between weather variables and crop outcomes.
+   - Created plots to compare model performance across counties and crops, aiding in the interpretation of results.
 
 ### **Project Outcome and Usefulness:**
-- The final system will provide **short-term weather forecasts** and **future crop yield predictions**, offering a tool for **scenario-based planning**.
-- Farmers and agricultural planners can use this tool to make informed decisions about when and how to plant, irrigate, and harvest, optimizing their practices based on both weather forecasts and crop yield predictions.
-- By understanding the likely effects of different weather conditions on crop outcomes, the project will help **mitigate risks** associated with temperature and precipitation fluctuations, potentially improving overall agricultural productivity.
+- **Insights into Weather-Crop Relationships:**
+  - The project provides a detailed understanding of how extreme weather events impact different crops in various counties.
+  - Identifies specific weather variables that significantly affect crop yield and production, helping target areas for risk mitigation.
 
-The analysis will cover the period from **1980 to the present**, utilizing both historical crop yield data and weather data for each growing season in the Central California region, which includes Fresno County, and various other ``['Fresno', 'Sacramento', 'San Joaquin', 'Stanislaus', 'Merced', 'Madera', 'Kings', 'Tulare',
-               'Kern', 'Yolo', 'Colusa', 'Sutter', 'Butte', 'Glenn', 'Tehama']``
+- **Predictive Modeling Tools:**
+  - Developed predictive models that can forecast future crop yields based on historical weather patterns and crop performance.
+  - These models can assist farmers and agricultural planners in anticipating potential yield fluctuations due to extreme weather.
 
----
+- **Data-Driven Decision Support:**
+  - By highlighting the most impactful weather factors, the project enables more informed decision-making regarding crop management, irrigation scheduling, and resource allocation.
+  - Supports scenario planning by simulating how changes in weather patterns might affect future crop outcomes.
 
 ### **User Implementation and Benefits:**
 
-#### **1. Simple Web-Based Dashboard:**
-   - **Implementation:** A straightforward web-based dashboard will provide daily weather forecasts and display visualizations (e.g., temperature trends, rainfall predictions) with a focus on crop yield impact.
-     - Users can access real-time weather data and track how forecasted conditions might impact yields for **almonds** and **tomatoes**, based on historical correlations.
-     - The dashboard will offer simple, easy-to-read graphs and alerts tailored to these two crops.
-   - **Benefit:** Farmers will gain a **quick overview** of the predicted weather and its potential impact on specific crop yields, enabling better decision-making for daily agricultural activities.
+#### **1. Analytical Dashboard and Reporting:**
+   - **Implementation:** Develop a user-friendly dashboard that presents key findings, visualizations, and predictive analytics.
+     - Users can explore interactive charts showing the relationship between extreme weather events and crop performance.
+     - The dashboard can provide county-specific insights and allow users to filter by crop type and weather variables.
+   - **Benefit:** Enables farmers, agronomists, and policymakers to easily access and interpret complex data analyses, facilitating evidence-based strategies.
 
-#### **2. Basic Alerts for Critical Weather Conditions:**
-   - **Implementation:** The system will send basic alerts via SMS or email when critical weather conditions (e.g., excessive heat or lack of rainfall) are forecasted.
-     - Users can set preferences for receiving alerts based on conditions likely to affect **almonds** or **tomatoes**, such as heat alerts for almonds or drought warnings for tomatoes.
-   - **Benefit:** The alerts will help farmers take **timely action** to protect crops from adverse weather conditions, such as adjusting irrigation or delaying planting during extreme heat.
+#### **2. Predictive Alerts and Recommendations:**
+   - **Implementation:** Integrate predictive models to generate alerts when forecasts indicate potential adverse impacts on crop yields.
+     - Alerts can be customized based on thresholds for significant weather variables identified in the analysis.
+     - Provide recommendations for mitigating actions, such as adjusting planting dates or enhancing irrigation during expected high-temperature periods.
+   - **Benefit:** Empowers users to take proactive measures to protect crops, optimize yields, and reduce economic losses due to extreme weather.
+
+#### **3. Strategic Planning Tools:**
+   - **Implementation:** Offer scenario analysis features that allow users to simulate the effects of different weather patterns on crop yields.
+     - Users can adjust variables like temperature or precipitation levels to see projected impacts on specific crops.
+   - **Benefit:** Assists in long-term agricultural planning, helping stakeholders adapt to climate variability and make resilient choices.
+
+### **Data Sources:**
+
+1. **Historical Weather Data:**
+   - **Datasets Used:** Daily and yearly weather data (`weather.csv`, `weather_yearly.csv`).
+   - **Content:** Includes temperature, precipitation, wind speed, visibility, cloud coverage, and calculated extreme weather features based on city-specific thresholds.
+   - **Usage:** Used to engineer features that quantify extreme weather events and analyze their impact on crop outcomes.
+
+2. **Crop Yield Data:**
+   - **Datasets Used:** Crop production data (`crops.csv`) from various counties in California.
+   - **Content:** Contains information on harvested acres, yield, production, and price per unit for specific crops.
+   - **Usage:** Merged with weather data to assess the relationship between weather variables and crop performance metrics.
+
+3. **Data Processing and Analysis Methods:**
+   - **Feature Engineering:** Developed location-specific thresholds for extreme weather based on statistical percentiles.
+   - **Regression Analysis:** Performed multiple regression models to identify significant predictors of crop outcomes.
+   - **Machine Learning Models:** Implemented models incorporating significant weather features, lagged weather variables, and lagged crop variables to enhance predictive accuracy.
+   - **Visualization Tools:** Used correlation matrices, heatmaps, and performance plots to interpret and present findings effectively.
 
 #### **Data Sources:**
 The project will utilize the following key data sources:
@@ -64,42 +112,40 @@ The project will utilize the following key data sources:
    - Data Available: Provides historical crop yield data for **almonds** and **tomatoes** in Fresno County.
    - Timeframe: Crop yield data from 1980 to the present.
 
+### **Expected Major Findings**
 
-Here's the revised section based on the new methods and approaches implemented in your project:
+This project is expected to yield several key findings related to the **relationship between extreme weather variables and crop yields** across various counties in California. By developing and evaluating predictive models, these findings will provide insights into the impact of weather conditions on crop outcomes, particularly for **almonds, wine grapes, and processing tomatoes**. Below are the main areas of exploration and the anticipated outcomes:
 
----
-
-## **Expected Major Findings**
-
-In this project, several key findings are anticipated based on the **independent forecasting models** for weather and crop yield data in **Fresno County**. These findings will provide valuable insights into short-term weather patterns, predictions for **tomato** and **almond** yields, and their interactions through scenario testing. Below are the main areas of exploration and the expected outcomes:
-
-#### **1. Identification of Short-Term Weather Patterns and Scenario Analysis of Their Impact on Crop Yield**
+#### **1. Identification of Significant Weather Variables and Their Impact on Crop Yield**
    - **Expected Finding:** 
-     - Analyze historical weather data using a **SARIMA model** to identify short-term weather patterns, including daily temperature fluctuations and precipitation trends, particularly during critical growing seasons for **tomatoes** and **almonds**.
-     - Simulate various weather scenarios (e.g., hotter-than-usual summers, increased rainfall) and assess how these projected weather conditions could affect the future yields of **tomatoes** and **almonds**.
+     - Through regression analysis and hypothesis testing, identify which extreme weather variables (e.g., high temperature days, heavy rain days, high wind days) have a significant impact on crop yields, harvested acres, and production per acre for each county-crop combination.
+     - Recognize patterns indicating how certain weather conditions—such as heatwaves, extended periods of low visibility, or high wind days—affect crop yields differently across regions.
    - **Value:** 
-     - This analysis will provide farmers with a deeper understanding of how **specific weather conditions** (e.g., heatwaves, seasonal rainfall) impact the yields of **tomatoes** and **almonds**. By incorporating short-term weather forecasts into scenario analyses, farmers can better optimize their agricultural practices based on potential future weather events.
+     - This analysis will help farmers and agricultural planners understand which weather variables are most critical for specific crops, offering insights into the most impactful weather factors. By identifying patterns in how weather affects different crops, farmers can proactively adjust their strategies to mitigate risks, such as implementing protective measures during periods of expected high temperatures or increasing irrigation during dry spells.
 
-#### **2. Development of Independent Weather and Crop Yield Forecasting Models**
+#### **2. Development of Predictive Models Incorporating Lagged Weather and Crop Variables**
    - **Expected Finding:** 
-     - Develop a **SARIMA model** to provide accurate short-term forecasts of daily weather conditions (temperature and precipitation) for **Fresno County**.
-     - Develop a separate **time series model** for predicting future **tomato** and **almond** yields based on historical trends in harvested acres, yield, and production.
-     - Use the predicted weather data to explore potential **indirect effects** of weather scenarios on crop yields, offering valuable insights into how climate trends may influence agricultural productivity.
+     - Build predictive models that incorporate significant weather variables, as well as lagged weather and crop performance features, to improve the accuracy of crop yield and production forecasts.
+     - Assess the performance of various machine learning models (e.g., Random Forest, Lasso, Ridge, SVR) in predicting crop yields and compare their effectiveness across different county-crop combinations.
+     - Demonstrate how historical weather patterns and past crop outcomes can provide valuable predictive signals for future yields, aiding in better preparation and planning.
    - **Value:** 
-     - Farmers will be equipped with two complementary tools: **short-term weather forecasts** and **crop yield predictions**, allowing them to make informed decisions regarding irrigation, planting, and harvesting. For example, if a high-temperature trend is forecasted for the summer months, farmers can adjust irrigation schedules or implement strategies to protect heat-sensitive crops, reducing potential yield losses.
+     - By using lagged features, the models capture the delayed effects of weather and past crop performance on future yields, improving prediction accuracy. This allows farmers to anticipate yield fluctuations based on recent and historical conditions, facilitating more precise planning for irrigation, harvesting, and resource allocation.
 
-### **Objective Discussion:**
+### **Objective Discussion**
 
 - **Impact and Utility:**
-  - This project aims to improve **short-term weather forecasts** and provide actionable insights into the correlation between weather conditions and **crop yield** for **tomatoes** and **almonds** in **Fresno County**. Accurate weather and crop yield predictions will benefit **agriculture** by enabling farmers to optimize irrigation, planting, and harvesting schedules. Additionally, early identification of critical weather conditions (e.g., heatwaves or droughts) will help farmers take timely actions to mitigate crop damage. The project will also provide value by contributing to **agricultural planning** and **disaster preparedness**.
+   - This project provides **insights into the influence of extreme weather events on crop yields** across California, supporting adaptive agricultural strategies. By developing predictive models, it enables farmers and agricultural planners to **forecast crop outcomes based on weather conditions** and make informed, data-driven decisions. For example, knowledge of significant weather variables and lagged effects will allow farmers to mitigate risks associated with adverse conditions, potentially increasing resilience against climate variability.
+   - Additionally, by identifying the most impactful weather variables for each county-crop combination, the project supports **agricultural planning, scenario testing, and disaster preparedness** for farmers across the state.
 
 - **Main Claims and Questions:**
-  - *Claim 1:* The project will accurately predict short-term weather patterns (e.g., temperature and precipitation) using historical and real-time data for **Fresno County**, enhancing decision-making for farmers and agricultural stakeholders.
-  - *Claim 2:* Machine learning models will provide accurate forecasts for how short-term weather patterns (e.g., heatwaves, rainfall) impact **tomato** and **almond** yields, validated through historical crop yield data.
-  - *Claim 3:* The project will offer early warnings about potential yield losses based on forecasted critical weather conditions, allowing farmers to take preventive actions to protect crops.
+   - *Claim 1:* The project will identify critical weather variables that significantly impact crop yields, allowing farmers to better understand the weather conditions most likely to affect their crop performance.
+   - *Claim 2:* Machine learning models incorporating both current and lagged weather and crop variables will provide accurate predictions of crop yields and production per acre for multiple crops across different counties.
+   - *Claim 3:* The project will enable scenario testing, allowing users to simulate potential outcomes under different weather scenarios and assess how climate variations may impact future agricultural productivity.
 
-  - *Question 1:* How do short-term weather patterns (e.g., temperature fluctuations, precipitation) influence **tomato** and **almond** yields, and what are the most critical weather variables affecting these yields?
-  - *Question 2:* How effective are machine learning models (e.g., LSTM) in predicting short-term weather conditions and their impact on **tomato** and **almond** yields compared to traditional forecasting methods?
+   - *Question 1:* Which extreme weather variables (e.g., high wind days, heavy rain days, low visibility) most significantly impact crop yields across various counties and crops?
+   - *Question 2:* How effective are machine learning models (Random Forest, Lasso, Ridge, SVR) in predicting crop yields when incorporating significant weather variables and lagged crop data, compared to models with only current weather data?
+   - *Question 3:* Can scenario testing with lagged and significant weather variables help simulate the effects of climate change on crop yields and production, aiding in better agricultural planning? 
+
 
 ## Data Summary and Statistical Analysis
 
@@ -149,42 +195,48 @@ In this project, several key findings are anticipated based on the **independent
    - **Implementation:** Use a time series plot to overlay weather anomalies (e.g., Z-scores for temperature) with crop yield data to show how extreme weather events affect yields.
    - **Tools:** Matplotlib, Plotly.
 
-### Preprocessing Steps
+### **Preprocessing Steps**
 
 **OpenWeatherMap API:**
-- Retrieve real-time weather data for specified California regions, capturing key variables such as temperature, precipitation, humidity, and atmospheric pressure.
-- Fetch historical weather data from 1980 to the present, allowing comparison with real-time data.
-- No preprocessing will be done on dates; date parsing will remain flexible for time interval analysis.
-- The data will be aggregated by date, city, and other relevant attributes such as temperature, humidity, and precipitation.
+- Retrieve real-time weather data for specified California regions, capturing variables such as temperature, precipitation, wind speed, cloud cover, and visibility.
+- Aggregate real-time data at daily, monthly, and yearly intervals for direct comparison with historical datasets.
+- No date preprocessing to ensure flexibility for time interval analysis, allowing seamless merging with historical data.
 
 **NOAA Climate Data:**
-- Download historical weather records focusing on temperature and precipitation from 1980 to the present for California’s agricultural regions.
-- Include relevant seasonal indicators such as temperature patterns and rainfall amounts during critical crop growth periods.
-- No specific date preprocessing; historical weather records will align with crop yield data for later correlation analysis.
+- Download historical weather records focusing on temperature, precipitation, and extreme weather indicators (e.g., high winds, heavy rain) from 1980 to the present for California’s agricultural regions.
+- Create seasonal indicators to capture critical weather conditions during crop growth periods.
+- Align historical weather records with crop yield data by year and region for later correlation and model analysis.
 
 **USDA Crop Yield Data:**
-- Collect historical crop yield data for key crops (almonds, tomatoes, grapes, lettuce) from 1980 to the present.
-- Align the crop yield data with the corresponding weather conditions in the same regions and timeframes for correlation analysis.
-- Regions are assigned based on counties to facilitate regional crop yield comparisons with weather data.
+- Collect historical crop yield data for key crops (almonds, tomatoes, grapes) from 1980 to the present, focusing on counties across California’s Central Valley and other agriculturally significant regions.
+- Generate lagged crop yield features (e.g., Yield Per Acre_lag1) to capture the influence of previous years' crop performance on current outcomes.
+- Align crop yield data with the corresponding weather conditions in the same regions and timeframes for a more robust analysis of weather impacts on yield.
 
 **Region Assignment for Crop Yield Data:**
-- Assign each county in the dataset to a predefined region (e.g., San Francisco, Riverside, Fresno) based on its geographical location.
-- Use these regions to aggregate and filter crop data by year and region, grouping by crop name to derive relevant metrics such as harvested acres, yield, production, price per unit, and overall value.
+- Assign counties in the dataset to key agricultural regions (e.g., Fresno, Riverside, Napa) based on geographic proximity to account for regional weather and soil conditions.
+- Aggregate and filter crop data by county, year, and crop type to derive metrics such as harvested acres, yield per acre, production, price per unit, and overall value, allowing comparisons across regions and crops.
 
-**Weather Data Aggregation:**
+### Weather Data Aggregation and Feature Engineering:
+
 1. **Daily Aggregation:**
-   - Parse and clean the datetime column, removing unnecessary time zone information.
-   - Aggregate weather data (temperature, pressure, humidity, etc.) daily, grouped by both date and city, to get a daily summary of weather conditions per city.
+   - Parse the datetime column and clean time zone information to maintain consistency.
+   - Aggregate daily weather variables by date and city to obtain daily summaries (e.g., average temperature, max wind speed).
+   - Calculate extreme weather indicators such as days with temperatures above a high threshold, heavy rain days, or low visibility days for each location.
 
 2. **Monthly Aggregation:**
    - Extract the year and month from the datetime column.
-   - Group the weather data by city and month to generate monthly summaries for each location, including average temperature, humidity, and precipitation.
+   - Aggregate data by city and month to create monthly summaries (e.g., monthly average temperature and total precipitation).
+   - Track extreme weather metrics monthly, such as the number of high-wind days or heavy precipitation days, to observe seasonal patterns.
 
-3. **Yearly Aggregation:**
-   - Extract the year from the datetime column.
-   - Group the weather data by city and year to produce yearly summaries, focusing on the same variables as daily and monthly aggregations.
+3. **Yearly Aggregation and Extreme Weather Feature Engineering:**
+   - Extract the year from the datetime column and group data by city and year.
+   - Generate yearly summaries for each location, focusing on temperature, precipitation, and additional weather variables like wind speed and visibility.
+   - Create extreme weather features for each year (e.g., high temp days, heavy rain days, snow days), using city-specific thresholds derived from historical statistics to capture extreme weather patterns specific to each location.
+   - Include location-specific lagged weather variables for multi-year temporal dependencies in weather, providing additional insight into how past conditions influence crop outcomes.
 
-Each step produces a CSV output that will serve as an input for the next phase of analysis. This approach maintains flexibility by not heavily preprocessing dates, enabling more dynamic analysis during the model-building phase. The preprocessing pipeline ensures consistent, clean data for later correlation and time-series analysis.
+4. **Lagged Crop Features:**
+   - Generate lagged features for key crop metrics (e.g., Yield Per Acre, Production Per Acre) to capture the impact of previous years' crop performance on current yields.
+   - Impute missing values in lagged crop features for the first few years using forward and backward filling, ensuring a complete dataset for analysis.
 
 <!--- 
 ----------
@@ -198,85 +250,95 @@ The following sections should be used for the full proposal document. These are 
 ### **1. Data Overview and Summary Statistics**
 
 **Objective:**
-To provide an initial understanding of both weather and crop yield datasets by summarizing key characteristics and overall distributions of the data.
+To provide a foundational understanding of the weather and crop yield datasets by summarizing key characteristics and distributions of the data, including measures of central tendency, variability, and data ranges.
 
 **Techniques:**
 - **Descriptive Statistics:**
-  - **Mean, Median, and Mode:** Calculate these central tendency measures for continuous variables such as temperature, precipitation, humidity, and crop yield to understand the average conditions and productivity.
-  - **Standard Deviation and Variance:** Measure the variability of weather variables and crop yield to assess the spread and dispersion of the data.
-  - **Min and Max Values:** Identify the range of weather conditions and crop yield values to understand the extremes observed in the dataset.
+  - **Mean, Median, and Mode:** Calculate these measures for continuous variables such as temperature, precipitation, and crop yield to understand baseline conditions and productivity trends.
+  - **Standard Deviation and Variance:** Evaluate the variability in weather variables and crop yield data to assess dispersion, which helps identify areas with more stable or volatile conditions.
+  - **Min and Max Values:** Identify the range of observed weather conditions and crop yields, offering insight into extreme events or unusual productivity highs or lows.
 
 - **Distribution Analysis:**
-  - **Histograms:** Create histograms to visualize the frequency distribution of weather variables and crop yield (e.g., temperature distribution across regions or yield distribution for each crop).
-  - **Box Plots:** Use box plots to visualize the spread, central tendency, and potential outliers in both weather data and crop yield data.
+  - **Histograms:** Visualize the frequency distribution of weather and crop variables to understand the common ranges and identify any skewness (e.g., distribution of high temperature days or yield values).
+  - **Box Plots:** Use box plots to represent the spread, central tendency, and potential outliers in weather and crop yield data, helping detect anomalies and variations across counties and crops.
 
-### **2. Temporal Analysis**
+### **2. Temporal Analysis and Feature Engineering**
 
 **Objective:**
-To analyze how weather variables change over time and assess how these changes correlate with crop yield during different growing seasons.
+To examine temporal trends and seasonal patterns in weather data and assess their effects on crop yield. This includes creating lagged weather and crop variables to capture temporal dependencies.
 
 **Techniques:**
+
+- **Lagged Feature Engineering:**
+  - **Implementation:** Generate lagged features for weather variables (e.g., high temperature days, precipitation) and crop yield variables (e.g., yield per acre, production per acre).
+  - **Purpose:** By incorporating lagged features, we capture the delayed effects of past weather events on current crop outcomes, improving model accuracy.
+  - **Imputation of Missing Values:** Use forward and backward filling methods for missing values in lagged features, particularly for initial years where lagged data may be unavailable.
 
 - **Seasonal Decomposition (STL Decomposition):**
-  - **Implementation Plan:** Use STL decomposition to break down weather data (e.g., temperature, precipitation) into seasonal, trend, and residual components.
-    - Select appropriate timeframes for weather data (e.g., daily or monthly) and crop yield data (e.g., seasonal) to capture seasonal variations.
-    - Apply **STL decomposition** to visualize and analyze how seasonal weather patterns correspond with crop productivity (e.g., rainfall during growing seasons correlating with higher yields).
-    - Assess regional variations (e.g., Coastal, Inland, Central Valley) to determine how different regions experience unique seasonal patterns that impact crop yield.
+  - **Objective:** Break down time series data (e.g., temperature and precipitation) into trend, seasonal, and residual components to better understand seasonal patterns.
+  - **Method:** Use STL decomposition to analyze how seasonal weather fluctuations (e.g., rainfall during planting season) correlate with crop productivity, and examine variations by region (e.g., coastal vs. inland).
 
-- **Autoregressive Integrated Moving Average (ARIMA):**
-  - **Implementation Plan:** Fit ARIMA models to forecast short-term weather conditions.
-    - Conduct **exploratory data analysis (EDA)** to determine the appropriate differencing for stationarity of the time series data.
-    - Use **ACF** and **PACF** plots to identify the optimal order for the ARIMA model (p, d, q).
-    - Train the ARIMA model on historical weather data, focusing on short-term predictions of temperature and precipitation.
-    - Validate the model’s performance using metrics like **Mean Absolute Error (MAE)** and compare predicted weather values with real-time data.
-    - Integrate crop yield data into the model to predict how upcoming weather conditions might influence yields.
-
-### **3. Anomaly Detection**
+### **3. Anomaly Detection for Extreme Weather Events**
 
 **Objective:**
-To identify unusual or extreme weather events (e.g., heatwaves, droughts) that deviate significantly from historical norms and assess their impact on crop yield.
+To identify extreme weather events (e.g., heatwaves, heavy rainfall) that deviate from historical norms and assess their potential impact on crop yields.
 
 **Techniques:**
+
+- **Threshold-Based Extreme Weather Metrics:**
+  - **Implementation:** Define location-specific thresholds (e.g., top 10% of historical high temperatures) to calculate extreme weather metrics such as high temperature days, heavy rain days, and high wind days.
+  - **Purpose:** Summarize extreme weather occurrences by year and location, enabling direct correlation analysis with crop outcomes.
 
 - **Z-Score Analysis:**
-  - **Implementation Plan:** 
-    - Calculate the mean and standard deviation of weather variables (e.g., temperature, precipitation) from historical data.
-    - Compute **Z-scores** for each weather observation to measure the number of standard deviations away from the mean.
-    - Identify anomalies (e.g., extreme temperatures or rainfall) by setting a threshold (e.g., Z-scores exceeding ±3).
-    - Overlay weather anomalies with crop yield data to assess whether extreme weather events had significant effects on yield.
+  - **Objective:** Standardize weather observations to identify anomalies by calculating Z-scores, which represent the number of standard deviations from the mean.
+  - **Application:** Flag extreme weather events (e.g., Z-scores exceeding ±3) and overlay them with crop yield data to assess their impact on productivity.
 
-- **Interquartile Range (IQR) Method:**
-  - **Implementation Plan:**
-    - Calculate the **first (Q1)** and **third quartiles (Q3)** of weather data to compute the **IQR**.
-    - Define upper and lower bounds (e.g., Q1 - 1.5 * IQR and Q3 + 1.5 * IQR) to detect weather outliers (e.g., extreme rainfall or drought).
-    - Visualize outliers using box plots and examine how these anomalies correlate with crop yield drops during specific growing seasons.
-
-### **4. Correlation Analysis Between Weather and Crop Yield**
+### **4. Correlation and Hypothesis Testing Between Weather and Crop Yield**
 
 **Objective:**
-To explore the relationships between weather variables (e.g., temperature, precipitation) and crop yield to identify how short-term weather fluctuations affect agricultural productivity.
+To evaluate the relationships between weather variables (e.g., temperature, precipitation) and crop outcomes (e.g., yield per acre, production per acre) and identify significant predictors for each county-crop combination.
 
 **Techniques:**
-- **Pearson and Spearman Correlation Analysis:**
-  - Use **Pearson correlation** to assess linear relationships and **Spearman correlation** for non-linear relationships between weather variables and crop yield.
-  - Identify which weather factors (e.g., temperature, rainfall) most strongly influence yield for each crop (e.g., almonds, tomatoes, grapes).
 
-- **Scatter Plots:**
-  - Visualize relationships between weather variables (e.g., temperature vs. precipitation) and crop yield to detect patterns or thresholds where yield is significantly impacted.
+- **Pearson Correlation Analysis:**
+  - **Implementation:** Calculate Pearson correlation coefficients to measure linear relationships between weather variables and crop yields.
+  - **Purpose:** Identify which weather factors have the strongest influence on specific crop types and regions, guiding feature selection for predictive models.
 
-### **5. Data Completeness and Integrity**
+- **Multiple Regression Analysis for Hypothesis Testing:**
+  - **Objective:** Test the hypothesis that extreme weather variables significantly affect crop outcomes.
+  - **Approach:** Perform regression analysis to identify significant predictors and measure the direction of their impact on harvested acres, yield per acre, and production per acre.
+  - **Conclusion:** Evaluate the hypothesis based on p-values and coefficients, documenting weather factors that consistently impact yields across different counties and crops.
+
+### **5. Machine Learning Models and Feature Selection**
 
 **Objective:**
-To ensure the quality and consistency of weather and crop yield data for accurate analysis and predictions.
+To develop predictive models for crop yields and production, incorporating weather and lagged crop features to improve performance.
 
 **Techniques:**
-- **Missing Value Analysis:**
-  - Analyze patterns of missing values in both weather and crop yield data to understand their distribution and potential impact on analysis.
-  - Use appropriate **imputation strategies** (e.g., forward/backward fill for time series data) to handle missing data and minimize its effect on results.
+
+- **Model Selection and Comparison:**
+  - **Models Used:** Random Forest, Lasso, Ridge, and Support Vector Regressor to capture different relationships between weather and crop variables.
+  - **Cross-Validation:** Apply time series cross-validation to assess model stability and performance across different time periods.
+  - **Evaluation Metrics:** Use R-squared and Root Mean Squared Error (RMSE) to compare model accuracy for each county-crop combination, determining the best-performing model for each.
+
+- **Incorporation of Significant and Lagged Features:**
+  - **Feature Engineering:** Include only significant weather features based on correlation analysis, and add lagged weather and crop variables to capture delayed effects.
+  - **Recursive Feature Elimination (RFE):** Use RFE to eliminate less relevant features, focusing models on the most impactful predictors for each county-crop combination.
+
+### **6. Data Completeness and Integrity**
+
+**Objective:**
+To ensure the reliability of the weather and crop yield data, addressing any gaps or inconsistencies before analysis and modeling.
+
+**Techniques:**
+
+- **Missing Value Analysis and Imputation:**
+  - **Objective:** Address missing values in weather and crop data, particularly for lagged features with missing initial years.
+  - **Methods:** Use forward and backward fill techniques for time series imputation, maintaining data continuity while minimizing the impact on results.
 
 - **Data Consistency Checks:**
-  - Perform **data validation** by cross-referencing weather data with known historical trends and comparing crop yield data against established benchmarks for accuracy.
-  - Ensure consistency across datasets (e.g., weather data from different sources or crop yield data for different regions) to avoid discrepancies in analysis.
+  - **Objective:** Verify that weather and crop data align with known historical patterns and ensure cross-dataset consistency.
+  - **Validation Steps:** Compare data from different sources, check for outliers or discrepancies, and validate data accuracy against established benchmarks to enhance data integrity.
 
 
 ## Automation, Scalability, and Portability
@@ -328,58 +390,78 @@ The following sections should be used for the analysis planning. These are not r
 
 ## Data Analysis and Algorithms
 
-In this project, two independent time series models will be developed for **weather data** and **crop yield data**, using advanced time series forecasting techniques such as **SARIMA**. Additionally, **scenario analysis** will be conducted to evaluate the impact of weather conditions on crop yield outcomes. Below are the specific analyses and algorithms that will be applied:
+In this project, we will develop machine learning models that incorporate both historical and lagged weather and crop variables to predict crop yields and understand the impact of extreme weather conditions on crop performance across multiple counties. The models are designed to capture relationships between weather patterns and crop outcomes, while scenario analysis will assess potential impacts of varying weather conditions on future yields. Below are the specific analyses, algorithms, and methods applied:
 
-### 1. **Time Series Analysis for Weather Forecasting (SARIMA Model)**
+### 1. **Machine Learning Models for Predictive Analysis**
 
-#### **Algorithm: SARIMA (Seasonal AutoRegressive Integrated Moving Average)**
-- **Inputs**: 
-  - Historical daily weather data for **Fresno County**, including:
-    - **Temperature** (daily averages)
-    - **Precipitation** (daily rainfall)
-- **Outputs**: 
-  - Predicted daily weather patterns for **temperature** and **precipitation** over the next 30 days or any specified forecast period.
-  
-#### **Algorithmic Properties and Logic**:
-The **SARIMA model** is an extension of the ARIMA model, which incorporates seasonality. SARIMA is particularly well-suited for time series data with both trends and repeating seasonal patterns, such as annual temperature cycles. The model takes the following key components into account:
-  - **AutoRegressive (AR)**: Considers the relationship between an observation and previous observations (lags).
-  - **Integrated (I)**: Differencing the data to remove trends and make the time series stationary.
-  - **Moving Average (MA)**: Models the relationship between an observation and the residuals of previous observations.
-  - **Seasonal Component**: Captures repeating seasonal effects, such as yearly temperature cycles.
-
-By training this model on historical weather data, we will forecast future temperature and precipitation for short-term periods, which can then be used in the scenario analysis for crops.
-
-### 2. **Time Series Analysis for Crop Yield Forecasting**
-
-#### **Algorithm: Time Series Model (SARIMA/ARIMA)**
-- **Inputs**: 
-  - Historical annual crop yield data for **Fresno County**, including:
-    - **Harvested Acres**
-    - **Yield**
-    - **Production** (for **tomatoes** and **almonds**)
-- **Outputs**: 
-  - Predicted crop yields (Harvested Acres, Yield, and Production) for **tomatoes** and **almonds** over the next several years.
+#### **Algorithm: Random Forest, Lasso Regression, Ridge Regression, and Support Vector Regression (SVR)**
+- **Inputs**:
+  - Significant weather features (e.g., high-temperature days, heavy rainfall days) derived from historical data across multiple counties.
+  - Lagged variables for both weather (e.g., previous year’s temperature, rainfall) and crop metrics (e.g., previous year’s yield and production) to capture delayed effects.
+- **Outputs**:
+  - Predicted crop yield metrics, including **Harvested Acres**, **Yield Per Acre**, and **Production Per Acre**, for key crops like **almonds**, **tomatoes**, and **grapes**.
 
 #### **Algorithmic Properties and Logic**:
-Similar to the weather forecasting model, the **SARIMA** model will be used to predict future crop yields based on historical trends in crop data. This model is ideal for handling seasonal trends in crop production, such as yearly growing cycles. The main difference here is that the SARIMA model for crops will focus on yearly data rather than daily data, making it easier to predict future crop outcomes over longer periods.
+These machine learning algorithms allow for capturing complex interactions between variables, non-linear relationships, and time-dependent effects. By incorporating lagged features, the models account for the historical influence of weather on crop outcomes. Each model is evaluated using time series cross-validation and metrics like R-squared and RMSE to assess predictive accuracy.
 
-### 3. **Scenario Analysis: Impact of Weather on Crop Yields**
+The models are designed to:
+  - Identify which weather and crop factors significantly impact yields in each county and for each crop.
+  - Improve predictive power by dynamically selecting significant features for each county-crop combination, tailored to specific conditions.
 
-#### **Algorithm: Scenario Testing Using Predicted Weather and Crop Models**
-- **Inputs**: 
-  - Predicted daily weather conditions from the **SARIMA weather model**.
-  - Historical and forecasted crop yields from the **crop yield model**.
-- **Outputs**: 
-  - Estimated changes in crop yield under different weather scenarios (e.g., temperature increases, changes in rainfall).
+### 2. **Integration of Lagged Weather and Crop Variables**
+
+#### **Algorithm: Feature Engineering with Lagged Variables**
+- **Inputs**:
+  - Historical weather data, including extreme weather metrics (e.g., high wind days, low visibility days), for each year and location.
+  - Historical crop data, including **Yield Per Acre**, **Production Per Acre**, and **Harvested Acres**.
+- **Outputs**:
+  - Enhanced dataset with lagged weather and crop features (e.g., 1-year and 2-year lags) to capture the influence of prior conditions on current crop yields.
 
 #### **Algorithmic Properties and Logic**:
-Once the independent weather and crop yield models are built, a **scenario analysis** will be performed to assess the indirect effects of weather on crops. By simulating different weather conditions (e.g., hotter summers, increased rainfall), the scenario analysis will help identify how predicted weather variations may impact **tomato** and **almond** yields in future growing seasons. This analysis will provide valuable insights into potential risks and opportunities for farmers, enabling them to adjust agricultural practices based on weather forecasts.
+Lagged features are engineered by shifting weather and crop variables from previous years, allowing the models to learn from past patterns. Missing values for initial lagged data are imputed using forward and backward filling to ensure complete datasets for model training. Lagged crop and weather variables improve model accuracy by accounting for time-dependent effects, such as the cumulative impact of drought or delayed crop responses to temperature changes.
 
-### 4. **Correlation and Exploratory Data Analysis**
-In addition to the time series modeling, **exploratory data analysis (EDA)** will be conducted to investigate any potential correlations between weather variables (e.g., temperature, precipitation) and crop outcomes. This will involve:
-- **Correlation analysis**: To identify any statistically significant relationships between weather conditions and crop yields.
-- **Feature Engineering**: Creating new weather-related features (e.g., temperature lag, seasonal averages) to improve the predictive power of the crop yield model.
+### 3. **Exploratory Data Analysis (EDA) and Hypothesis Testing**
 
+#### **Techniques: Correlation Analysis, Hypothesis Testing, and Visualization**
+- **Inputs**:
+  - Historical weather and crop data across counties.
+- **Outputs**:
+  - Insights into statistically significant relationships between weather features and crop outcomes, highlighting key predictors.
+
+#### **Algorithmic Properties and Logic**:
+EDA is performed to examine correlations between weather conditions (e.g., temperature, rainfall) and crop outcomes (e.g., yield and production). Hypothesis testing is conducted to verify whether extreme weather variables significantly impact crop yields. Significant features are identified based on p-values, and only the most relevant predictors are retained for each model. Visualizations such as heatmaps, correlation matrices, and performance comparison plots enable a comprehensive understanding of these relationships.
+
+### 4. **Scenario Analysis: Simulating Weather Impact on Crop Yields**
+
+#### **Algorithm: Scenario Testing Using Predictive Models**
+- **Inputs**:
+  - Predictive weather and crop yield models developed using significant and lagged features.
+  - Simulated changes in key weather variables (e.g., increased temperature, reduced precipitation).
+- **Outputs**:
+  - Predicted changes in crop yield under different weather scenarios, assessing potential risks and opportunities for agricultural planning.
+
+#### **Algorithmic Properties and Logic**:
+The scenario analysis leverages predictive models to simulate the effects of extreme weather conditions (e.g., hotter temperatures, lower rainfall) on future crop yields. By adjusting key weather variables in the model inputs, the project demonstrates how shifts in climate patterns could impact almond, tomato, and grape production across California counties. This analysis provides actionable insights to help farmers and agricultural planners adapt to potential climate variations.
+
+### 5. **Feature Selection and Model Evaluation**
+
+#### **Techniques: Cross-Validation, Recursive Feature Elimination (RFE), and Model Performance Metrics**
+- **Inputs**:
+  - Significant weather and lagged crop variables identified for each county-crop combination.
+- **Outputs**:
+  - Optimal feature sets and model performance metrics (R-squared, RMSE) for evaluating prediction accuracy.
+
+#### **Algorithmic Properties and Logic**:
+Recursive Feature Elimination (RFE) and cross-validation are used to select the most impactful weather and crop features, reducing model complexity while enhancing performance. Performance metrics like R-squared and RMSE are calculated for each model, allowing for comparison across counties and crops. By iteratively refining feature selection and model parameters, the project achieves higher accuracy in predicting crop outcomes.
+
+---
+
+### Summary of Key Improvements:
+
+- **Incorporated Lagged Features**: Lagged weather and crop variables are included to account for delayed impacts, significantly enhancing model robustness and interpretability.
+- **Enhanced Predictive Models**: By employing machine learning algorithms (Random Forest, Lasso, Ridge, SVR) and testing multiple models, we’ve improved accuracy compared to initial SARIMA time series forecasts.
+- **Focused Scenario Analysis**: Predictive models allow for dynamic scenario testing, simulating the effects of extreme weather on yields, which supports proactive agricultural decision-making.
+- **Data-Driven Feature Selection**: Only statistically significant weather variables are used, customized for each County-Crop combination, which ensures the models are both accurate and relevant to specific agricultural contexts.
 
 <!--- 
 ----------
