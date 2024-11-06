@@ -11,174 +11,319 @@ results = pd.read_csv('./data/results.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
 
 correlation_columns = [
-    'Yield Per Acre', 'Production Per Acre', 'Value Per Acre', 'high_temp_days',
-    'low_temp_days', 'heavy_rain_days', 'high_wind_days', 'cloudy_days', 'low_visibility_days', 'snow_days'
+    'Yield Per Acre', 'Production Per Acre', 'Value Per Acre',
+    'high_temp_days', 'low_temp_days', 'heavy_rain_days',
+    'high_wind_days', 'cloudy_days', 'low_visibility_days',
+    'snow_days'
 ]
 
 # Define targets and predictors
 targets = ['Harvested Acres', 'Yield Per Acre', 'Production Per Acre']
-predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days', 'snow_days',
-              'high_wind_days', 'low_visibility_days', 'cloudy_days']
+predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days',
+              'snow_days', 'high_wind_days', 'low_visibility_days',
+              'cloudy_days']
 
 def layout():
-    return html.Div([
-        html.H1("Extreme Weather Threshold Analysis"),
-        
-        # Extreme Weather Section
-        html.Div([
-            html.Label("Select a County (Extreme Weather):"),
-            dcc.Dropdown(
-                id="extreme-weather-county-dropdown",
-                options=[{"label": county, "value": county} for county in weather_data['city_name'].unique()],
-                value=weather_data['city_name'].unique()[0],
-                clearable=False
+    return html.Div(
+        [
+            html.H1(
+                "Extreme Weather Threshold Analysis",
+                className="extreme-weather-title"
             ),
-            html.Label("Select a Weather Variable:"),
-            dcc.Dropdown(
-                id="extreme-weather-variable-dropdown",
-                options=[
-                    {"label": "Temperature", "value": "temp"},
-                    {"label": "Rain (1 Hour)", "value": "rain_1h"},
-                    {"label": "Dew Point", "value": "dew_point"},
-                    {"label": "Cloud Cover", "value": "clouds_all"}
+
+            # Extreme Weather Section
+            html.Div(
+                [
+                    html.Label(
+                        "Select a County (Extreme Weather):",
+                        className="extreme-weather-county-label"
+                    ),
+                    dcc.Dropdown(
+                        id="extreme-weather-county-dropdown",
+                        options=[
+                            {"label": county, "value": county}
+                            for county in weather_data['city_name'].unique()
+                        ],
+                        value=weather_data['city_name'].unique()[0],
+                        clearable=False,
+                        className="extreme-weather-county-dropdown"
+                    ),
+                    html.Label(
+                        "Select a Weather Variable:",
+                        className="extreme-weather-variable-label"
+                    ),
+                    dcc.Dropdown(
+                        id="extreme-weather-variable-dropdown",
+                        options=[
+                            {"label": "Temperature", "value": "temp"},
+                            {"label": "Rain (1 Hour)", "value": "rain_1h"},
+                            {"label": "Dew Point", "value": "dew_point"},
+                            {"label": "Cloud Cover", "value": "clouds_all"}
+                        ],
+                        value="temp",
+                        clearable=False,
+                        className="extreme-weather-variable-dropdown"
+                    ),
+                    dcc.Graph(
+                        id="extreme-weather-graph",
+                        className="extreme-weather-graph"
+                    ),
                 ],
-                value="temp",
-                clearable=False
+                className="extreme-weather-section",
+                style={"margin-bottom": "50px"}
             ),
-            dcc.Graph(id="extreme-weather-graph"),
-        ], style={"margin-bottom": "50px"}),
-        
-        html.H1("County-Crop Correlation Analysis"),
-        
-        # Correlation Matrix Section
-        html.Div([
-            html.Label("Select a County (Correlation Matrix):"),
+
+            html.H1(
+                "County-Crop Correlation Analysis",
+                className="correlation-analysis-title"
+            ),
+
+            # Correlation Matrix Section
+            html.Div(
+                [
+                    html.Label(
+                        "Select a County (Correlation Matrix):",
+                        className="correlation-county-label"
+                    ),
+                    dcc.Dropdown(
+                        id="correlation-county-dropdown",
+                        options=[
+                            {"label": county, "value": county}
+                            for county in merged_yearly['County'].unique()
+                        ],
+                        value=merged_yearly['County'].unique()[0],
+                        clearable=False,
+                        className="correlation-county-dropdown"
+                    ),
+                    html.Label(
+                        "Select a Crop:",
+                        className="correlation-crop-label"
+                    ),
+                    dcc.Dropdown(
+                        id="correlation-crop-dropdown",
+                        options=[],  # Populated by callback based on county selection
+                        value=None,
+                        clearable=False,
+                        className="correlation-crop-dropdown"
+                    ),
+                    dcc.Graph(
+                        id="correlation-matrix-plot",
+                        className="correlation-matrix-graph"
+                    ),
+                ],
+                className="correlation-matrix-section"
+            ),
+
+            html.H1(
+                "Statistical Analysis Results",
+                className="statistical-analysis-title"
+            ),
+
+            # Dropdown for selecting multiple counties
+            html.Label(
+                "Select Counties:",
+                className="county-selection-label"
+            ),
             dcc.Dropdown(
-                id="correlation-county-dropdown",
-                options=[{"label": county, "value": county} for county in merged_yearly['County'].unique()],
-                value=merged_yearly['County'].unique()[0],
-                clearable=False
+                id="county-dropdown",
+                options=[
+                    {"label": county, "value": county}
+                    for county in results['County'].unique()
+                ],
+                value=[results['County'].unique()[0]],
+                multi=True,
+                clearable=False,
+                className="county-dropdown"
             ),
-            html.Label("Select a Crop:"),
+
+            # Dropdown for selecting the target variable
+            html.Label(
+                "Select an Outcome Variable:",
+                className="target-selection-label"
+            ),
             dcc.Dropdown(
-                id="correlation-crop-dropdown",
-                options=[],  # Populated by callback based on county selection
-                value=None,
-                clearable=False
+                id="target-dropdown",
+                options=[
+                    {"label": target, "value": target}
+                    for target in results['Target'].unique()
+                ],
+                value=results['Target'].unique()[0],
+                clearable=False,
+                className="target-dropdown"
             ),
-            dcc.Graph(id="correlation-matrix-plot"),
-        ]),
 
-        html.H1("Statistical Analysis Results"),
+            # P-Value Plot
+            html.H3(
+                "P-Value Significance",
+                className="p-value-title"
+            ),
+            dcc.Graph(
+                id="p-value-plot",
+                className="p-value-graph"
+            ),
 
-        # Dropdown for selecting multiple counties
-        html.Label("Select Counties:"),
-        dcc.Dropdown(
-            id="county-dropdown",
-            options=[{"label": county, "value": county} for county in results['County'].unique()],
-            value=[results['County'].unique()[0]],  # Default to the first county
-            multi=True,
-            clearable=False
-        ),
+            # Coefficient Plot
+            html.H3(
+                "Coefficient Analysis",
+                className="coefficient-analysis-title"
+            ),
+            dcc.Graph(
+                id="coefficient-plot",
+                className="coefficient-graph"
+            ),
 
-        # Dropdown for selecting the target variable
-        html.Label("Select an Outcome Variable:"),
-        dcc.Dropdown(
-            id="target-dropdown",
-            options=[{"label": target, "value": target} for target in results['Target'].unique()],
-            value=results['Target'].unique()[0],
-            clearable=False
-        ),
+            # R-Squared Plot
+            html.H3(
+                "R-Squared Analysis",
+                className="r-squared-title"
+            ),
+            dcc.Graph(
+                id="r-squared-plot",
+                className="r-squared-graph"
+            ),
 
-        # P-Value Plot
-        html.H3("P-Value Significance"),
-        dcc.Graph(id="p-value-plot"),
+            html.H2(
+                "Hypothesis Summary Table",
+                className="hypothesis-summary-title"
+            ),
 
-        # Coefficient Plot
-        html.H3("Coefficient Analysis"),
-        dcc.Graph(id="coefficient-plot"),
+            # Wrap DataTable in html.Div with className
+            html.Div(
+                dash_table.DataTable(
+                    data=summary_data.to_dict("records"),
+                    columns=[
+                        {"name": i, "id": i}
+                        for i in summary_data.columns
+                    ],
+                    style_table={'overflowX': 'auto'},
+                    style_header={
+                        'backgroundColor': 'rgb(230, 230, 230)',
+                        'fontWeight': 'bold'
+                    },
+                    style_cell={
+                        'textAlign': 'left',
+                        'padding': '5px',
+                        'whiteSpace': 'normal',
+                        'height': 'auto'
+                    },
+                    style_data_conditional=[
+                        {
+                            'if': {
+                                'filter_query':
+                                    '{Hypothesis Conclusion} = "Reject H₀"',
+                                'column_id': 'Hypothesis Conclusion'
+                            },
+                            'backgroundColor': 'tomato',
+                            'color': 'white'
+                        },
+                        {
+                            'if': {
+                                'filter_query':
+                                    '{Hypothesis Conclusion} = "Fail to Reject H₀"',
+                                'column_id': 'Hypothesis Conclusion'
+                            },
+                            'backgroundColor': 'lightgreen',
+                            'color': 'black'
+                        }
+                    ],
+                    sort_action="native",
+                    filter_action="native",
+                    page_size=100  # Customize the number of rows per page
+                ),
+                className="hypothesis-summary-table"
+            ),
 
-        # R-Squared Plot
-        html.H3("R-Squared Analysis"),
-        dcc.Graph(id="r-squared-plot"),
+            html.H1(
+                "Statistical Analysis Results - Some Additional Plots",
+                className="additional-plots-title"
+            ),
 
-        html.H2("Hypothesis Summary Table"),
-        
-        dash_table.DataTable(
-            data=summary_data.to_dict("records"),
-            columns=[{"name": i, "id": i} for i in summary_data.columns],
-            style_table={'overflowX': 'auto'},
-            style_header={
-                'backgroundColor': 'rgb(230, 230, 230)',
-                'fontWeight': 'bold'
-            },
-            style_cell={
-                'textAlign': 'left',
-                'padding': '5px',
-                'whiteSpace': 'normal',
-                'height': 'auto'
-            },
-            style_data_conditional=[
-                {
-                    'if': {'filter_query': '{Hypothesis Conclusion} = "Reject H₀"', 'column_id': 'Hypothesis Conclusion'},
-                    'backgroundColor': 'tomato',
-                    'color': 'white'
-                },
-                {
-                    'if': {'filter_query': '{Hypothesis Conclusion} = "Fail to Reject H₀"', 'column_id': 'Hypothesis Conclusion'},
-                    'backgroundColor': 'lightgreen',
-                    'color': 'black'
-                }
-            ],
-            sort_action="native",
-            filter_action="native",
-            page_size=100  # Customize the number of rows per page
-        ),
+            # Crop selection dropdown
+            html.Label(
+                "Select a Crop:",
+                className="crop-selection-label"
+            ),
+            dcc.Dropdown(
+                id="crop-dropdown",
+                options=[
+                    {"label": crop, "value": crop}
+                    for crop in results['Crop'].unique()
+                ],
+                value=results['Crop'].unique()[0],
+                clearable=False,
+                className="crop-dropdown"
+            ),
 
-        html.H1("Statistical Analysis Results - Some Additional Plots"),
-        
-        # Crop selection dropdown
-        html.Label("Select a Crop:"),
-        dcc.Dropdown(
-            id="crop-dropdown",
-            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
-            value=results['Crop'].unique()[0],  # Default to the first crop
-            clearable=False
-        ),
+            # Coefficient Plot
+            html.H3(
+                "Interactive Regression Coefficients by County",
+                className="interactive-coefficient-title"
+            ),
+            dcc.Graph(
+                id="coefficient-graph",
+                className="interactive-coefficient-graph"
+            ),
 
-        # Coefficient Plot
-        html.H3("Interactive Regression Coefficients by County"),
-        dcc.Graph(id="coefficient-graph"),
+            html.H1(
+                "Statistical Analysis Results",
+                className="statistical-analysis-results-title"
+            ),
 
-        html.H1("Statistical Analysis Results"),
-        
-        # Dropdown for selecting a crop
-        html.Label("Select a Crop:"),
-        dcc.Dropdown(
-            id="crop-heatmap-dropdown",
-            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
-            value=results['Crop'].unique()[0],  # Default to the first crop
-            clearable=False
-        ),
+            # Dropdown for selecting a crop
+            html.Label(
+                "Select a Crop:",
+                className="crop-heatmap-selection-label"
+            ),
+            dcc.Dropdown(
+                id="crop-heatmap-dropdown",
+                options=[
+                    {"label": crop, "value": crop}
+                    for crop in results['Crop'].unique()
+                ],
+                value=results['Crop'].unique()[0],
+                clearable=False,
+                className="crop-heatmap-dropdown"
+            ),
 
-        # Coefficient Heatmap
-        html.H3("Interactive Coefficient Heatmap by County"),
-        dcc.Graph(id="coefficient-heatmap"),
-        
-        # Dropdown for selecting a crop
-        html.Label("Select a Crop:"),
-        dcc.Dropdown(
-            id="crop-r2-dropdown",
-            options=[{"label": crop, "value": crop} for crop in results['Crop'].unique()],
-            value=results['Crop'].unique()[0],  # Default to the first crop
-            clearable=False
-        ),
+            # Coefficient Heatmap
+            html.H3(
+                "Interactive Coefficient Heatmap by County",
+                className="coefficient-heatmap-title"
+            ),
+            dcc.Graph(
+                id="coefficient-heatmap",
+                className="coefficient-heatmap-graph"
+            ),
 
-        # R-Squared Plot
-        html.H3("R-Squared Values by County and Target"),
-        dcc.Graph(id="r-squared-barplot"),
-    ])
-    
+            # Dropdown for selecting a crop
+            html.Label(
+                "Select a Crop:",
+                className="crop-r2-selection-label"
+            ),
+            dcc.Dropdown(
+                id="crop-r2-dropdown",
+                options=[
+                    {"label": crop, "value": crop}
+                    for crop in results['Crop'].unique()
+                ],
+                value=results['Crop'].unique()[0],
+                clearable=False,
+                className="crop-r2-dropdown"
+            ),
+
+            # R-Squared Plot
+            html.H3(
+                "R-Squared Values by County and Target",
+                className="r-squared-barplot-title"
+            ),
+            dcc.Graph(
+                id="r-squared-barplot",
+                className="r-squared-barplot-graph"
+            ),
+        ],
+        className="main-container"
+    )
+
 @callback(
     Output("extreme-weather-graph", "figure"),
     Input("extreme-weather-county-dropdown", "value"),

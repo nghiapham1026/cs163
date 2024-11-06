@@ -44,8 +44,8 @@ filtered_counties = {
 }
 
 def layout():
-    return html.Div([
-        html.H1("California Crop and Weather Analysis"),
+    return html.Div(className="main-container", children=[
+        html.H1("California Crop and Weather Analysis", className="main-title"),
         
         # Project Objective
         html.P(
@@ -53,25 +53,28 @@ def layout():
             "and crop yield, production, and harvested acres in various California counties. "
             "By examining historical weather patterns and crop data, we seek to understand how "
             "extreme weather events affect agricultural productivity and inform decision-making "
-            "in climate adaptation strategies for California’s agricultural sector."
+            "in climate adaptation strategies for California’s agricultural sector.",
+            className="project-objective"
         ),
 
         # Stock Image
         html.Img(
             src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg", 
             alt="Illustration of weather impact on crops", 
-            style={"width": "100%", "height": "auto", "margin-top": "20px"}
+            style={"width": "100%", "height": "auto", "margin-top": "20px"},
+            className="stock-image"
         ),
 
-        html.H1("Geographical Locations Used in Analysis"),
+        html.H1("Geographical Locations Used in Analysis", className="section-title"),
 
         # Map of California
-        html.Div([
+        html.Div(className="map-container", children=[
             dcc.Graph(
                 id="california-map",
-                figure=california_map()
+                figure=california_map(),
+                className="california-map-graph"
             )
-        ], style={"margin-top": "20px", "height": "500px"}),  # Adjust height as necessary
+        ], style={"margin-top": "20px", "height": "500px"}),
     ])
 
 def california_map():

@@ -1,0 +1,91 @@
+/* assets/styles.css */
+
+/* General Styles */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Page Title */
+.main-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Project Objective Paragraph */
+.project-objective {
+    font-size: 1.2em;
+    line-height: 1.6;
+    color: #34495e;
+    margin-bottom: 40px;
+    text-align: justify;
+}
+
+/* Stock Image */
+.stock-image {
+    width: 100%;
+    height: auto;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Title */
+.section-title {
+    text-align: center;
+    font-size: 2em;
+    color: #2c3e50;
+    margin-top: 60px;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #3498db;
+}
+
+/* Map Container */
+.map-container {
+    margin-top: 20px;
+    height: 600px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* California Map Graph */
+.california-map-graph {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2em;
+    }
+    .project-objective {
+        font-size: 1em;
+    }
+    .section-title {
+        font-size: 1.5em;
+    }
+    .map-container {
+        height: 400px;
+    }
+}
+
+.stock-image:hover {
+    transform: scale(1.02);
+    transition: transform 0.3s ease;
+}

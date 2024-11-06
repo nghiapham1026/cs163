@@ -1,0 +1,138 @@
+/* assets/styles.css */
+
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f2f5;
+    margin: 0;
+    padding: 0;
+}
+
+.data-overview-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Page Header */
+.data-overview-page-header {
+    text-align: center;
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #2980b9;
+    padding-bottom: 20px;
+}
+
+/* Section Styles */
+.weather-data-properties-section,
+.crop-data-properties-section,
+.weather-data-summary-section,
+.crop-data-summary-section,
+.weather-data-missing-values-section,
+.crop-data-missing-values-section {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Section Headers */
+.weather-data-properties-header,
+.crop-data-properties-header,
+.weather-data-summary-header,
+.crop-data-summary-header,
+.weather-data-missing-values-header,
+.crop-data-missing-values-header {
+    font-size: 2em;
+    color: #34495e;
+    margin-bottom: 20px;
+    border-left: 5px solid #3498db;
+    padding-left: 15px;
+}
+
+/* Subheaders */
+.weather-data-columns-info-header,
+.crop-data-columns-info-header {
+    font-size: 1.5em;
+    color: #7f8c8d;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-left: 5px solid #95a5a6;
+    padding-left: 10px;
+}
+
+/* Paragraphs */
+.weather-data-num-rows,
+.weather-data-num-columns,
+.crop-data-num-rows,
+.crop-data-num-columns {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+/* Graph Containers */
+.weather-data-columns-info-graph,
+.crop-data-columns-info-graph,
+.weather-data-summary-graph,
+.crop-data-summary-graph,
+.weather-data-missing-values-graph,
+.crop-data-missing-values-graph {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.table th {
+    background-color: #2980b9;
+    color: #ffffff;
+}
+
+.table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .data-overview-page-header {
+        font-size: 2em;
+    }
+
+    .weather-data-properties-header,
+    .crop-data-properties-header,
+    .weather-data-summary-header,
+    .crop-data-summary-header,
+    .weather-data-missing-values-header,
+    .crop-data-missing-values-header {
+        font-size: 1.5em;
+    }
+
+    .weather-data-columns-info-header,
+    .crop-data-columns-info-header {
+        font-size: 1.2em;
+    }
+
+    .weather-data-columns-info-graph,
+    .crop-data-columns-info-graph,
+    .weather-data-summary-graph,
+    .crop-data-summary-graph,
+    .weather-data-missing-values-graph,
+    .crop-data-missing-values-graph {
+        margin-top: 15px;
+    }
+}

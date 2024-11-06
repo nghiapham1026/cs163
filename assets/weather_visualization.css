@@ -1,0 +1,118 @@
+/* assets/styles.css */
+
+/* General Styles */
+body {
+    font-family: 'Lato', sans-serif;
+    background-color: #f5f7fa;
+    margin: 0;
+    padding: 0;
+}
+
+.weather-visualization-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Page Title */
+.page-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #2980b9;
+    padding-bottom: 10px;
+}
+
+/* City Dropdown */
+.city-dropdown-label {
+    font-size: 1.2em;
+    color: #34495e;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.city-dropdown {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 40px;
+}
+
+/* Plot Containers */
+.temperature-plot-container,
+.extreme-weather-plot-container,
+.rainfall-plot-container,
+.dew-point-plot-container,
+.cloud-cover-plot-container {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* Plot Titles */
+.temperature-plot-title,
+.extreme-weather-plot-title,
+.rainfall-plot-title,
+.dew-point-plot-title,
+.cloud-cover-plot-title {
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    border-left: 5px solid #2980b9;
+    padding-left: 15px;
+}
+
+/* Graphs */
+.temperature-plot-graph,
+.extreme-weather-plot-graph,
+.rainfall-plot-graph,
+.dew-point-plot-graph,
+.cloud-cover-plot-graph {
+    height: 500px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 2em;
+    }
+
+    .city-dropdown-label {
+        font-size: 1em;
+    }
+
+    .temperature-plot-title,
+    .extreme-weather-plot-title,
+    .rainfall-plot-title,
+    .dew-point-plot-title,
+    .cloud-cover-plot-title {
+        font-size: 1.5em;
+    }
+
+    .temperature-plot-graph,
+    .extreme-weather-plot-graph,
+    .rainfall-plot-graph,
+    .dew-point-plot-graph,
+    .cloud-cover-plot-graph {
+        height: 400px;
+    }
+
+    .plot-container {
+        padding: 20px;
+        margin-bottom: 30px;
+    }
+}
+
+.plot-container:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.city-dropdown {
+    transition: border 0.3s ease;
+}
+.city-dropdown:focus {
+    border-color: #2980b9;
+}
