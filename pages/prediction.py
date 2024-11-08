@@ -97,26 +97,28 @@ def layout():
     return html.Div([
         html.H1("Prediction Model Performance Analysis"),
 
-        # Section for each metric
-        *[
-            html.Div([
-                html.H3(f"{metric} Analysis"),
-                
-                # Row with bar plot and box plot for each metric
-                html.Div([
-                    dcc.Graph(figure=bar_fig, config={'displayModeBar': False}),
-                    dcc.Graph(figure=box_fig, config={'displayModeBar': False})
-                ], style={"display": "flex", "gap": "20px", "justify-content": "center"})
-            ]) for metric, (bar_fig, box_fig) in zip(metrics, plot_pairs)
-        ],
-        
-        # Section for density plots
-        html.H2("Density Plots for Model Performance Metrics"),
-        *[
-            html.Div([
-                dcc.Graph(figure=fig, config={'displayModeBar': False}),
-            ], style={"margin-bottom": "30px"}) for fig in density_plots
-        ],
+        # Dropdown for selecting counties
+        html.Label("Select Counties:"),
+        dcc.Dropdown(
+            id="county-multi-dropdown",
+            options=[{"label": county, "value": county} for county in results_df['County'].unique()],
+            value=[],
+            multi=True,  # Allow multiple selections
+            placeholder="Select one or more counties"
+        ),
+
+        # Dropdown for selecting crops
+        html.Label("Select Crops:"),
+        dcc.Dropdown(
+            id="crop-multi-dropdown",
+            options=[{"label": crop, "value": crop} for crop in results_df['Crop'].unique()],
+            value=[],
+            multi=True,  # Allow multiple selections
+            placeholder="Select one or more crops"
+        ),
+
+        # Placeholder for comparison plots
+        html.Div(id="comparison-plots-container", style={"margin-top": "20px"}),
 
         html.H1("Model Performance Visualization"),
 
@@ -267,3 +269,88 @@ def update_plots(n_clicks, selected_model, selected_county, selected_crop, selec
         dcc.Graph(figure=fig_residuals),
         dcc.Graph(figure=fig_actual_vs_predicted)
     ]
+
+@callback(
+    Output("comparison-plots-container", "children"),
+    Input("county-multi-dropdown", "value"),
+    Input("crop-multi-dropdown", "value")
+)
+def update_comparison_plots(selected_counties, selected_crops):
+    if not selected_counties or not selected_crops:
+        return html.Div("Please select at least one county and one crop to generate the plots.")
+
+    # Filter the DataFrame based on the selections
+    filtered_data = results_df[
+        (results_df['County'].isin(selected_counties)) &
+        (results_df['Crop'].isin(selected_crops))
+    ]
+
+    if filtered_data.empty:
+        return html.Div("No data available for the selected filters.")
+
+    # Generate Metric Plots
+    metrics = ['R2', 'RMSE', 'MAE']
+
+    metric_figs = []
+    for metric in metrics:
+        # Create a bar plot comparing metric averages for selected counties and crops
+        metric_fig = px.bar(
+            filtered_data,
+            x="Model",
+            y=metric,
+            color="County",
+            barmode="group",
+            facet_row="Crop",
+            title=f"Comparison of {metric} by Model, County, and Crop",
+            labels={"Model": "Model", metric: metric}
+        )
+        metric_fig.update_layout(height=400 * len(selected_crops))  # Adjust height dynamically
+        metric_figs.append(html.Div([
+            html.H3(f"Metric Plot: {metric}"),
+            dcc.Graph(figure=metric_fig)
+        ]))
+
+    density_figs = []
+    for metric in metrics:
+        fig = go.Figure()
+
+        # Create density traces for each model in the selected counties and crops
+        for county in selected_counties:
+            for crop in selected_crops:
+                county_crop_data = filtered_data[
+                    (filtered_data['County'] == county) & (filtered_data['Crop'] == crop)
+                ]
+
+                if county_crop_data.empty:
+                    continue
+
+                for model in county_crop_data['Model'].unique():
+                    model_data = county_crop_data[county_crop_data['Model'] == model]
+
+                    # Add a trace for this model
+                    fig.add_trace(go.Violin(
+                        y=model_data[metric],
+                        name=f"{model} ({county}, {crop})",
+                        box_visible=True,
+                        meanline_visible=True,
+                        opacity=0.6
+                    ))
+
+        # Update layout for this metric's density plot
+        fig.update_layout(
+            title=f"Density Plot of {metric} by County, Crop, and Model",
+            xaxis_title="Models",
+            yaxis_title=metric,
+            height=500,
+        )
+
+        density_figs.append(html.Div([
+            html.H3(f"Density Plot: {metric}"),
+            dcc.Graph(figure=fig)
+        ]))
+
+    # Combine and structure the layout for both metric and density plots
+    return html.Div([
+        html.Div(metric_figs, style={"margin-bottom": "40px"}),
+        html.Div(density_figs)
+    ])
