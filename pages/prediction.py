@@ -298,13 +298,13 @@ def update_comparison_plots(selected_counties, selected_crops):
             filtered_data,
             x="Model",
             y=metric,
-            color="County",
+            color="Crop",  # Use Crop as the grouping
             barmode="group",
-            facet_row="Crop",
+            facet_row="County",  # Separate rows by counties
             title=f"Comparison of {metric} by Model, County, and Crop",
             labels={"Model": "Model", metric: metric}
         )
-        metric_fig.update_layout(height=400 * len(selected_crops))  # Adjust height dynamically
+        metric_fig.update_layout(height=400 * len(selected_counties))  # Adjust height dynamically
         metric_figs.append(html.Div([
             html.H3(f"Metric Plot: {metric}"),
             dcc.Graph(figure=metric_fig)
@@ -315,8 +315,8 @@ def update_comparison_plots(selected_counties, selected_crops):
         fig = go.Figure()
 
         # Create density traces for each model in the selected counties and crops
-        for county in selected_counties:
-            for crop in selected_crops:
+        for crop in selected_crops:
+            for county in selected_counties:
                 county_crop_data = filtered_data[
                     (filtered_data['County'] == county) & (filtered_data['Crop'] == crop)
                 ]
@@ -339,8 +339,8 @@ def update_comparison_plots(selected_counties, selected_crops):
         # Update layout for this metric's density plot
         fig.update_layout(
             title=f"Density Plot of {metric} by County, Crop, and Model",
-            xaxis_title="Models",
             yaxis_title=metric,
+            legend_title="Models",
             height=500,
         )
 
