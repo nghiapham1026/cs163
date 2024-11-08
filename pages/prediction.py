@@ -156,8 +156,11 @@ def layout():
             clearable=True
         ),
 
+        # Button to trigger plot generation
+        html.Button("Show Plot", id="show-plot-button", n_clicks=0, style={"margin-top": "20px"}),
+
         # Placeholder for plots
-        html.Div(id="plots-container")
+        html.Div(id="plots-container", style={"margin-top": "20px"})
     ])
 
 
@@ -201,12 +204,17 @@ def update_target_dropdown(selected_crop, selected_model, selected_county):
 
 @callback(
     Output("plots-container", "children"),
-    Input("target-dropdown", "value"),
+    Input("show-plot-button", "n_clicks"),  # Button click event
     State("model-dropdown", "value"),
     State("county-dropdown", "value"),
-    State("crop-dropdown", "value")
+    State("crop-dropdown", "value"),
+    State("target-dropdown", "value")
 )
-def update_plots(selected_target, selected_model, selected_county, selected_crop):
+def update_plots(n_clicks, selected_model, selected_county, selected_crop, selected_target):
+    # Only proceed if the button has been clicked at least once
+    if n_clicks == 0:
+        return html.Div("Select options and click 'Show Plot' to generate the plots.")
+
     # Construct the unique key to retrieve the model data
     model_key = f"{selected_model}_{selected_county}_{selected_crop}_{selected_target}"
     model_entry = all_models.get(model_key)
