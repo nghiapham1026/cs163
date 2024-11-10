@@ -312,41 +312,22 @@ def update_comparison_plots(selected_counties, selected_crops):
 
     density_figs = []
     for metric in metrics:
-        fig = go.Figure()
-
-        # Create density traces for each model in the selected counties and crops
-        for crop in selected_crops:
-            for county in selected_counties:
-                county_crop_data = filtered_data[
-                    (filtered_data['County'] == county) & (filtered_data['Crop'] == crop)
-                ]
-
-                if county_crop_data.empty:
-                    continue
-
-                for model in county_crop_data['Model'].unique():
-                    model_data = county_crop_data[county_crop_data['Model'] == model]
-
-                    # Add a trace for this model
-                    fig.add_trace(go.Violin(
-                        y=model_data[metric],
-                        name=f"{model} ({county}, {crop})",
-                        box_visible=True,
-                        meanline_visible=True,
-                        opacity=0.6
-                    ))
-
-        # Update layout for this metric's density plot
-        fig.update_layout(
-            title=f"Density Plot of {metric} by County, Crop, and Model",
-            yaxis_title=metric,
-            legend_title="Models",
-            height=500,
+        # Create a density plot with faceting by county
+        density_fig = px.violin(
+            filtered_data,
+            y=metric,
+            x="Model",
+            color="Crop",  # Group by crop
+            facet_row="County",  # Facet rows by county
+            box=True,  # Show box plot within the violin
+            points="all",  # Show all data points
+            title=f"Density Plot of {metric} by Model, County, and Crop",
+            labels={"Model": "Model", metric: metric}
         )
-
+        density_fig.update_layout(height=400 * len(selected_counties))  # Adjust height dynamically
         density_figs.append(html.Div([
             html.H3(f"Density Plot: {metric}"),
-            dcc.Graph(figure=fig)
+            dcc.Graph(figure=density_fig)
         ]))
 
     # Combine and structure the layout for both metric and density plots
