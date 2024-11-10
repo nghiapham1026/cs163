@@ -749,7 +749,54 @@ The following sections should be used for the visualization planning. These are 
 
 # Visualization
 ## Visualization Plan
-<!--- List and explain what types of plots you plan to provide and what you are trying to show through the diagrams. You should explore the best way to visualize the information and message based on the lectures on visualization and related topics. It is required to have at least two interactive graphing and five static plots. -->
+
+#### 1. **Interactive Plots**
+
+**A. Hypothetical Extreme Weather Scenario Analysis**
+   - **Plot Type**: Interactive Time Series Simulation
+   - **Description**: Allow users to simulate the impact of extreme weather events (e.g., a spike in `high_temp_days`, `heavy_rain_days`, or both) and observe hypothetical crop yield responses.
+   - **Workaround for Poor Model Performance**:
+     - Use simplified relationships (e.g., linear regression or historical correlation coefficients) to estimate impacts.
+     - Provide a disclaimer indicating that these are exploratory simulations, not precise predictions.
+   - **Features**:
+     - Sliders to adjust weather variable values (e.g., number of `high_temp_days`).
+     - Display the simulated crop yield on a dynamic line chart alongside historical data.
+
+**B. Interactive Farming Practices Map**
+   - **Plot Type**: Geographical Heatmap
+   - **Description**: Display differences in farming practices (e.g., irrigation usage, crop rotation) and crop yields across counties.
+   - **Workaround for Poor Model Performance**:
+     - Highlight correlations between farming practices (from references) and historical crop performance without relying on predictive modeling.
+   - **Features**:
+     - Tooltip to show farming practice details for each county.
+     - Dropdown to switch between different farming metrics (e.g., percentage of irrigated land, use of fertilizers).
+
+
+#### 2. **Static Plots**
+
+**A. Extreme Weather Impact (Bar Plot)**
+   - **Description**: Show historical crop yield changes during years with extreme weather events (e.g., droughts, heavy rainfall).
+   - **Workaround**:
+     - Identify and highlight extreme weather years from historical data (e.g., years with max `high_temp_days` or `heavy_rain_days`).
+     - Compare crop yields from these years to averages.
+
+**B. Hypothetical Scenario Analysis (Scatter Plot)**
+   - **Description**: Display the relationship between simulated weather changes and expected crop outcomes.
+   - **Workaround**:
+     - Use regression lines or averages to show general trends, rather than relying on ML predictions.
+
+**C. Distribution of Farming Practices (Box Plot)**
+   - **Description**: Show the spread of specific farming practices across counties, e.g., irrigation percentages.
+   - **Purpose**: Highlight variability and potential impacts on crop yields.
+
+**D. Crop Yield and Farming Practice Comparison (Bar Plot)**
+   - **Description**: Compare average crop yields between counties with different farming practices (e.g., high vs. low irrigation).
+   - **Purpose**: Visually connect farming practices to yield performance.
+
+**E. Weather Anomalies and Yield (Time Series Plot)**
+   - **Description**: Highlight years with weather anomalies (e.g., unusually high temperatures) and their impact on crop yields.
+   - **Purpose**: Show trends and relationships without relying on predictions.
+
 
 ## Web Page Plan
 <!--- Explain how many pages you will have in total and what content will be shown in each page. (Each diagram discussed above should be given a proper location in this section. Also, it is required to have (1) "Project Objective" page, which explains the main goals and data sources, and (2) "Analytical Methods" page, where you explain the major techniques used in the project and provide further references. -->
