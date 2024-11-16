@@ -1,5 +1,6 @@
 # Weather Data Analysis and Forecasting
-# Colab Notebook: https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
+# Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
+# Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
 ## **Project Summary: Weather Data Analysis and Forecasting**
 
 #### **Project Goals:**
