@@ -1,337 +1,272 @@
-import plotly.express as px
+import dash
+from dash import html, dcc, callback, Output, Input
+import plotly.graph_objs as go
 import pandas as pd
-from dash import html, dcc, Input, Output, callback, State
-import plotly.graph_objects as go
 import joblib
+import numpy as np
 
-# Sample Data - Replace this with actual results_df DataFrame
-results_df = pd.read_csv('./data/results_df.csv')
+# Initialize the Dash app
+app = dash.Dash(__name__)
+app.title = "Model Metrics Comparison and Predictions"
 
-# Load the joblib file
-all_models = joblib.load('./data/all_models.joblib')
+# Load your DataFrame for metrics
+results_df = pd.read_csv('./data/results_df.csv')  # Replace with your actual data loading method
 
-# Parse keys to extract model, county, crop, and target
-parsed_keys = []
-for key in all_models.keys():
-    model_name, county, crop, target = key.split("_")
-    parsed_keys.append({
-        "model": model_name,
-        "county": county,
-        "crop": crop,
-        "target": target,
-        "key": key
-    })
+# Load all models and metadata
+all_models = joblib.load("./data/all_models.joblib")  # Ensure this file is in the correct path
 
-# Convert to DataFrame for easier filtering
-key_df = pd.DataFrame(parsed_keys)
-
-def generate_metric_plots(metric):
-    # Bar plot for average metric by model
-    bar_fig = px.bar(
-        results_df,
-        x='Model',
-        y=metric,
-        title=f'Average {metric} by Model',
-        labels={'Model': 'Model', metric: metric},
-        color='Model',
-        color_discrete_sequence=px.colors.sequential.Viridis
-    )
-
-    # Box plot for metric distribution by model
-    box_fig = px.box(
-        results_df,
-        x='Model',
-        y=metric,
-        title=f'{metric} Distribution by Model',
-        labels={'Model': 'Model', metric: metric},
-        color='Model',
-        color_discrete_sequence=px.colors.sequential.Viridis
-    )
-
-    return bar_fig, box_fig
-
-def filter_outliers(data, column, lower_percentile=5, upper_percentile=95):
-    """Filter outliers based on percentile range."""
-    lower_bound = data[column].quantile(lower_percentile / 100)
-    upper_bound = data[column].quantile(upper_percentile / 100)
-    return data[(data[column] >= lower_bound) & (data[column] <= upper_bound)]
-
-def generate_density_plot(metric):
-    fig = go.Figure()
-    
-    # Create a density plot for each model on the same figure
-    for model in results_df['Model'].unique():
-        model_data = results_df[results_df['Model'] == model]
-        
-        # Filter outliers for the metric
-        filtered_data = filter_outliers(model_data, metric)
-        
-        fig.add_trace(go.Violin(
-            x=filtered_data[metric],
-            name=model,
-            fillcolor="rgba(173, 216, 230, 0.5)",  # Light blue fill for each model
-            opacity=0.6,
-            box_visible=True,
-            meanline_visible=True
-        ))
-
-    # Update layout for titles, labels, and size
-    fig.update_layout(
-        title=f"Distribution of {metric} Scores Across Models",
-        xaxis_title=metric,
-        yaxis_title="Density",
-        violinmode="overlay",  # Overlay to simulate KDE-like effect
-        height=1000,  # Increase height
-        width=800   # Increase width
-    )
-
-    return fig
+# Load your DataFrame for counties and crops (assuming df is defined somewhere)
+df = pd.read_csv('./data/merged_yearly.csv')  # Replace with your actual data source
+counties_predictions = df['County'].unique()
+crops_predictions = df['Crop Name'].unique()
+models = ['KNN', 'DecisionTree', 'GradientBoosting']
 
 def layout():
-    # Generate plots for each metric
-    metrics = ['R2', 'RMSE', 'MAE']
-    plot_pairs = [generate_metric_plots(metric) for metric in metrics]
-    density_plots = [generate_density_plot(metric) for metric in metrics]
-    
-    # Create layout with plots
+    # Get unique counties and crops for the dropdown menus
+    counties_metrics = results_df['County'].unique()
+    crops_metrics = results_df['Crop'].unique()
+
     return html.Div([
-        html.H1("Prediction Model Performance Analysis"),
+        html.H1("Model Metrics Comparison", style={'text-align': 'center'}),
 
-        # Dropdown for selecting counties
-        html.Label("Select Counties:"),
-        dcc.Dropdown(
-            id="county-multi-dropdown",
-            options=[{"label": county, "value": county} for county in results_df['County'].unique()],
-            value=[],
-            multi=True,  # Allow multiple selections
-            placeholder="Select one or more counties"
-        ),
+        # Dropdown menus for Model Metrics Comparison
+        html.Div([
+            html.Label("Select County:"),
+            dcc.Dropdown(
+                id='county-dropdown-metrics',
+                options=[{'label': county, 'value': county} for county in counties_metrics],
+                value=counties_metrics[0]
+            ),
+            html.Br(),
+            html.Label("Select Crop:"),
+            dcc.Dropdown(
+                id='crop-dropdown-metrics',
+                options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                value=crops_metrics[0]
+            )
+        ], style={'width': '50%', 'margin': 'auto'}),
 
-        # Dropdown for selecting crops
-        html.Label("Select Crops:"),
-        dcc.Dropdown(
-            id="crop-multi-dropdown",
-            options=[{"label": crop, "value": crop} for crop in results_df['Crop'].unique()],
-            value=[],
-            multi=True,  # Allow multiple selections
-            placeholder="Select one or more crops"
-        ),
+        # Plots for Yield Per Acre and Production Per Acre Metrics
+        html.Div([
+            html.H2("Yield Per Acre Metrics", style={'text-align': 'center'}),
+            dcc.Graph(id='yield-per-acre-graph'),
+            html.H2("Production Per Acre Metrics", style={'text-align': 'center'}),
+            dcc.Graph(id='production-per-acre-graph')
+        ]),
 
-        # Placeholder for comparison plots
-        html.Div(id="comparison-plots-container", style={"margin-top": "20px"}),
+        html.H1("Per Acre Prediction", style={'text-align': 'center'}),
 
-        html.H1("Model Performance Visualization"),
+        # Dropdowns for Predictions section
+        html.Div([
+            html.Label("Select County:"),
+            dcc.Dropdown(
+                id='county-dropdown-prediction',
+                options=[{'label': county, 'value': county} for county in counties_predictions],
+                value=counties_predictions[0]
+            ),
+            html.Label("Select Crop:"),
+            dcc.Dropdown(
+                id='crop-dropdown-prediction',
+                options=[{'label': crop, 'value': crop} for crop in crops_predictions],
+                value=crops_predictions[0]
+            ),
+            html.Label("Select Model:"),
+            dcc.Dropdown(
+                id='model-dropdown-prediction',
+                options=[{'label': model, 'value': model} for model in models],
+                value=models[0]
+            )
+        ], style={'width': '50%', 'margin': 'auto'}),
 
-        # Dropdown for selecting model
-        html.Label("Select a Machine Learning Model:"),
-        dcc.Dropdown(
-            id="model-dropdown",
-            options=[{"label": model, "value": model} for model in key_df['model'].unique()],
-            value=None,
-            clearable=True
-        ),
+        # Visualization for Production Per Acre
+        html.H2("Production Per Acre"),
+        dcc.Graph(id='prediction-graph-production'),
+        dcc.Graph(id='residual-graph-production'),
 
-        # Dropdown for selecting county
-        html.Label("Select a County:"),
-        dcc.Dropdown(
-            id="county-dropdown",
-            options=[],  # Dynamically populated
-            value=None,
-            clearable=True
-        ),
+        # Visualization for Yield Per Acre
+        html.H2("Yield Per Acre"),
+        dcc.Graph(id='prediction-graph-yield'),
+        dcc.Graph(id='residual-graph-yield'),
 
-        # Dropdown for selecting crop
-        html.Label("Select a Crop:"),
-        dcc.Dropdown(
-            id="crop-dropdown",
-            options=[],  # Dynamically populated
-            value=None,
-            clearable=True
-        ),
-
-        # Dropdown for selecting target
-        html.Label("Select a Target:"),
-        dcc.Dropdown(
-            id="target-dropdown",
-            options=[],  # Dynamically populated
-            value=None,
-            clearable=True
-        ),
-
-        # Button to trigger plot generation
-        html.Button("Show Plot", id="show-plot-button", n_clicks=0, style={"margin-top": "20px"}),
-
-        # Placeholder for plots
-        html.Div(id="plots-container", style={"margin-top": "20px"})
+        # Metrics display
+        html.Div(id='metrics-display', style={'text-align': 'center', 'margin-top': '20px'})
     ])
 
+app.layout = layout
 
+# Callback for Model Metrics Comparison
 @callback(
-    Output("county-dropdown", "options"),
-    Input("model-dropdown", "value")
+    [Output('yield-per-acre-graph', 'figure'),
+     Output('production-per-acre-graph', 'figure')],
+    [Input('county-dropdown-metrics', 'value'),
+     Input('crop-dropdown-metrics', 'value')]
 )
-def update_county_dropdown(selected_model):
-    # Filter the keys for the selected model
-    filtered = key_df[key_df["model"] == selected_model]
-    counties = filtered["county"].unique()
-    return [{"label": county, "value": county} for county in counties]
-
-@callback(
-    Output("crop-dropdown", "options"),
-    Input("county-dropdown", "value"),
-    State("model-dropdown", "value")
-)
-def update_crop_dropdown(selected_county, selected_model):
-    # Filter the keys for the selected model and county
-    filtered = key_df[(key_df["model"] == selected_model) & (key_df["county"] == selected_county)]
-    crops = filtered["crop"].unique()
-    return [{"label": crop, "value": crop} for crop in crops]
-
-@callback(
-    Output("target-dropdown", "options"),
-    Input("crop-dropdown", "value"),
-    State("model-dropdown", "value"),
-    State("county-dropdown", "value")
-)
-def update_target_dropdown(selected_crop, selected_model, selected_county):
-    # Filter the keys for the selected model, county, and crop
-    filtered = key_df[
-        (key_df["model"] == selected_model) &
-        (key_df["county"] == selected_county) &
-        (key_df["crop"] == selected_crop)
-    ]
-    targets = filtered["target"].unique()
-    return [{"label": target, "value": target} for target in targets]
-
-
-@callback(
-    Output("plots-container", "children"),
-    Input("show-plot-button", "n_clicks"),  # Button click event
-    State("model-dropdown", "value"),
-    State("county-dropdown", "value"),
-    State("crop-dropdown", "value"),
-    State("target-dropdown", "value")
-)
-def update_plots(n_clicks, selected_model, selected_county, selected_crop, selected_target):
-    # Only proceed if the button has been clicked at least once
-    if n_clicks == 0:
-        return html.Div("Select options and click 'Show Plot' to generate the plots.")
-
-    # Construct the unique key to retrieve the model data
-    model_key = f"{selected_model}_{selected_county}_{selected_crop}_{selected_target}"
-    model_entry = all_models.get(model_key)
-
-    if not model_entry:
-        return html.Div("No data available for the selected combination.")
-
-    # Extract the model and metadata
-    learning_curve = model_entry.get("learning_curve")
-    residuals = model_entry.get("residuals")
-    predictions = model_entry.get("predictions")
-    actuals = model_entry.get("actuals")
-
-    if not all([learning_curve, residuals, predictions, actuals]):
-        return html.Div("Incomplete data for the selected model.")
-
-    # Extract learning curve data
-    train_sizes = learning_curve["train_sizes"]
-    train_scores = learning_curve["train_scores"]
-    test_scores = learning_curve["val_scores"]  # Use "val_scores" instead of "test_scores"
-
-    # Generate plots
-    # Learning Curve
-    fig_learning = go.Figure()
-    fig_learning.add_trace(go.Scatter(x=train_sizes, y=train_scores, mode='lines+markers', name='Train Score'))
-    fig_learning.add_trace(go.Scatter(x=train_sizes, y=test_scores, mode='lines+markers', name='Validation Score'))
-    fig_learning.update_layout(title="Learning Curve", xaxis_title="Training Examples", yaxis_title="Score")
-
-    # Residual Plot
-    fig_residuals = px.scatter(
-        x=predictions,
-        y=residuals,
-        labels={"x": "Predicted Values", "y": "Residuals"},
-        title="Residual Plot"
-    )
-    fig_residuals.add_hline(y=0, line_dash="dash", line_color="red")
-
-    # Actual vs. Predicted
-    fig_actual_vs_predicted = px.scatter(
-        x=actuals,
-        y=predictions,
-        labels={"x": "Actual Values", "y": "Predicted Values"},
-        title="Actual vs. Predicted"
-    )
-    fig_actual_vs_predicted.add_trace(go.Scatter(x=actuals, y=actuals, mode='lines', name='Perfect Prediction'))
-
-    # Return the plots
-    return [
-        dcc.Graph(figure=fig_learning),
-        dcc.Graph(figure=fig_residuals),
-        dcc.Graph(figure=fig_actual_vs_predicted)
+def update_metrics_graphs(selected_county, selected_crop):
+    # Filter the data based on selected county and crop
+    filtered_df = results_df[
+        (results_df['County'] == selected_county) &
+        (results_df['Crop'] == selected_crop)
     ]
 
-@callback(
-    Output("comparison-plots-container", "children"),
-    Input("county-multi-dropdown", "value"),
-    Input("crop-multi-dropdown", "value")
-)
-def update_comparison_plots(selected_counties, selected_crops):
-    if not selected_counties or not selected_crops:
-        return html.Div("Please select at least one county and one crop to generate the plots.")
+    # All unique models
+    all_models = results_df['Model'].unique()
 
-    # Filter the DataFrame based on the selections
-    filtered_data = results_df[
-        (results_df['County'].isin(selected_counties)) &
-        (results_df['Crop'].isin(selected_crops))
-    ]
+    # Function to prepare data for a given target
+    def prepare_data(target):
+        target_df = filtered_df[filtered_df['Target'] == target]
+        rmse_values = []
+        mae_values = []
+        for model in all_models:
+            model_data = target_df[target_df['Model'] == model]
+            if not model_data.empty:
+                rmse_values.append(model_data['RMSE'].values[0])
+                mae_values.append(model_data['MAE'].values[0])
+            else:
+                rmse_values.append(None)
+                mae_values.append(None)
+        return rmse_values, mae_values
 
-    if filtered_data.empty:
-        return html.Div("No data available for the selected filters.")
+    # Prepare data for Yield Per Acre
+    yield_rmse, yield_mae = prepare_data('Yield Per Acre')
 
-    # Generate Metric Plots
-    metrics = ['R2', 'RMSE', 'MAE']
+    # Prepare data for Production Per Acre
+    production_rmse, production_mae = prepare_data('Production Per Acre')
 
-    metric_figs = []
-    for metric in metrics:
-        # Create a bar plot comparing metric averages for selected counties and crops
-        metric_fig = px.bar(
-            filtered_data,
-            x="Model",
-            y=metric,
-            color="Crop",  # Use Crop as the grouping
-            barmode="group",
-            facet_row="County",  # Separate rows by counties
-            title=f"Comparison of {metric} by Model, County, and Crop",
-            labels={"Model": "Model", metric: metric}
-        )
-        metric_fig.update_layout(height=400 * len(selected_counties))  # Adjust height dynamically
-        metric_figs.append(html.Div([
-            html.H3(f"Metric Plot: {metric}"),
-            dcc.Graph(figure=metric_fig)
-        ]))
-
-    density_figs = []
-    for metric in metrics:
-        # Create a density plot with faceting by county
-        density_fig = px.violin(
-            filtered_data,
-            y=metric,
-            x="Model",
-            color="Crop",  # Group by crop
-            facet_row="County",  # Facet rows by county
-            box=True,  # Show box plot within the violin
-            points="all",  # Show all data points
-            title=f"Density Plot of {metric} by Model, County, and Crop",
-            labels={"Model": "Model", metric: metric}
-        )
-        density_fig.update_layout(height=400 * len(selected_counties))  # Adjust height dynamically
-        density_figs.append(html.Div([
-            html.H3(f"Density Plot: {metric}"),
-            dcc.Graph(figure=density_fig)
-        ]))
-
-    # Combine and structure the layout for both metric and density plots
-    return html.Div([
-        html.Div(metric_figs, style={"margin-bottom": "40px"}),
-        html.Div(density_figs)
+    # Create the bar charts for Yield Per Acre
+    yield_fig = go.Figure(data=[
+        go.Bar(name='RMSE', x=all_models, y=yield_rmse, offsetgroup=0),
+        go.Bar(name='MAE', x=all_models, y=yield_mae, offsetgroup=1)
     ])
+    yield_fig.update_layout(
+        barmode='group',
+        title='Yield Per Acre Metrics',
+        xaxis_title='Model',
+        yaxis_title='Metric Value',
+        legend_title='Metrics'
+    )
+
+    # Create the bar charts for Production Per Acre
+    production_fig = go.Figure(data=[
+        go.Bar(name='RMSE', x=all_models, y=production_rmse, offsetgroup=0),
+        go.Bar(name='MAE', x=all_models, y=production_mae, offsetgroup=1)
+    ])
+    production_fig.update_layout(
+        barmode='group',
+        title='Production Per Acre Metrics',
+        xaxis_title='Model',
+        yaxis_title='Metric Value',
+        legend_title='Metrics'
+    )
+
+    return yield_fig, production_fig
+
+# Callback for Predictions
+@callback(
+    [Output('prediction-graph-production', 'figure'),
+     Output('residual-graph-production', 'figure'),
+     Output('prediction-graph-yield', 'figure'),
+     Output('residual-graph-yield', 'figure'),
+     Output('metrics-display', 'children')],
+    [Input('county-dropdown-prediction', 'value'),
+     Input('crop-dropdown-prediction', 'value'),
+     Input('model-dropdown-prediction', 'value')]
+)
+def update_prediction_graphs(county, crop, model_name):
+    # Generate keys for model retrieval
+    model_key_production = f"{model_name}_{county}_{crop}_Production Per Acre"
+    model_key_yield = f"{model_name}_{county}_{crop}_Yield Per Acre"
+
+    # Check if both model keys are available
+    missing_data = False
+    error_messages = []
+    if model_key_production not in all_models:
+        missing_data = True
+        error_messages.append("Model data not available for Production Per Acre.")
+    if model_key_yield not in all_models:
+        missing_data = True
+        error_messages.append("Model data not available for Yield Per Acre.")
+    if missing_data:
+        return {}, {}, {}, {}, html.Div(error_messages)
+
+    # Retrieve model data for Production Per Acre
+    model_data_production = all_models[model_key_production]
+    predictions_production = model_data_production["predictions"]
+    actuals_production = model_data_production["actuals"]
+    residuals_production = model_data_production["residuals"]
+    metrics_production = model_data_production["metrics"]
+
+    # Retrieve model data for Yield Per Acre
+    model_data_yield = all_models[model_key_yield]
+    predictions_yield = model_data_yield["predictions"]
+    actuals_yield = model_data_yield["actuals"]
+    residuals_yield = model_data_yield["residuals"]
+    metrics_yield = model_data_yield["metrics"]
+
+    # Prediction graph for Production Per Acre
+    prediction_fig_production = go.Figure()
+    prediction_fig_production.add_trace(go.Scatter(
+        y=actuals_production, mode='lines', name='Actual Production Per Acre'))
+    prediction_fig_production.add_trace(go.Scatter(
+        y=predictions_production, mode='lines', name='Predicted Production Per Acre'))
+    prediction_fig_production.update_layout(
+        title="Actual vs Predictions - Production Per Acre",
+        xaxis_title="Data Points",
+        yaxis_title="Production Per Acre"
+    )
+
+    # Residual graph for Production Per Acre
+    residual_fig_production = go.Figure()
+    residual_fig_production.add_trace(go.Scatter(
+        y=residuals_production, mode='markers', name='Residuals Production Per Acre'))
+    residual_fig_production.add_hline(y=0, line_dash="dash", line_color="red")
+    residual_fig_production.update_layout(
+        title="Residuals - Production Per Acre",
+        xaxis_title="Data Points",
+        yaxis_title="Residuals"
+    )
+
+    # Prediction graph for Yield Per Acre
+    prediction_fig_yield = go.Figure()
+    prediction_fig_yield.add_trace(go.Scatter(
+        y=actuals_yield, mode='lines', name='Actual Yield Per Acre'))
+    prediction_fig_yield.add_trace(go.Scatter(
+        y=predictions_yield, mode='lines', name='Predicted Yield Per Acre'))
+    prediction_fig_yield.update_layout(
+        title="Actual vs Predictions - Yield Per Acre",
+        xaxis_title="Data Points",
+        yaxis_title="Yield Per Acre"
+    )
+
+    # Residual graph for Yield Per Acre
+    residual_fig_yield = go.Figure()
+    residual_fig_yield.add_trace(go.Scatter(
+        y=residuals_yield, mode='markers', name='Residuals Yield Per Acre'))
+    residual_fig_yield.add_hline(y=0, line_dash="dash", line_color="red")
+    residual_fig_yield.update_layout(
+        title="Residuals - Yield Per Acre",
+        xaxis_title="Data Points",
+        yaxis_title="Residuals"
+    )
+
+    # Metrics display
+    metrics_text = html.Div([
+        html.H3("Metrics Comparison"),
+        html.Table([
+            html.Tr([html.Th("Metric"), html.Th("Production Per Acre"), html.Th("Yield Per Acre")]),
+            html.Tr([html.Td("R² Score"),
+                     html.Td(f"{metrics_production['R2']:.2f}"),
+                     html.Td(f"{metrics_yield['R2']:.2f}")]),
+            html.Tr([html.Td("RMSE"),
+                     html.Td(f"{metrics_production['RMSE']:.2f}"),
+                     html.Td(f"{metrics_yield['RMSE']:.2f}")]),
+            html.Tr([html.Td("MAE"),
+                     html.Td(f"{metrics_production['MAE']:.2f}"),
+                     html.Td(f"{metrics_yield['MAE']:.2f}")]),
+        ], style={'margin': 'auto', 'border': '1px solid black'})
+    ])
+
+    return (prediction_fig_production, residual_fig_production,
+            prediction_fig_yield, residual_fig_yield, metrics_text)
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
