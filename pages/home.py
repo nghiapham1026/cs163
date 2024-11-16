@@ -54,6 +54,10 @@ df = pd.read_csv('./data/merged_yearly.csv')
 extreme_weather_vars = ['high_temp_days', 'low_temp_days', 'heavy_rain_days', 'snow_days',
                         'high_wind_days', 'low_visibility_days', 'cloudy_days']
 
+# List of weather features and target variables
+weather_features = ['high_temp_days', 'low_temp_days', 'heavy_rain_days', 'snow_days',
+                    'high_wind_days', 'low_visibility_days', 'cloudy_days']
+
 def layout():
     return html.Div(className="main-container", children=[
         html.H1("California Crop and Weather Analysis", className="main-title"),
@@ -87,7 +91,6 @@ def layout():
             )
         ], style={"margin-top": "20px", "height": "500px"}),
 
-        # New Plot Section
         html.H2("Impact of Extreme Weather on Crop Yield", className="section-title"),
         html.P(
             "Select a crop and an extreme weather variable to see how extreme weather conditions impact crop yields across different counties."
@@ -109,6 +112,32 @@ def layout():
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
         dcc.Graph(id='yield-comparison-graph', className='graph'),
+
+        # New Plot Section
+        html.H2("Weather Impact on Crop Yield and Production", className="section-title"),
+        html.P(
+            "Select a crop and an extreme weather variable to explore the relationship between weather conditions and crop yield and production."
+        ),
+        html.Div([
+            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-weather-impact'),
+            dcc.Dropdown(
+                id='crop-dropdown-weather-impact',
+                options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
+                value=sorted(df["Crop Name"].unique())[0],
+                className='dropdown'
+            ),
+            html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='weather-feature-dropdown-weather-impact'),
+            dcc.Dropdown(
+                id='weather-feature-dropdown-weather-impact',
+                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in weather_features],
+                value=weather_features[0],
+                className='dropdown'
+            ),
+        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        html.Div([
+            dcc.Graph(id='yield-per-acre-graph-weather-impact'),
+            dcc.Graph(id='production-per-acre-graph-weather-impact')
+        ], className='graph-container'),
     ])
 
 def california_map():
@@ -165,7 +194,6 @@ def california_map():
 
     return fig
 
-# Callback for the plot
 @callback(
     Output('yield-comparison-graph', 'figure'),
     [Input('crop-dropdown', 'value'),
@@ -245,3 +273,64 @@ def update_graph(selected_crop, selected_var):
     )
 
     return fig
+
+@callback(
+    [Output('yield-per-acre-graph-weather-impact', 'figure'),
+     Output('production-per-acre-graph-weather-impact', 'figure')],
+    [Input('crop-dropdown-weather-impact', 'value'),
+     Input('weather-feature-dropdown-weather-impact', 'value')]
+)
+def update_graphs(selected_crop, selected_weather_feature):
+    # Filter data for selected crop
+    crop_data = df[df['Crop Name'] == selected_crop]
+    
+    # Check if data is available
+    if crop_data.empty:
+        return {}, {}
+    
+    # Remove rows with NaN in selected weather feature
+    crop_data = crop_data.dropna(subset=[selected_weather_feature, 'Yield Per Acre', 'Production Per Acre', 'County'])
+    
+    if crop_data.empty:
+        return {}, {}
+    
+    # For 'Yield Per Acre' plot
+    fig_yield = px.scatter(
+        crop_data,
+        x=selected_weather_feature,
+        y='Yield Per Acre',
+        color='County',
+        trendline='ols',
+        trendline_scope='trace',
+        title=f"{selected_crop}: {selected_weather_feature.replace('_', ' ').title()} vs Yield Per Acre",
+        labels={selected_weather_feature: selected_weather_feature.replace('_', ' ').title(), 'Yield Per Acre': 'Yield Per Acre'}
+    )
+    
+    # For 'Production Per Acre' plot
+    fig_production = px.scatter(
+        crop_data,
+        x=selected_weather_feature,
+        y='Production Per Acre',
+        color='County',
+        trendline='ols',
+        trendline_scope='trace',
+        title=f"{selected_crop}: {selected_weather_feature.replace('_', ' ').title()} vs Production Per Acre",
+        labels={selected_weather_feature: selected_weather_feature.replace('_', ' ').title(), 'Production Per Acre': 'Production Per Acre'}
+    )
+    
+    # Update layouts if needed
+    fig_yield.update_layout(
+        xaxis_title=selected_weather_feature.replace('_', ' ').title(),
+        yaxis_title='Yield Per Acre',
+        legend_title='County',
+        height=500
+    )
+    
+    fig_production.update_layout(
+        xaxis_title=selected_weather_feature.replace('_', ' ').title(),
+        yaxis_title='Production Per Acre',
+        legend_title='County',
+        height=500
+    )
+    
+    return fig_yield, fig_production
