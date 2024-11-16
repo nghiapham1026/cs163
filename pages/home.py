@@ -1,7 +1,5 @@
 from dash import html, dcc
 import plotly.graph_objects as go
-import plotly.express as px
-import pandas as pd
 import json
 
 # Load California county boundaries GeoJSON
@@ -41,41 +39,16 @@ selected_counties = ["Sonoma", "Napa", "Santa Clara", "Alameda", "Tulare",
 # Filter GeoJSON data to only include selected counties
 filtered_counties = {
     "type": "FeatureCollection",
-    "features": [feature for feature in california_counties["features"] if feature["properties"]["CountyName"] in selected_counties]
+    "features": [
+        feature for feature in california_counties["features"]
+        if feature["properties"]["CountyName"] in selected_counties
+    ]
 }
-
-df = pd.read_csv('./data/merged_yearly.csv')
-
-# Define extreme weather conditions
-extreme_years = df[(df["high_temp_days"] > df["high_temp_days"].quantile(0.9)) |
-                   (df["heavy_rain_days"] > df["heavy_rain_days"].quantile(0.9))]["Year"].unique()
-
-# Calculate average crop yield for extreme years
-extreme_yield = df[df["Year"].isin(extreme_years)].groupby("Crop Name")["Yield Per Acre"].mean().reset_index()
-extreme_yield.rename(columns={"Yield Per Acre": "Extreme Years Yield"}, inplace=True)
-
-# Calculate average crop yield for non-extreme years
-non_extreme_yield = df[~df["Year"].isin(extreme_years)].groupby("Crop Name")["Yield Per Acre"].mean().reset_index()
-non_extreme_yield.rename(columns={"Yield Per Acre": "Non-Extreme Years Yield"}, inplace=True)
-
-# Merge the data for comparison
-yield_comparison = pd.merge(extreme_yield, non_extreme_yield, on="Crop Name")
-yield_comparison["Difference"] = yield_comparison["Extreme Years Yield"] - yield_comparison["Non-Extreme Years Yield"]
-
-# Create the bar plot
-fig = px.bar(
-    yield_comparison,
-    x="Crop Name",
-    y=["Extreme Years Yield", "Non-Extreme Years Yield"],
-    barmode="group",
-    title="Crop Yield During Extreme vs Non-Extreme Weather Years",
-    labels={"value": "Yield Per Acre", "variable": "Condition"}
-)
 
 def layout():
     return html.Div(className="main-container", children=[
         html.H1("California Crop and Weather Analysis", className="main-title"),
-        
+
         # Project Objective
         html.P(
             "This project aims to analyze the correlation between extreme weather conditions "
@@ -88,8 +61,8 @@ def layout():
 
         # Stock Image
         html.Img(
-            src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg", 
-            alt="Illustration of weather impact on crops", 
+            src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
+            alt="Illustration of weather impact on crops",
             style={"width": "100%", "height": "auto", "margin-top": "20px"},
             className="stock-image"
         ),
@@ -104,14 +77,6 @@ def layout():
                 className="california-map-graph"
             )
         ], style={"margin-top": "20px", "height": "500px"}),
-
-        # Static Plot Section
-        html.H2("Extreme Weather Impact on Crop Yield"),
-        html.P(
-            "This plot compares average crop yields during years with extreme weather events (e.g., high temperatures or heavy rainfall) "
-            "to those during non-extreme years."
-        ),
-        dcc.Graph(figure=fig),
     ])
 
 def california_map():
