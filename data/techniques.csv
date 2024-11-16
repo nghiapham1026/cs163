@@ -1,0 +1,19 @@
+County,Primary Crops,Farming Methods,Irrigation Techniques,Pesticide Usage
+Alameda,Grapes,Conventional,Drip,Moderate
+Alameda,Hay,Organic,Sprinkler,Moderate
+El Dorado,Apples,Organic,Drip,Minimal
+Fresno,Almonds,Conventional,Flood,Moderate
+Fresno,Grapes,Sustainable,Drip,Moderate
+Kings,Tomatoes,Conventional,Sprinkler,High
+Kings,Cotton,Conventional,Flood,High
+Mendocino,Wine Grapes,Organic,Drip,Minimal
+Napa,Wine Grapes,Sustainable,Drip,Minimal
+Napa,Wine Grapes,Organic,Drip,Minimal
+Riverside,Citrus,Conventional,Drip,Moderate
+Riverside,Dates,Conventional,Sprinkler,Moderate
+Santa Clara,Cherries,Conventional,Drip,Low
+Santa Clara,Lettuce,Urban Agriculture,Sprinkler,Low
+Sonoma,Wine Grapes,Sustainable,Drip,Minimal
+Sonoma,Wine Grapes,Organic,Drip,Minimal
+Tulare,Citrus,Conventional,Flood,Moderate
+Tulare,Almonds,Sustainable,Drip,Moderate
