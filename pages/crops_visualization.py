@@ -11,36 +11,37 @@ counties = crops_data['County'].unique()
 # Layout function for the Crop Data Visualization page
 def layout():
     return html.Div([
-        html.H1("Crop Data Visualization"),
-        
+        html.H1("Crop Data Visualization", className="page-title"),
+
         # Dropdown for county selection
-        html.Label("Select a County:"),
+        html.Label("Select a County:", className="county-label"),
         dcc.Dropdown(
             id="county-dropdown",
             options=[{"label": county, "value": county} for county in counties],
             value=counties[0],  # Default value set to the first county
-            clearable=False
+            clearable=False,
+            className="county-dropdown"
         ),
-        
+
         # Yield Per Acre plot
         html.Div([
-            html.H3("Yield Per Acre Over Time by Crop"),
-            dcc.Graph(id="yield-plot")
-        ]),
-        
+            html.H3("Yield Per Acre Over Time by Crop", className="yield-title"),
+            dcc.Graph(id="yield-plot", className="yield-graph")
+        ], className="yield-container"),
+
         # Production Per Acre plot
         html.Div([
-            html.H3("Production Per Acre Over Time by Crop"),
-            dcc.Graph(id="production-plot")
-        ]),
-        
+            html.H3("Production Per Acre Over Time by Crop", className="production-title"),
+            dcc.Graph(id="production-plot", className="production-graph")
+        ], className="production-container"),
+
         # Harvested Acres plot
         html.Div([
-            html.H3("Harvested Acres Over Time by Crop"),
-            dcc.Graph(id="harvested-acres-plot")
-        ]),
-    ])
-    
+            html.H3("Harvested Acres Over Time by Crop", className="harvested-acres-title"),
+            dcc.Graph(id="harvested-acres-plot", className="harvested-acres-graph")
+        ], className="harvested-acres-container"),
+    ], className="main-container")
+
 # Callback to update all plots based on selected county
 @callback(
     Output("yield-plot", "figure"),
@@ -54,7 +55,7 @@ def update_crop_plots(selected_county):
 
     # Ensure 'Year' is in datetime format
     county_data["Year"] = pd.to_datetime(county_data["Year"], format='%Y')
-    
+
     # Yield Per Acre plot
     yield_fig = px.line(county_data, x="Year", y="Yield Per Acre", color="Crop Name",
                         title=f"Yield Per Acre Over Time by Crop in {selected_county}")

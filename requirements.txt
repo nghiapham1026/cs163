@@ -7,3 +7,6 @@ folium
 matplotlib
 scipy
 dash_bootstrap_components
+joblib
+scikit-learn
+statsmodels

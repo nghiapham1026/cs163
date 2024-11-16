@@ -1,0 +1,188 @@
+/* assets/styles.css */
+
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f7f9;
+    margin: 0;
+    padding: 0;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Titles and Headers */
+.extreme-weather-title,
+.correlation-analysis-title,
+.statistical-analysis-title,
+.additional-plots-title,
+.statistical-analysis-results-title {
+    font-size: 2.5em;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 40px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+.hypothesis-summary-title {
+    font-size: 2em;
+    text-align: center;
+    color: #2c3e50;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+}
+
+/* Sections */
+.extreme-weather-section,
+.correlation-matrix-section {
+    background-color: #ffffff;
+    padding: 30px;
+    margin-bottom: 50px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Labels */
+.extreme-weather-county-label,
+.extreme-weather-variable-label,
+.correlation-county-label,
+.correlation-crop-label,
+.county-selection-label,
+.target-selection-label,
+.crop-selection-label,
+.crop-heatmap-selection-label,
+.crop-r2-selection-label {
+    font-size: 1.2em;
+    color: #34495e;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    display: block;
+}
+
+/* Dropdowns */
+.extreme-weather-county-dropdown,
+.extreme-weather-variable-dropdown,
+.correlation-county-dropdown,
+.correlation-crop-dropdown,
+.county-dropdown,
+.target-dropdown,
+.crop-dropdown,
+.crop-heatmap-dropdown,
+.crop-r2-dropdown {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+}
+
+/* Graphs */
+.extreme-weather-graph,
+.correlation-matrix-graph,
+.p-value-graph,
+.coefficient-graph,
+.r-squared-graph,
+.interactive-coefficient-graph,
+.coefficient-heatmap-graph,
+.r-squared-barplot-graph {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* DataTable */
+.hypothesis-summary-table {
+    margin-top: 40px;
+}
+
+.hypothesis-summary-table .dash-table-container {
+    border: none;
+}
+
+.hypothesis-summary-table .dash-table-container .dash-spreadsheet {
+    border: 1px solid #ddd;
+}
+
+.hypothesis-summary-table .dash-table-container .dash-spreadsheet-container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Table Header */
+.hypothesis-summary-table .dash-header {
+    background-color: #2980b9;
+    color: #fff;
+    font-weight: bold;
+}
+
+/* Table Cells */
+.hypothesis-summary-table .dash-cell {
+    text-align: left;
+    padding: 10px;
+}
+
+/* Conditional Formatting */
+.hypothesis-summary-table .dash-cell--highlight {
+    background-color: #f9f9f9;
+}
+
+/* Additional Styles */
+.p-value-title,
+.coefficient-analysis-title,
+.r-squared-title,
+.interactive-coefficient-title,
+.coefficient-heatmap-title,
+.r-squared-barplot-title {
+    font-size: 1.8em;
+    color: #2c3e50;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    border-left: 5px solid #3498db;
+    padding-left: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-container {
+        padding: 10px;
+    }
+
+    .extreme-weather-title,
+    .correlation-analysis-title,
+    .statistical-analysis-title,
+    .additional-plots-title,
+    .statistical-analysis-results-title {
+        font-size: 2em;
+    }
+
+    .p-value-title,
+    .coefficient-analysis-title,
+    .r-squared-title,
+    .interactive-coefficient-title,
+    .coefficient-heatmap-title,
+    .r-squared-barplot-title {
+        font-size: 1.5em;
+    }
+
+    .extreme-weather-section,
+    .correlation-matrix-section {
+        padding: 20px;
+    }
+
+    .extreme-weather-county-label,
+    .extreme-weather-variable-label,
+    .correlation-county-label,
+    .correlation-crop-label,
+    .county-selection-label,
+    .target-selection-label,
+    .crop-selection-label,
+    .crop-heatmap-selection-label,
+    .crop-r2-selection-label {
+        font-size: 1em;
+    }
+}
