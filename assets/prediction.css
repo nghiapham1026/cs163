@@ -1,0 +1,118 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+}
+
+#prediction-page {
+    padding: 20px;
+}
+
+/* Page Titles */
+.page-title {
+    text-align: center;
+    color: #333;
+    margin-top: 40px;
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: bold;
+}
+
+/* Section Titles */
+.section-title {
+    text-align: center;
+    color: #555;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* Dropdown Containers */
+.dropdown-container {
+    width: 50%;
+    margin: 0 auto 30px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.dropdown-label {
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.dropdown {
+    width: 100%;
+}
+
+#metrics-dropdown-container .dropdown-label,
+#prediction-dropdown-container .dropdown-label,
+#heatmap-dropdown-container .dropdown-label {
+    margin-top: 10px;
+}
+
+/* Graphs */
+.graph {
+    width: 90%;
+    margin: 0 auto 30px auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Metrics Display */
+.metrics-display {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.metrics-display h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.metrics-table {
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.metrics-table th,
+.metrics-table td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: center;
+}
+
+.metrics-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.metrics-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Error Messages */
+.error-messages {
+    color: red;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .dropdown-container {
+        width: 90%;
+    }
+
+    .graph {
+        width: 100%;
+    }
+}

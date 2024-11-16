@@ -29,91 +29,98 @@ def layout():
     crops_metrics = results_df['Crop'].unique()
 
     return html.Div([
-        html.H1("Model Metrics Comparison", style={'text-align': 'center'}),
+        html.H1("Model Metrics Comparison", id='model-metrics-title', className='page-title'),
 
         # Dropdown menus for Model Metrics Comparison
         html.Div([
-            html.Label("Select County:"),
+            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-metrics'),
             dcc.Dropdown(
                 id='county-dropdown-metrics',
                 options=[{'label': county, 'value': county} for county in counties_metrics],
-                value=counties_metrics[0]
+                value=counties_metrics[0],
+                className='dropdown'
             ),
             html.Br(),
-            html.Label("Select Crop:"),
+            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-metrics'),
             dcc.Dropdown(
                 id='crop-dropdown-metrics',
                 options=[{'label': crop, 'value': crop} for crop in crops_metrics],
-                value=crops_metrics[0]
+                value=crops_metrics[0],
+                className='dropdown'
             )
-        ], style={'width': '50%', 'margin': 'auto'}),
+        ], style={'width': '50%', 'margin': 'auto'}, id='metrics-dropdown-container', className='dropdown-container'),
 
         # Plots for Yield Per Acre and Production Per Acre Metrics
         html.Div([
-            html.H2("Yield Per Acre Metrics", style={'text-align': 'center'}),
-            dcc.Graph(id='yield-per-acre-graph'),
-            html.H2("Production Per Acre Metrics", style={'text-align': 'center'}),
-            dcc.Graph(id='production-per-acre-graph')
-        ]),
+            html.H2("Yield Per Acre Metrics", id='yield-metrics-title', className='section-title'),
+            dcc.Graph(id='yield-per-acre-graph', className='graph'),
+            html.H2("Production Per Acre Metrics", id='production-metrics-title', className='section-title'),
+            dcc.Graph(id='production-per-acre-graph', className='graph')
+        ], id='metrics-graphs-container', className='graphs-container'),
 
-        html.H1("Per Acre Prediction", style={'text-align': 'center'}),
+        html.H1("Per Acre Prediction", id='prediction-title', className='page-title'),
 
         # Dropdowns for Predictions section
         html.Div([
-            html.Label("Select County:"),
+            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-prediction'),
             dcc.Dropdown(
                 id='county-dropdown-prediction',
                 options=[{'label': county, 'value': county} for county in counties_predictions],
-                value=counties_predictions[0]
+                value=counties_predictions[0],
+                className='dropdown'
             ),
-            html.Label("Select Crop:"),
+            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-prediction'),
             dcc.Dropdown(
                 id='crop-dropdown-prediction',
                 options=[{'label': crop, 'value': crop} for crop in crops_predictions],
-                value=crops_predictions[0]
+                value=crops_predictions[0],
+                className='dropdown'
             ),
-            html.Label("Select Model:"),
+            html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-prediction'),
             dcc.Dropdown(
                 id='model-dropdown-prediction',
                 options=[{'label': model, 'value': model} for model in models],
-                value=models[0]
+                value=models[0],
+                className='dropdown'
             )
-        ], style={'width': '50%', 'margin': 'auto'}),
+        ], style={'width': '50%', 'margin': 'auto'}, id='prediction-dropdown-container', className='dropdown-container'),
 
         # Visualization for Production Per Acre
-        html.H2("Production Per Acre"),
-        dcc.Graph(id='prediction-graph-production'),
-        dcc.Graph(id='residual-graph-production'),
+        html.H2("Production Per Acre", id='production-prediction-title', className='section-title'),
+        dcc.Graph(id='prediction-graph-production', className='graph'),
+        dcc.Graph(id='residual-graph-production', className='graph'),
 
         # Visualization for Yield Per Acre
-        html.H2("Yield Per Acre"),
-        dcc.Graph(id='prediction-graph-yield'),
-        dcc.Graph(id='residual-graph-yield'),
+        html.H2("Yield Per Acre", id='yield-prediction-title', className='section-title'),
+        dcc.Graph(id='prediction-graph-yield', className='graph'),
+        dcc.Graph(id='residual-graph-yield', className='graph'),
 
         # Metrics display
-        html.Div(id='metrics-display', style={'text-align': 'center', 'margin-top': '20px'}),
+        html.Div(id='metrics-display', className='metrics-display'),
 
-        html.H1("Interactive Heatmap of Metrics by County and Crop", style={'text-align': 'center'}),
+        html.H1("Interactive Heatmap of Metrics by County and Crop", id='heatmap-title', className='page-title'),
 
         # Dropdowns for Heatmap
         html.Div([
-            html.Label("Select Variable:"),
+            html.Label("Select Variable:", className='dropdown-label', htmlFor='variable-dropdown-heatmap'),
             dcc.Dropdown(
                 id='variable-dropdown-heatmap',
                 options=[{'label': var, 'value': var} for var in variables_list],
-                value=variables_list[0]
+                value=variables_list[0],
+                className='dropdown'
             ),
-            html.Label("Select Metric:"),
+            html.Label("Select Metric:", className='dropdown-label', htmlFor='metric-dropdown-heatmap'),
             dcc.Dropdown(
                 id='metric-dropdown-heatmap',
                 options=[{'label': met, 'value': met} for met in metrics_list],
-                value=metrics_list[0]
+                value=metrics_list[0],
+                className='dropdown'
             )
-        ], style={'width': '50%', 'margin': 'auto'}),
+        ], style={'width': '50%', 'margin': 'auto'}, id='heatmap-dropdown-container', className='dropdown-container'),
 
         # Heatmap
-        dcc.Graph(id='heatmap-graph')
-    ])
+        dcc.Graph(id='heatmap-graph', className='graph')
+    ], id='prediction-page', className='prediction-page')
 
 app.layout = layout
 
@@ -209,7 +216,7 @@ def update_prediction_graphs(county, crop, model_name):
         missing_data = True
         error_messages.append("Model data not available for Yield Per Acre.")
     if missing_data:
-        return {}, {}, {}, {}, html.Div(error_messages)
+        return {}, {}, {}, {}, html.Div(error_messages, id='error-messages', className='error-messages')
 
     # Retrieve model data for Production Per Acre
     model_data_production = all_models[model_key_production]
@@ -273,7 +280,7 @@ def update_prediction_graphs(county, crop, model_name):
 
     # Metrics display
     metrics_text = html.Div([
-        html.H3("Metrics Comparison"),
+        html.H3("Metrics Comparison", id='metrics-comparison-title', className='section-title'),
         html.Table([
             html.Tr([html.Th("Metric"), html.Th("Production Per Acre"), html.Th("Yield Per Acre")]),
             html.Tr([html.Td("R² Score"),
@@ -285,8 +292,8 @@ def update_prediction_graphs(county, crop, model_name):
             html.Tr([html.Td("MAE"),
                      html.Td(f"{metrics_production['MAE']:.2f}"),
                      html.Td(f"{metrics_yield['MAE']:.2f}")]),
-        ], style={'margin': 'auto', 'border': '1px solid black'})
-    ])
+        ], id='metrics-table', className='metrics-table')
+    ], id='metrics-container', className='metrics-container')
 
     return (prediction_fig_production, residual_fig_production,
             prediction_fig_yield, residual_fig_yield, metrics_text)
