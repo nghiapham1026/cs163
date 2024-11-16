@@ -1,6 +1,7 @@
 import dash
 from dash import html, dcc, callback, Output, Input
 import plotly.graph_objs as go
+import plotly.express as px
 import pandas as pd
 import joblib
 import numpy as np
@@ -9,17 +10,18 @@ import numpy as np
 app = dash.Dash(__name__)
 app.title = "Model Metrics Comparison and Predictions"
 
-# Load your DataFrame for metrics
-results_df = pd.read_csv('./data/results_df.csv')  # Replace with your actual data loading method
+results_df = pd.read_csv('./data/results_df.csv')
 
-# Load all models and metadata
-all_models = joblib.load("./data/all_models.joblib")  # Ensure this file is in the correct path
+all_models = joblib.load("./data/all_models.joblib")
 
-# Load your DataFrame for counties and crops (assuming df is defined somewhere)
-df = pd.read_csv('./data/merged_yearly.csv')  # Replace with your actual data source
+df = pd.read_csv('./data/merged_yearly.csv')
 counties_predictions = df['County'].unique()
 crops_predictions = df['Crop Name'].unique()
 models = ['KNN', 'DecisionTree', 'GradientBoosting']
+
+# Metrics and variables to visualize
+metrics_list = ['RMSE', 'MAE']
+variables_list = ['Yield Per Acre', 'Production Per Acre']
 
 def layout():
     # Get unique counties and crops for the dropdown menus
@@ -89,7 +91,28 @@ def layout():
         dcc.Graph(id='residual-graph-yield'),
 
         # Metrics display
-        html.Div(id='metrics-display', style={'text-align': 'center', 'margin-top': '20px'})
+        html.Div(id='metrics-display', style={'text-align': 'center', 'margin-top': '20px'}),
+
+        html.H1("Interactive Heatmap of Metrics by County and Crop", style={'text-align': 'center'}),
+
+        # Dropdowns for Heatmap
+        html.Div([
+            html.Label("Select Variable:"),
+            dcc.Dropdown(
+                id='variable-dropdown-heatmap',
+                options=[{'label': var, 'value': var} for var in variables_list],
+                value=variables_list[0]
+            ),
+            html.Label("Select Metric:"),
+            dcc.Dropdown(
+                id='metric-dropdown-heatmap',
+                options=[{'label': met, 'value': met} for met in metrics_list],
+                value=metrics_list[0]
+            )
+        ], style={'width': '50%', 'margin': 'auto'}),
+
+        # Heatmap
+        dcc.Graph(id='heatmap-graph')
     ])
 
 app.layout = layout
@@ -267,6 +290,50 @@ def update_prediction_graphs(county, crop, model_name):
 
     return (prediction_fig_production, residual_fig_production,
             prediction_fig_yield, residual_fig_yield, metrics_text)
+
+# Callback to update the heatmap based on user selection
+@callback(
+    Output('heatmap-graph', 'figure'),
+    [Input('variable-dropdown-heatmap', 'value'),
+     Input('metric-dropdown-heatmap', 'value')]
+)
+def update_heatmap(selected_variable, selected_metric):
+    # Filter the data for the selected variable
+    filtered_df = results_df[results_df['Target'] == selected_variable]
+
+    # Create a pivot table
+    pivot_table = filtered_df.pivot_table(
+        index='County',
+        columns='Crop',
+        values=selected_metric,
+        aggfunc='mean'
+    )
+
+    # Reset index to use County as a column
+    pivot_table = pivot_table.reset_index()
+
+    # Melt the DataFrame to long format
+    heatmap_data = pivot_table.melt(id_vars='County', var_name='Crop', value_name=selected_metric)
+
+    # Create the heatmap
+    fig = px.density_heatmap(
+        heatmap_data,
+        x='Crop',
+        y='County',
+        z=selected_metric,
+        color_continuous_scale='RdBu_r',
+        text_auto=True
+    )
+
+    fig.update_layout(
+        title=f"{selected_metric} for {selected_variable} by County and Crop",
+        xaxis_title="Crop",
+        yaxis_title="County",
+        xaxis={'categoryorder':'category ascending'},
+        yaxis={'categoryorder':'category ascending'}
+    )
+
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
