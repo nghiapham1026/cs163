@@ -1,5 +1,7 @@
-from dash import html, dcc
+from dash import html, dcc, callback, Output, Input
 import plotly.graph_objects as go
+import plotly.express as px
+import pandas as pd
 import json
 
 # Load California county boundaries GeoJSON
@@ -45,6 +47,13 @@ filtered_counties = {
     ]
 }
 
+# Load the data
+df = pd.read_csv('./data/merged_yearly.csv')
+
+# Define extreme weather variables
+extreme_weather_vars = ['high_temp_days', 'low_temp_days', 'heavy_rain_days', 'snow_days',
+                        'high_wind_days', 'low_visibility_days', 'cloudy_days']
+
 def layout():
     return html.Div(className="main-container", children=[
         html.H1("California Crop and Weather Analysis", className="main-title"),
@@ -77,6 +86,29 @@ def layout():
                 className="california-map-graph"
             )
         ], style={"margin-top": "20px", "height": "500px"}),
+
+        # New Plot Section
+        html.H2("Impact of Extreme Weather on Crop Yield", className="section-title"),
+        html.P(
+            "Select a crop and an extreme weather variable to see how extreme weather conditions impact crop yields across different counties."
+        ),
+        html.Div([
+            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown'),
+            dcc.Dropdown(
+                id='crop-dropdown',
+                options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
+                value=sorted(df["Crop Name"].unique())[0],
+                className='dropdown'
+            ),
+            html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='extreme-variable-dropdown'),
+            dcc.Dropdown(
+                id='extreme-variable-dropdown',
+                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_vars],
+                value=extreme_weather_vars[0],
+                className='dropdown'
+            ),
+        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        dcc.Graph(id='yield-comparison-graph', className='graph'),
     ])
 
 def california_map():
@@ -129,6 +161,87 @@ def california_map():
     fig.update_layout(
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         showlegend=False
+    )
+
+    return fig
+
+# Callback for the plot
+@callback(
+    Output('yield-comparison-graph', 'figure'),
+    [Input('crop-dropdown', 'value'),
+     Input('extreme-variable-dropdown', 'value')]
+)
+def update_graph(selected_crop, selected_var):
+    # Get unique counties
+    counties = df["County"].unique()
+
+    # DataFrame to store results
+    yield_comparison_list = []
+
+    for county in counties:
+        # Filter data for the current county and selected crop
+        county_data = df[(df["County"] == county) & (df["Crop Name"] == selected_crop)]
+        if county_data.empty:
+            continue  # Skip if no data for this county and crop
+
+        # Handle possible NaNs in the selected variable
+        var_values = county_data[selected_var].dropna()
+        if var_values.empty:
+            continue  # Skip if variable data is missing
+
+        # Calculate the 65th percentile threshold for the selected variable
+        threshold = var_values.quantile(0.65)
+
+        # Identify extreme years for the current variable in the current county
+        extreme_years = county_data[county_data[selected_var] > threshold]["Year"].unique()
+
+        # Calculate average crop yield for extreme years
+        extreme_yield = county_data[county_data["Year"].isin(extreme_years)]["Yield Per Acre"].mean()
+        if pd.isna(extreme_yield):
+            extreme_yield = 0
+
+        # Calculate average crop yield for non-extreme years
+        non_extreme_yield = county_data[~county_data["Year"].isin(extreme_years)]["Yield Per Acre"].mean()
+        if pd.isna(non_extreme_yield):
+            non_extreme_yield = 0
+
+        # Append to list
+        yield_comparison_list.append({
+            "County": county,
+            "Extreme Years Yield": extreme_yield,
+            "Non-Extreme Years Yield": non_extreme_yield
+        })
+
+    if not yield_comparison_list:
+        return px.bar(title="No data available for the selected crop and variable.")
+
+    # Create DataFrame
+    yield_comparison_df = pd.DataFrame(yield_comparison_list)
+
+    # Melt the DataFrame for plotting
+    yield_comparison_melted = yield_comparison_df.melt(
+        id_vars="County",
+        value_vars=["Extreme Years Yield", "Non-Extreme Years Yield"],
+        var_name="Condition",
+        value_name="Yield Per Acre"
+    )
+
+    # Create the bar plot
+    fig = px.bar(
+        yield_comparison_melted,
+        x="County",
+        y="Yield Per Acre",
+        color="Condition",
+        barmode="group",
+        title=f"Impact of {selected_var.replace('_', ' ').title()} on {selected_crop} Yield Across Counties",
+        labels={"Yield Per Acre": "Yield Per Acre", "Condition": "Condition"},
+        category_orders={"County": sorted(counties)}
+    )
+
+    fig.update_layout(
+        xaxis_title="County",
+        yaxis_title="Average Yield Per Acre",
+        legend_title="Condition"
     )
 
     return fig
