@@ -236,7 +236,7 @@ def california_map():
     fig.update_layout(mapbox=dict(
         style="carto-positron",
         center={"lat": 37.5, "lon": -119.5},
-        zoom=5.5
+        zoom=5
     ))
 
     # Add GeoJSON polygons for each selected county with a semi-transparent fill
