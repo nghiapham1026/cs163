@@ -7,7 +7,7 @@ import numpy as np
 # Load the weather data
 weather_data = pd.read_csv('./data/weather_data.csv')
 merged_yearly = pd.read_csv('./data/merged_yearly.csv')
-results = pd.read_csv('./data/results.csv')
+results = pd.read_csv('./data/results_df.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
 
 correlation_columns = [
