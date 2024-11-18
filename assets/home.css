@@ -1,5 +1,3 @@
-/* assets/styles.css */
-
 /* General Styles */
 body {
     font-family: 'Open Sans', sans-serif;
@@ -88,4 +86,32 @@ body {
 .stock-image:hover {
     transform: scale(1.02);
     transition: transform 0.3s ease;
+}
+
+/* Override the dropdown container width */
+.Select {
+    width: 400px !important;
+    margin: auto;
+}
+
+/* Adjust the dropdown menu width */
+.Select-menu {
+    width: 400px !important;
+}
+
+/* Adjust the arrow zone (dropdown icon area) */
+.Select-arrow-zone {
+    width: 20px;
+    height: 20px;
+}
+
+/* Adjust placeholder and text alignment */
+.Select-placeholder {
+    text-align: left;
+}
+
+/* Adjust dropdown items */
+.Select-option {
+    text-align: left;
+    padding: 10px;
 }

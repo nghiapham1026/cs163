@@ -141,7 +141,7 @@ def layout():
                 value='High Temp Days',  # Keep existing default for weather variable
                 className='dropdown'
             ),
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        ], className='dropdown-container'),
         dcc.Graph(id='yield-comparison-graph', className='graph'),
 
         # Existing Plot Section 2
@@ -164,7 +164,7 @@ def layout():
                 value=weather_features[0],  # Keep existing default for weather variable
                 className='dropdown'
             ),
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        ], className='dropdown-container'),
         html.Div([
             dcc.Graph(id='yield-per-acre-graph-weather-impact'),
             dcc.Graph(id='production-per-acre-graph-weather-impact')
@@ -189,7 +189,7 @@ def layout():
                 value=default_crop,  # Default value set to GRAPES WINE
                 className='dropdown'
             ),
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        ], className='dropdown-container'),
         html.Div([
             dcc.Graph(id='yield-per-acre-graph-anomalies'),
             dcc.Graph(id='production-per-acre-graph-anomalies')
@@ -207,7 +207,7 @@ def layout():
                 value=default_county,  # Default value set to Fresno
                 className='dropdown'
             )
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        ], className='dropdown-container'),
         html.Div([
             dcc.Graph(id='average-yield-graph', className='graph'),
             dcc.Graph(id='average-production-graph', className='graph')  # New Graph for Production Per Acre
@@ -225,7 +225,7 @@ def layout():
                 value=extreme_weather_vars[0],
                 className='dropdown'
             ),
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        ], className='dropdown-container'),
         dcc.Graph(id='yield-production-graph-farming'),
     ])
 
