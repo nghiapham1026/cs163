@@ -119,7 +119,35 @@ def layout():
         ], style={'width': '50%', 'margin': 'auto'}, id='heatmap-dropdown-container', className='dropdown-container'),
 
         # Heatmap
-        dcc.Graph(id='heatmap-graph', className='graph')
+        dcc.Graph(id='heatmap-graph', className='graph'),
+
+
+        # New Learning Curve Section
+        html.H2("Learning Curve Analysis", id='learning-curve-title', className='section-title'),
+        html.Div([
+            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-learning'),
+            dcc.Dropdown(
+                id='county-dropdown-learning',
+                options=[{'label': county, 'value': county} for county in counties_metrics],
+                value=counties_metrics[0],
+                className='dropdown'
+            ),
+            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-learning'),
+            dcc.Dropdown(
+                id='crop-dropdown-learning',
+                options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                value=crops_metrics[0],
+                className='dropdown'
+            ),
+            html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-learning'),
+            dcc.Dropdown(
+                id='model-dropdown-learning',
+                options=[{'label': model, 'value': model} for model in models],
+                value=models[0],
+                className='dropdown'
+            )
+        ], style={'width': '50%', 'margin': 'auto'}, id='learning-dropdown-container', className='dropdown-container'),
+        dcc.Graph(id='learning-curve-graph', className='graph')
     ], id='prediction-page', className='prediction-page')
 
 app.layout = layout
@@ -341,6 +369,65 @@ def update_heatmap(selected_variable, selected_metric):
     )
 
     return fig
+
+@callback(
+    Output('learning-curve-graph', 'figure'),
+    [Input('county-dropdown-learning', 'value'),
+     Input('crop-dropdown-learning', 'value'),
+     Input('model-dropdown-learning', 'value')]
+)
+def update_learning_curve(selected_county, selected_crop, selected_model):
+    # Initialize the figure
+    fig = go.Figure()
+
+    # Loop through targets ("Yield Per Acre" and "Production Per Acre")
+    targets = ["Yield Per Acre", "Production Per Acre"]
+    for target in targets:
+        # Generate the model key
+        model_key = f"{selected_model}_{selected_county}_{selected_crop}_{target}"
+
+        # Check if the model data is available
+        if model_key not in all_models:
+            fig.add_annotation(
+                text=f"No data available for {target}",
+                xref="paper", yref="paper",
+                x=0.5, y=1,
+                showarrow=False,
+                font=dict(size=12, color="red")
+            )
+            continue
+
+        # Extract learning curve data
+        model_data = all_models[model_key]
+        train_sizes = model_data["learning_curve"]["train_sizes"]
+        train_scores = model_data["learning_curve"]["train_scores"]
+        val_scores = model_data["learning_curve"]["val_scores"]
+
+        # Add training and validation scores to the plot
+        fig.add_trace(go.Scatter(
+            x=train_sizes,
+            y=train_scores,
+            mode='lines+markers',
+            name=f"Training Score ({target})"
+        ))
+        fig.add_trace(go.Scatter(
+            x=train_sizes,
+            y=val_scores,
+            mode='lines+markers',
+            name=f"Validation Score ({target})"
+        ))
+
+    # Update layout
+    fig.update_layout(
+        title=f"Learning Curves for {selected_model} ({selected_county}, {selected_crop})",
+        xaxis_title="Training Samples",
+        yaxis_title="Score",
+        legend_title="Curve",
+        template="plotly_white"
+    )
+
+    return fig
+
 
 if __name__ == '__main__':
     app.run_server(debug=True)
