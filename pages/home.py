@@ -84,6 +84,10 @@ for county_name in df["County"].unique():
         }
     county_thresholds[county_name] = thresholds
 
+# Define default values for dropdowns
+default_county = "Fresno"
+default_crop = "GRAPES WINE"
+
 def layout():
     return html.Div(className="main-container", children=[
         html.H1("California Crop and Weather Analysis", className="main-title"),
@@ -127,14 +131,14 @@ def layout():
             dcc.Dropdown(
                 id='crop-dropdown',
                 options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
-                value=sorted(df["Crop Name"].unique())[0],
+                value=default_crop,  # Default value set to GRAPES WINE
                 className='dropdown'
             ),
             html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='extreme-variable-dropdown'),
             dcc.Dropdown(
                 id='extreme-variable-dropdown',
                 options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_vars],
-                value=extreme_weather_vars[0],
+                value=extreme_weather_vars[0],  # Keep existing default for weather variable
                 className='dropdown'
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
@@ -150,14 +154,14 @@ def layout():
             dcc.Dropdown(
                 id='crop-dropdown-weather-impact',
                 options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
-                value=sorted(df["Crop Name"].unique())[0],
+                value=default_crop,  # Default value set to GRAPES WINE
                 className='dropdown'
             ),
             html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='weather-feature-dropdown-weather-impact'),
             dcc.Dropdown(
                 id='weather-feature-dropdown-weather-impact',
                 options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in weather_features],
-                value=weather_features[0],
+                value=weather_features[0],  # Keep existing default for weather variable
                 className='dropdown'
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
@@ -166,7 +170,6 @@ def layout():
             dcc.Graph(id='production-per-acre-graph-weather-impact')
         ], className='graph-container'),
 
-        # Existing Plot Section 3
         html.H2("Weather Anomalies and Crop Yield", className="section-title"),
         html.P(
             "Select a county and a crop to see how weather anomalies impact crop yield and production over time."
@@ -176,14 +179,14 @@ def layout():
             dcc.Dropdown(
                 id='county-dropdown-anomalies',
                 options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
-                value=sorted(df["County"].unique())[0],
+                value=default_county,  # Default value set to Fresno
                 className='dropdown'
             ),
             html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-anomalies'),
             dcc.Dropdown(
                 id='crop-dropdown-anomalies',
                 options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
-                value=sorted(df["Crop Name"].unique())[0],
+                value=default_crop,  # Default value set to GRAPES WINE
                 className='dropdown'
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
@@ -192,36 +195,23 @@ def layout():
             dcc.Graph(id='production-per-acre-graph-anomalies')
         ], className='graph-container'),
 
-        # New Plot Section
-        html.H2("Crop Yield and Production by Farming Method Under Different Weather Conditions", className="section-title"),
+        html.H2("Impact of Extreme Weather on Average Crop Yields and Production", className="section-title"),
         html.P(
-            "Select an extreme weather variable to see how different farming methods perform under various weather conditions."
+            "Select a county to explore how different levels of extreme weather variables impact crop yields and production for various crops."
         ),
         html.Div([
-            html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='weather-variable-dropdown-farming'),
+            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-average-yield-production'),
             dcc.Dropdown(
-                id='weather-variable-dropdown-farming',
-                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_vars],
-                value=extreme_weather_vars[0],
-                className='dropdown'
-            ),
-        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
-        dcc.Graph(id='yield-production-graph-farming'),
-
-        html.H2("Impact of Extreme Weather on Average Crop Yields", className="section-title"),
-        html.P(
-            "Select a county to explore how different levels of extreme weather variables impact crop yields for various crops."
-        ),
-        html.Div([
-            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-average-yield'),
-            dcc.Dropdown(
-                id='county-dropdown-average-yield',
+                id='county-dropdown-average-yield-production',
                 options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
-                value=sorted(df["County"].unique())[0],
+                value=default_county,  # Default value set to Fresno
                 className='dropdown'
             )
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
-        dcc.Graph(id='average-yield-graph', className='graph')
+        html.Div([
+            dcc.Graph(id='average-yield-graph', className='graph'),
+            dcc.Graph(id='average-production-graph', className='graph')  # New Graph for Production Per Acre
+        ], className='graph-container')
     ])
 
 def california_map():
@@ -607,20 +597,22 @@ def update_yield_production_graph(selected_var):
     return fig
 
 @callback(
-    Output('average-yield-graph', 'figure'),
-    [Input('county-dropdown-average-yield', 'value')]
+    [Output('average-yield-graph', 'figure'),
+     Output('average-production-graph', 'figure')],
+    [Input('county-dropdown-average-yield-production', 'value')]
 )
-def update_average_yield_plot(selected_county):
+def update_average_yield_and_production_plot(selected_county):
     # Filter the data for the selected county
     county_data = df[df["County"] == selected_county]
 
-    # Initialize a list to store aggregated results
-    aggregated_results = []
+    # Initialize lists to store aggregated results for both Yield and Production
+    yield_results = []
+    production_results = []
 
-    # Loop through each weather variable, categorize, and calculate average yield
+    # Loop through each weather variable, categorize, and calculate averages
     for var in extreme_weather_vars:
-        # Create categories for the current weather variable
         try:
+            # Categorize the weather variable
             county_data['Category'] = pd.cut(
                 county_data[var],
                 bins=[
@@ -637,20 +629,30 @@ def update_average_yield_plot(selected_county):
             print(f"Error categorizing variable {var}: {e}")
             continue  # Skip this variable if binning fails
 
-        # Aggregate data: Calculate average yield per category and crop name
+        # Aggregate data for Yield Per Acre
         avg_yield = county_data.groupby(['Category', 'Crop Name'], observed=True)['Yield Per Acre'].mean().reset_index()
         avg_yield['Weather Variable'] = var.replace('_', ' ').title()
-        aggregated_results.append(avg_yield)
+        yield_results.append(avg_yield)
 
-    # Combine all results into a single DataFrame
-    if aggregated_results:
-        combined_data = pd.concat(aggregated_results)
+        # Aggregate data for Production Per Acre
+        avg_production = county_data.groupby(['Category', 'Crop Name'], observed=True)['Production Per Acre'].mean().reset_index()
+        avg_production['Weather Variable'] = var.replace('_', ' ').title()
+        production_results.append(avg_production)
+
+    # Combine all results into single DataFrames
+    if yield_results:
+        combined_yield_data = pd.concat(yield_results)
     else:
-        return go.Figure()  # Return an empty figure if no data
+        combined_yield_data = pd.DataFrame()
 
-    # Create the grouped bar plot
-    fig = px.bar(
-        combined_data,
+    if production_results:
+        combined_production_data = pd.concat(production_results)
+    else:
+        combined_production_data = pd.DataFrame()
+
+    # Create the Yield Per Acre plot
+    yield_fig = px.bar(
+        combined_yield_data,
         x="Weather Variable",
         y="Yield Per Acre",
         color="Crop Name",
@@ -663,13 +665,33 @@ def update_average_yield_plot(selected_county):
             "Category": "Weather Severity"
         }
     )
-
-    # Enhance plot layout for better readability
-    fig.update_layout(
+    yield_fig.update_layout(
         legend_title_text="Crop Type",
         xaxis_title="Extreme Weather Variable",
         yaxis_title="Average Crop Yield",
         title_x=0.5  # Center the title
     )
 
-    return fig
+    # Create the Production Per Acre plot
+    production_fig = px.bar(
+        combined_production_data,
+        x="Weather Variable",
+        y="Production Per Acre",
+        color="Crop Name",
+        barmode="group",
+        facet_col="Category",
+        title=f"Impact of Extreme Weather on Average Crop Production in {selected_county}",
+        labels={
+            "Production Per Acre": "Average Production Per Acre",
+            "Weather Variable": "Extreme Weather Variable",
+            "Category": "Weather Severity"
+        }
+    )
+    production_fig.update_layout(
+        legend_title_text="Crop Type",
+        xaxis_title="Extreme Weather Variable",
+        yaxis_title="Average Crop Production",
+        title_x=0.5  # Center the title
+    )
+
+    return yield_fig, production_fig
