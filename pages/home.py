@@ -207,6 +207,21 @@ def layout():
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
         dcc.Graph(id='yield-production-graph-farming'),
+
+        html.H2("Impact of Extreme Weather on Average Crop Yields", className="section-title"),
+        html.P(
+            "Select a county to explore how different levels of extreme weather variables impact crop yields for various crops."
+        ),
+        html.Div([
+            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-average-yield'),
+            dcc.Dropdown(
+                id='county-dropdown-average-yield',
+                options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
+                value=sorted(df["County"].unique())[0],
+                className='dropdown'
+            )
+        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        dcc.Graph(id='average-yield-graph', className='graph')
     ])
 
 def california_map():
@@ -588,5 +603,73 @@ def update_yield_production_graph(selected_var):
     fig.update_xaxes(title_text="Farming Methods", row=1, col=2)
     fig.update_yaxes(title_text="Yield Per Acre", row=1, col=1)
     fig.update_yaxes(title_text="Production Per Acre", row=1, col=2)
+
+    return fig
+
+@callback(
+    Output('average-yield-graph', 'figure'),
+    [Input('county-dropdown-average-yield', 'value')]
+)
+def update_average_yield_plot(selected_county):
+    # Filter the data for the selected county
+    county_data = df[df["County"] == selected_county]
+
+    # Initialize a list to store aggregated results
+    aggregated_results = []
+
+    # Loop through each weather variable, categorize, and calculate average yield
+    for var in extreme_weather_vars:
+        # Create categories for the current weather variable
+        try:
+            county_data['Category'] = pd.cut(
+                county_data[var],
+                bins=[
+                    county_data[var].min() - 0.01,
+                    county_data[var].quantile(0.33),
+                    county_data[var].quantile(0.67),
+                    county_data[var].max() + 0.01
+                ],
+                labels=['Low', 'Moderate', 'High'],
+                include_lowest=True,
+                duplicates='drop'  # Handle duplicate edges
+            )
+        except ValueError as e:
+            print(f"Error categorizing variable {var}: {e}")
+            continue  # Skip this variable if binning fails
+
+        # Aggregate data: Calculate average yield per category and crop name
+        avg_yield = county_data.groupby(['Category', 'Crop Name'], observed=True)['Yield Per Acre'].mean().reset_index()
+        avg_yield['Weather Variable'] = var.replace('_', ' ').title()
+        aggregated_results.append(avg_yield)
+
+    # Combine all results into a single DataFrame
+    if aggregated_results:
+        combined_data = pd.concat(aggregated_results)
+    else:
+        return go.Figure()  # Return an empty figure if no data
+
+    # Create the grouped bar plot
+    fig = px.bar(
+        combined_data,
+        x="Weather Variable",
+        y="Yield Per Acre",
+        color="Crop Name",
+        barmode="group",
+        facet_col="Category",
+        title=f"Impact of Extreme Weather on Average Crop Yields in {selected_county}",
+        labels={
+            "Yield Per Acre": "Average Yield Per Acre",
+            "Weather Variable": "Extreme Weather Variable",
+            "Category": "Weather Severity"
+        }
+    )
+
+    # Enhance plot layout for better readability
+    fig.update_layout(
+        legend_title_text="Crop Type",
+        xaxis_title="Extreme Weather Variable",
+        yaxis_title="Average Crop Yield",
+        title_x=0.5  # Center the title
+    )
 
     return fig
