@@ -138,7 +138,7 @@ def layout():
             dcc.Dropdown(
                 id='extreme-variable-dropdown',
                 options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_vars],
-                value=extreme_weather_vars[0],  # Keep existing default for weather variable
+                value='High Temp Days',  # Keep existing default for weather variable
                 className='dropdown'
             ),
         ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
@@ -211,7 +211,22 @@ def layout():
         html.Div([
             dcc.Graph(id='average-yield-graph', className='graph'),
             dcc.Graph(id='average-production-graph', className='graph')  # New Graph for Production Per Acre
-        ], className='graph-container')
+        ], className='graph-container'),
+
+        html.H2("Crop Yield and Production by Farming Method Under Different Weather Conditions", className="section-title"),
+        html.P(
+            "Select an extreme weather variable to see how different farming methods perform under various weather conditions."
+        ),
+        html.Div([
+            html.Label("Select Extreme Weather Variable:", className='dropdown-label', htmlFor='weather-variable-dropdown-farming'),
+            dcc.Dropdown(
+                id='weather-variable-dropdown-farming',
+                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_vars],
+                value=extreme_weather_vars[0],
+                className='dropdown'
+            ),
+        ], className='dropdown-container', style={'width': '50%', 'margin': 'auto'}),
+        dcc.Graph(id='yield-production-graph-farming'),
     ])
 
 def california_map():
