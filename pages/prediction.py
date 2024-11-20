@@ -150,6 +150,43 @@ def layout():
                     ], style={'width': '50%', 'margin': 'auto'}, id='actual-pred-dropdown-container', className='dropdown-container'),
 
                     dcc.Graph(id='actual-vs-prediction-graph', className='graph'),
+
+                    html.H1("Residual Plot", id='residual-plot-title', className='section-title'),
+                    html.Div([
+                        html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-residual'),
+                        dcc.Dropdown(
+                            id='county-dropdown-residual',
+                            options=[{'label': county, 'value': county} for county in counties_metrics],
+                            value=counties_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-residual'),
+                        dcc.Dropdown(
+                            id='crop-dropdown-residual',
+                            options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                            value=crops_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-residual'),
+                        dcc.Dropdown(
+                            id='model-dropdown-residual',
+                            options=[{'label': model, 'value': model} for model in models],
+                            value=models[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Target Variable:", className='dropdown-label', htmlFor='target-variable-residual'),
+                        dcc.RadioItems(
+                            id='target-variable-residual',
+                            options=[
+                                {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
+                                {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
+                            ],
+                            value='Yield Per Acre',
+                            labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                        )
+                    ], style={'width': '50%', 'margin': 'auto'}, id='residual-dropdown-container', className='dropdown-container'),
+
+                    dcc.Graph(id='residual-plot-graph', className='graph'),
                 ])
             ]),
 
@@ -672,6 +709,60 @@ def update_actual_vs_prediction_plot(county, crop, model_name, target_variable):
         title=f"Actual vs. Predicted {target_variable} for {crop} in {county}",
         xaxis_title="Actual Values",
         yaxis_title="Predicted Values",
+        legend_title="Legend",
+        height=600,
+        width=800
+    )
+
+    return fig
+
+@callback(
+    Output('residual-plot-graph', 'figure'),
+    [Input('county-dropdown-residual', 'value'),
+     Input('crop-dropdown-residual', 'value'),
+     Input('model-dropdown-residual', 'value'),
+     Input('target-variable-residual', 'value')]
+)
+def update_residual_plot(county, crop, model_name, target_variable):
+    # Generate the model key to access the stored data
+    model_key = f"{model_name}_{county}_{crop}_{target_variable}"
+    
+    # Check if the model key exists in the all_models dictionary
+    if model_key not in all_models:
+        return go.Figure(layout=go.Layout(title="No data available for the selected combination."))
+
+    # Retrieve residuals and actuals from the model entry
+    model_entry = all_models[model_key]
+    residuals = model_entry.get('residuals', [])
+    actuals = model_entry.get('actuals', [])
+
+    # Ensure residuals and actuals are available
+    if not residuals or not actuals:
+        return go.Figure(layout=go.Layout(title="No residual data available for the selected combination."))
+
+    # Create residual plot
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=actuals,
+        y=residuals,
+        mode='markers',
+        name='Residuals'
+    ))
+
+    # Add a horizontal reference line at y = 0
+    fig.add_trace(go.Scatter(
+        x=[min(actuals), max(actuals)],
+        y=[0, 0],
+        mode='lines',
+        name='Zero Residual',
+        line=dict(dash='dash', color='red')
+    ))
+
+    # Update layout
+    fig.update_layout(
+        title=f"Residual Plot for {target_variable} ({county}, {crop})",
+        xaxis_title="Actual Values",
+        yaxis_title="Residuals (Actual - Predicted)",
         legend_title="Legend",
         height=600,
         width=800
