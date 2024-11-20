@@ -1,10 +1,11 @@
 import dash
-from dash import html, dcc, callback, Output, Input
+from dash import Dash, html, dcc, Input, Output, State, ALL, callback
+import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
 import plotly.express as px
 import pandas as pd
 import joblib
-import numpy as np
+import random
 
 # Initialize the Dash app
 app = dash.Dash(__name__)
@@ -29,126 +30,123 @@ def layout():
     crops_metrics = results_df['Crop'].unique()
 
     return html.Div([
-        html.H1("Model Metrics Comparison", id='model-metrics-title', className='page-title'),
+        dcc.Tabs([
+            # Tab for Metrics Comparison
+            dcc.Tab(label="Metrics Comparison", children=[
+                html.Div([
+                    html.H1("Model Metrics Comparison", id='model-metrics-title', className='page-title'),
 
-        # Dropdown menus for Model Metrics Comparison
-        html.Div([
-            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-metrics'),
-            dcc.Dropdown(
-                id='county-dropdown-metrics',
-                options=[{'label': county, 'value': county} for county in counties_metrics],
-                value=counties_metrics[0],
-                className='dropdown'
-            ),
-            html.Br(),
-            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-metrics'),
-            dcc.Dropdown(
-                id='crop-dropdown-metrics',
-                options=[{'label': crop, 'value': crop} for crop in crops_metrics],
-                value=crops_metrics[0],
-                className='dropdown'
-            )
-        ], style={'width': '50%', 'margin': 'auto'}, id='metrics-dropdown-container', className='dropdown-container'),
+                    # Dropdown menus for Model Metrics Comparison
+                    html.Div([
+                        html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-metrics'),
+                        dcc.Dropdown(
+                            id='county-dropdown-metrics',
+                            options=[{'label': county, 'value': county} for county in counties_metrics],
+                            value=counties_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Br(),
+                        html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-metrics'),
+                        dcc.Dropdown(
+                            id='crop-dropdown-metrics',
+                            options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                            value=crops_metrics[0],
+                            className='dropdown'
+                        )
+                    ], style={'width': '50%', 'margin': 'auto'}, id='metrics-dropdown-container', className='dropdown-container'),
 
-        # Plots for Yield Per Acre and Production Per Acre Metrics
-        html.Div([
-            html.H2("Yield Per Acre Metrics", id='yield-metrics-title', className='section-title'),
-            dcc.Graph(id='yield-per-acre-graph', className='graph'),
-            html.H2("Production Per Acre Metrics", id='production-metrics-title', className='section-title'),
-            dcc.Graph(id='production-per-acre-graph', className='graph')
-        ], id='metrics-graphs-container', className='graphs-container'),
+                    # Plots for Yield Per Acre and Production Per Acre Metrics
+                    html.Div([
+                        html.H2("Yield Per Acre Metrics", id='yield-metrics-title', className='section-title'),
+                        dcc.Graph(id='yield-per-acre-graph', className='graph'),
+                        html.H2("Production Per Acre Metrics", id='production-metrics-title', className='section-title'),
+                        dcc.Graph(id='production-per-acre-graph', className='graph')
+                    ], id='metrics-graphs-container', className='graphs-container'),
 
-        html.H1("Per Acre Prediction", id='prediction-title', className='page-title'),
+                    # Heatmap Section
+                    html.H1("Interactive Heatmap of Metrics by County and Crop", id='heatmap-title', className='page-title'),
 
-        # Dropdowns for Predictions section
-        html.Div([
-            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-prediction'),
-            dcc.Dropdown(
-                id='county-dropdown-prediction',
-                options=[{'label': county, 'value': county} for county in counties_predictions],
-                value=counties_predictions[0],
-                className='dropdown'
-            ),
-            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-prediction'),
-            dcc.Dropdown(
-                id='crop-dropdown-prediction',
-                options=[{'label': crop, 'value': crop} for crop in crops_predictions],
-                value=crops_predictions[0],
-                className='dropdown'
-            ),
-            html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-prediction'),
-            dcc.Dropdown(
-                id='model-dropdown-prediction',
-                options=[{'label': model, 'value': model} for model in models],
-                value=models[0],
-                className='dropdown'
-            )
-        ], style={'width': '50%', 'margin': 'auto'}, id='prediction-dropdown-container', className='dropdown-container'),
+                    # Dropdowns for Heatmap
+                    html.Div([
+                        html.Label("Select Variable:", className='dropdown-label', htmlFor='variable-dropdown-heatmap'),
+                        dcc.Dropdown(
+                            id='variable-dropdown-heatmap',
+                            options=[{'label': var, 'value': var} for var in variables_list],
+                            value=variables_list[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Metric:", className='dropdown-label', htmlFor='metric-dropdown-heatmap'),
+                        dcc.Dropdown(
+                            id='metric-dropdown-heatmap',
+                            options=[{'label': met, 'value': met} for met in metrics_list],
+                            value=metrics_list[0],
+                            className='dropdown'
+                        )
+                    ], style={'width': '50%', 'margin': 'auto'}, id='heatmap-dropdown-container', className='dropdown-container'),
 
-        # Visualization for Production Per Acre
-        html.H2("Production Per Acre", id='production-prediction-title', className='section-title'),
-        dcc.Graph(id='prediction-graph-production', className='graph'),
-        dcc.Graph(id='residual-graph-production', className='graph'),
+                    # Heatmap Graph
+                    dcc.Graph(id='heatmap-graph', className='graph'),
+                ])
+            ]),
 
-        # Visualization for Yield Per Acre
-        html.H2("Yield Per Acre", id='yield-prediction-title', className='section-title'),
-        dcc.Graph(id='prediction-graph-yield', className='graph'),
-        dcc.Graph(id='residual-graph-yield', className='graph'),
-
-        # Metrics display
-        html.Div(id='metrics-display', className='metrics-display'),
-
-        html.H1("Interactive Heatmap of Metrics by County and Crop", id='heatmap-title', className='page-title'),
-
-        # Dropdowns for Heatmap
-        html.Div([
-            html.Label("Select Variable:", className='dropdown-label', htmlFor='variable-dropdown-heatmap'),
-            dcc.Dropdown(
-                id='variable-dropdown-heatmap',
-                options=[{'label': var, 'value': var} for var in variables_list],
-                value=variables_list[0],
-                className='dropdown'
-            ),
-            html.Label("Select Metric:", className='dropdown-label', htmlFor='metric-dropdown-heatmap'),
-            dcc.Dropdown(
-                id='metric-dropdown-heatmap',
-                options=[{'label': met, 'value': met} for met in metrics_list],
-                value=metrics_list[0],
-                className='dropdown'
-            )
-        ], style={'width': '50%', 'margin': 'auto'}, id='heatmap-dropdown-container', className='dropdown-container'),
-
-        # Heatmap
-        dcc.Graph(id='heatmap-graph', className='graph'),
-
-
-        # New Learning Curve Section
-        html.H2("Learning Curve Analysis", id='learning-curve-title', className='section-title'),
-        html.Div([
-            html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-learning'),
-            dcc.Dropdown(
-                id='county-dropdown-learning',
-                options=[{'label': county, 'value': county} for county in counties_metrics],
-                value=counties_metrics[0],
-                className='dropdown'
-            ),
-            html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-learning'),
-            dcc.Dropdown(
-                id='crop-dropdown-learning',
-                options=[{'label': crop, 'value': crop} for crop in crops_metrics],
-                value=crops_metrics[0],
-                className='dropdown'
-            ),
-            html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-learning'),
-            dcc.Dropdown(
-                id='model-dropdown-learning',
-                options=[{'label': model, 'value': model} for model in models],
-                value=models[0],
-                className='dropdown'
-            )
-        ], style={'width': '50%', 'margin': 'auto'}, id='learning-dropdown-container', className='dropdown-container'),
-        dcc.Graph(id='learning-curve-graph', className='graph')
-    ], id='prediction-page', className='prediction-page')
+            # Tab for Prediction Demo
+            dcc.Tab(label="Prediction Demo", children=[
+                dbc.Container([
+                    html.H1("Crop Yield and Production Prediction Demo"),
+                    html.Br(),
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Select County:"),
+                            dcc.Dropdown(
+                                id='county-dropdown',
+                                options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
+                                value=sorted(df["County"].unique())[0]
+                            ),
+                            html.Br(),
+                            html.Label("Select Crop:"),
+                            dcc.Dropdown(
+                                id='crop-dropdown',
+                                options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
+                                value=sorted(df["Crop Name"].unique())[0]
+                            ),
+                            html.Br(),
+                            html.Label("Select Target Variable:"),
+                            dcc.RadioItems(
+                                id='target-variable',
+                                options=[
+                                    {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
+                                    {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
+                                ],
+                                value='Yield Per Acre',
+                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                            ),
+                            html.Br(),
+                            html.Label("Select Model:"),
+                            dcc.RadioItems(
+                                id='model-name',
+                                options=[{'label': model, 'value': model} for model in ['KNN', 'DecisionTree', 'GradientBoosting']],
+                                value='GradientBoosting',
+                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                            ),
+                            html.Br(),
+                            html.H4("Input Features:"),
+                            html.Div(id='feature-inputs'),
+                            html.Br(),
+                            dbc.Button("Randomize Input", id='randomize-button', color='secondary', className='me-2'),
+                            dbc.Button("Predict", id='predict-button', color='primary'),
+                            html.Br(),
+                            html.Br(),
+                            html.Div(id='prediction-output')
+                        ], width=6),
+                        dbc.Col([
+                            html.H4("Feature Importance"),
+                            html.Div(id='feature-importance'),
+                        ], width=6)
+                    ])
+                ])
+            ])
+        ])
+    ])
 
 app.layout = layout
 
@@ -428,6 +426,138 @@ def update_learning_curve(selected_county, selected_crop, selected_model):
 
     return fig
 
+@callback(
+    [Output({'type': 'feature-input', 'index': ALL}, 'value')],
+    [Input('randomize-button', 'n_clicks')],
+    [State('county-dropdown', 'value'),
+     State('crop-dropdown', 'value'),
+     State('target-variable', 'value'),
+     State('model-name', 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'id')]
+)
+def randomize_input(n_clicks, county, crop, target, model_name, input_ids):
+    if n_clicks is None:
+        raise dash.exceptions.PreventUpdate
+
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key not in all_models:
+        return [[]]  # No randomization if model is not found
+
+    # Generate random values
+    random_values = []
+    for id_dict in input_ids:
+        feature = id_dict['index']
+        if "days" in feature:  # Extreme weather variables
+            random_values.append(random.randint(10, 100))
+        elif "crop" in feature or "lag" in feature:  # Crop variables
+            random_values.append(round(random.uniform(0.1, 1), 2))
+        else:
+            random_values.append(0.0)  # Default for other features
+
+    return [random_values]
+
+@callback(
+    Output('feature-inputs', 'children'),
+    [Input('county-dropdown', 'value'),
+     Input('crop-dropdown', 'value'),
+     Input('target-variable', 'value'),
+     Input('model-name', 'value')]
+)
+def update_feature_inputs(county, crop, target, model_name):
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key in all_models:
+        all_features = all_models[model_key].get('selected_features')
+        if all_features is None:
+            return html.Div("Error: Feature metadata missing in the model.")
+
+        input_fields = [
+            html.Div([
+                html.Label(f"{feature.replace('_', ' ').title()}"),
+                dcc.Input(
+                    id={'type': 'feature-input', 'index': feature},
+                    type='number',
+                    placeholder=f"Enter {feature}",
+                    style={'margin-bottom': '10px', 'width': '100%'}
+                )
+            ]) for feature in all_features
+        ]
+        return input_fields
+    else:
+        return html.Div("Model not available for the selected combination.")
+
+@callback(
+    Output('prediction-output', 'children'),
+    [Input('predict-button', 'n_clicks')],
+    [State('county-dropdown', 'value'),
+     State('crop-dropdown', 'value'),
+     State('target-variable', 'value'),
+     State('model-name', 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'id')]
+)
+def make_prediction(n_clicks, county, crop, target, model_name, input_values, input_ids):
+    if n_clicks is None:
+        return ""
+
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key not in all_models:
+        return f"Model not available for the combination: {model_name}, {county}, {crop}, {target}."
+
+    try:
+        model_entry = all_models[model_key]
+        model = model_entry['model']
+        scaler = model_entry['scaler']
+        all_features = model_entry.get('selected_features')
+
+        if all_features is None:
+            return "Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training."
+
+        feature_values = {feature: 0.0 for feature in all_features}
+
+        for value, id_dict in zip(input_values, input_ids):
+            feature = id_dict['index']
+            if feature in feature_values:
+                feature_values[feature] = float(value) if value is not None else 0.0
+
+        X_input = pd.DataFrame([feature_values])
+        X_scaled = scaler.transform(X_input)
+        prediction = model.predict(X_scaled)[0]
+
+        return html.Div([html.H4(f"Predicted {target}: {prediction:.2f}")])
+
+    except Exception as e:
+        return f"An error occurred during prediction: {e}"
+
+@callback(
+    Output('feature-importance', 'children'),
+    [Input('county-dropdown', 'value'),
+     Input('crop-dropdown', 'value'),
+     Input('target-variable', 'value'),
+     Input('model-name', 'value')]
+)
+def update_feature_importance(county, crop, target, model_name):
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key not in all_models:
+        return html.Div("Feature importance not available for this model.")
+
+    model_entry = all_models[model_key]
+    model = model_entry['model']
+    all_features = model_entry['selected_features']
+
+    if hasattr(model, 'feature_importances_'):
+        importances = model.feature_importances_
+    elif hasattr(model, 'coef_'):
+        importances = abs(model.coef_[0])
+    else:
+        return html.Div("Feature importance calculation not supported for this model.")
+
+    feature_importance_df = pd.DataFrame({
+        'Feature': all_features,
+        'Importance': importances
+    }).sort_values(by='Importance', ascending=False)
+
+    fig = px.bar(feature_importance_df, x='Importance', y='Feature', orientation='h', title="Feature Importance")
+    return dcc.Graph(figure=fig)
 
 if __name__ == '__main__':
     app.run_server(debug=True)
