@@ -86,6 +86,70 @@ def layout():
 
                     # Heatmap Graph
                     dcc.Graph(id='heatmap-graph', className='graph'),
+
+                    # New Learning Curve Section
+                    html.H1("Learning Curve Analysis", id='learning-curve-title', className='section-title'),
+                    html.Div([
+                        html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-learning'),
+                        dcc.Dropdown(
+                            id='county-dropdown-learning',
+                            options=[{'label': county, 'value': county} for county in counties_metrics],
+                            value=counties_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-learning'),
+                        dcc.Dropdown(
+                            id='crop-dropdown-learning',
+                            options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                            value=crops_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-learning'),
+                        dcc.Dropdown(
+                            id='model-dropdown-learning',
+                            options=[{'label': model, 'value': model} for model in models],
+                            value=models[0],
+                            className='dropdown'
+                        )
+                    ], style={'width': '50%', 'margin': 'auto'}, id='learning-dropdown-container', className='dropdown-container'),
+                    dcc.Graph(id='learning-curve-graph', className='graph'),
+
+                    html.H1("Actual vs. Prediction Plot", id='actual-vs-prediction-title', className='section-title'),
+                    html.Div([
+                        html.Label("Select County:", className='dropdown-label', htmlFor='county-dropdown-actual-pred'),
+                        dcc.Dropdown(
+                            id='county-dropdown-actual-pred',
+                            options=[{'label': county, 'value': county} for county in counties_metrics],
+                            value=counties_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Crop:", className='dropdown-label', htmlFor='crop-dropdown-actual-pred'),
+                        dcc.Dropdown(
+                            id='crop-dropdown-actual-pred',
+                            options=[{'label': crop, 'value': crop} for crop in crops_metrics],
+                            value=crops_metrics[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Model:", className='dropdown-label', htmlFor='model-dropdown-actual-pred'),
+                        dcc.Dropdown(
+                            id='model-dropdown-actual-pred',
+                            options=[{'label': model, 'value': model} for model in models],
+                            value=models[0],
+                            className='dropdown'
+                        ),
+                        html.Label("Select Target Variable:", className='dropdown-label', htmlFor='target-variable-actual-pred'),
+                        dcc.RadioItems(
+                            id='target-variable-actual-pred',
+                            options=[
+                                {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
+                                {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
+                            ],
+                            value='Yield Per Acre',
+                            labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                        )
+                    ], style={'width': '50%', 'margin': 'auto'}, id='actual-pred-dropdown-container', className='dropdown-container'),
+
+                    dcc.Graph(id='actual-vs-prediction-graph', className='graph'),
                 ])
             ]),
 
@@ -558,6 +622,62 @@ def update_feature_importance(county, crop, target, model_name):
 
     fig = px.bar(feature_importance_df, x='Importance', y='Feature', orientation='h', title="Feature Importance")
     return dcc.Graph(figure=fig)
+
+@callback(
+    Output('actual-vs-prediction-graph', 'figure'),
+    [Input('county-dropdown-actual-pred', 'value'),
+     Input('crop-dropdown-actual-pred', 'value'),
+     Input('model-dropdown-actual-pred', 'value'),
+     Input('target-variable-actual-pred', 'value')]
+)
+def update_actual_vs_prediction_plot(county, crop, model_name, target_variable):
+    # Generate the model key to access the stored data
+    model_key = f"{model_name}_{county}_{crop}_{target_variable}"
+    
+    # Check if the model key exists in the all_models dictionary
+    if model_key not in all_models:
+        return go.Figure(layout=go.Layout(title="No data available for the selected combination."))
+
+    # Retrieve predictions, actuals, and other data
+    model_entry = all_models[model_key]
+    predictions = model_entry.get('predictions', [])
+    actuals = model_entry.get('actuals', [])
+
+    # Ensure predictions and actuals are available
+    if not predictions or not actuals:
+        return go.Figure(layout=go.Layout(title="No prediction data available for the selected combination."))
+
+    # Create scatter plot
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=actuals,
+        y=predictions,
+        mode='markers',
+        name='Predicted vs Actual'
+    ))
+
+    # Add a diagonal reference line (y = x)
+    max_val = max(max(actuals), max(predictions))
+    min_val = min(min(actuals), min(predictions))
+    fig.add_trace(go.Scatter(
+        x=[min_val, max_val],
+        y=[min_val, max_val],
+        mode='lines',
+        name='Perfect Prediction (y=x)',
+        line=dict(dash='dash', color='red')
+    ))
+
+    # Update layout
+    fig.update_layout(
+        title=f"Actual vs. Predicted {target_variable} for {crop} in {county}",
+        xaxis_title="Actual Values",
+        yaxis_title="Predicted Values",
+        legend_title="Legend",
+        height=600,
+        width=800
+    )
+
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)
