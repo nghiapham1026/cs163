@@ -28,15 +28,17 @@ def layout():
                 value=results_df['Crop'].unique()[0]
             ),
         ]),
-        dcc.Graph(id='model-comparison-plot'),
+        dcc.Graph(id='mae-bar-plot'),
+        dcc.Graph(id='rmse-bar-plot'),
     ])
 
-# Callback for updating the plot
+# Callback for updating both plots
 @callback(
-    Output('model-comparison-plot', 'figure'),
+    [Output('mae-bar-plot', 'figure'),
+     Output('rmse-bar-plot', 'figure')],
     [Input('target-dropdown', 'value'), Input('crop-dropdown', 'value')]
 )
-def update_model_comparison_plot(selected_target, selected_crop):
+def update_plots(selected_target, selected_crop):
     # Filter the dataframe for the selected target and crop
     filtered_df = results_df[
         (results_df['Target'] == selected_target) &
@@ -44,26 +46,23 @@ def update_model_comparison_plot(selected_target, selected_crop):
     ]
 
     if filtered_df.empty:
-        return go.Figure().update_layout(
+        no_data_fig = go.Figure().update_layout(
             title=f"No data available for {selected_target} and {selected_crop}",
             xaxis_title="Model",
-            yaxis_title="MAE",
+            yaxis_title="Metric",
         )
+        return no_data_fig, no_data_fig
 
-    # Create the bar plot
-    fig = go.Figure()
-
-    # Add bars for each model
+    # MAE Plot
+    mae_fig = go.Figure()
     for model in filtered_df['Model'].unique():
         model_data = filtered_df[filtered_df['Model'] == model]
-        fig.add_trace(go.Bar(
+        mae_fig.add_trace(go.Bar(
             x=model_data['County'],
             y=model_data['MAE_Test'],
             name=model,
         ))
-
-    # Customize layout
-    fig.update_layout(
+    mae_fig.update_layout(
         title=f'MAE for {selected_target} and {selected_crop} Across Models',
         xaxis_title='County',
         yaxis_title='MAE',
@@ -74,4 +73,24 @@ def update_model_comparison_plot(selected_target, selected_crop):
         template='plotly_white'
     )
 
-    return fig
+    # RMSE Plot
+    rmse_fig = go.Figure()
+    for model in filtered_df['Model'].unique():
+        model_data = filtered_df[filtered_df['Model'] == model]
+        rmse_fig.add_trace(go.Bar(
+            x=model_data['County'],
+            y=model_data['RMSE_Test'],
+            name=model,
+        ))
+    rmse_fig.update_layout(
+        title=f'RMSE for {selected_target} and {selected_crop} Across Models',
+        xaxis_title='County',
+        yaxis_title='RMSE',
+        barmode='group',  # Display bars side by side
+        xaxis=dict(tickangle=45),
+        legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1),
+        margin=dict(l=40, r=40, t=40, b=40),
+        template='plotly_white'
+    )
+
+    return mae_fig, rmse_fig
