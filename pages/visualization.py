@@ -2,8 +2,11 @@ import pandas as pd
 from dash import html, dcc, callback, Input, Output
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 df = pd.read_csv('./data/merged_yearly.csv')
+techniques_df = pd.read_csv('./data/techniques.csv')
+merged_data = pd.merge(techniques_df, df, on="County")
 
 extreme_weather_features = [
     'high_temp_days', 'low_temp_days', 'heavy_rain_days',
@@ -156,6 +159,40 @@ def layout():
                         children=[
                             dcc.Graph(id='anomalies-yield-graph'),  # Updated ID
                             dcc.Graph(id='anomalies-production-graph')  # Updated ID
+                        ]
+                    )
+                ]
+            ),
+
+            html.Div(
+                className="yield-production-container",
+                children=[
+                    html.H1(
+                        "Crop Yield and Production by Farming Method Under Different Weather Conditions",
+                        className="yield-production-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label(
+                                "Select Extreme Weather Variable:",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id='yield-production-weather-variable-dropdown',  # Unique ID
+                                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
+                                value=extreme_weather_features[0],
+                                className="dropdown"
+                            ),
+                        ]
+                    ),
+                    html.Div(
+                        className="graph-container",
+                        children=[
+                            dcc.Graph(
+                                id='yield-production-graph',  # Unique ID
+                                className="yield-production-graph"
+                            )
                         ]
                     )
                 ]
@@ -409,3 +446,84 @@ def update_anomalies_graphs(selected_county, selected_crop):
     )
 
     return fig_yield, fig_production
+
+@callback(
+    Output('yield-production-graph', 'figure'),
+    [Input('yield-production-weather-variable-dropdown', 'value')]
+)
+def update_yield_production_graph(selected_var):
+    data = merged_data.copy()
+
+    # Categorize the weather variable into 'Low', 'Moderate', 'High'
+    data['Weather Level'] = pd.cut(
+        data[selected_var],
+        bins=[
+            data[selected_var].min() - 0.01,
+            data[selected_var].quantile(0.33),
+            data[selected_var].quantile(0.67),
+            data[selected_var].max() + 0.01
+        ],
+        labels=['Low', 'Moderate', 'High'],
+        include_lowest=True
+    )
+
+    # Group data for plotting
+    grouped_data = data.groupby(['Farming Methods', 'Weather Level'], observed=True).agg({
+        'Yield Per Acre': 'mean',
+        'Production Per Acre': 'mean'
+    }).reset_index()
+
+    # Create subplots
+    fig = make_subplots(
+        rows=1, cols=2,
+        subplot_titles=("Yield Per Acre", "Production Per Acre"),
+        shared_yaxes=False
+    )
+
+    # Define colors for weather levels
+    weather_colors = {'Low': 'lightblue', 'Moderate': 'orange', 'High': 'red'}
+
+    # Add bars for Yield Per Acre
+    for level in ['Low', 'Moderate', 'High']:
+        data_level = grouped_data[grouped_data['Weather Level'] == level]
+        fig.add_trace(
+            go.Bar(
+                x=data_level['Farming Methods'],
+                y=data_level['Yield Per Acre'],
+                name=f"{level} Weather",
+                marker_color=weather_colors[level],
+            ),
+            row=1, col=1
+        )
+
+    # Add bars for Production Per Acre
+    for level in ['Low', 'Moderate', 'High']:
+        data_level = grouped_data[grouped_data['Weather Level'] == level]
+        show_legend = False if level != 'Low' else True  # Show legend only once
+        fig.add_trace(
+            go.Bar(
+                x=data_level['Farming Methods'],
+                y=data_level['Production Per Acre'],
+                name=f"{level} Weather",
+                marker_color=weather_colors[level],
+                showlegend=show_legend,
+            ),
+            row=1, col=2
+        )
+
+    # Update layout
+    fig.update_layout(
+        title_text=f"Crop Yield and Production by Farming Method Under Different Levels of {selected_var.replace('_', ' ').title()}",
+        barmode='group',
+        legend_title_text='Weather Level',
+        height=600,
+        width=1000
+    )
+
+    # Update axes titles
+    fig.update_xaxes(title_text="Farming Methods", row=1, col=1)
+    fig.update_xaxes(title_text="Farming Methods", row=1, col=2)
+    fig.update_yaxes(title_text="Yield Per Acre", row=1, col=1)
+    fig.update_yaxes(title_text="Production Per Acre", row=1, col=2)
+
+    return fig
