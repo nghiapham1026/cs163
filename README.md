@@ -82,3 +82,6 @@ git clone https://github.com/your-username/weather-crop-analysis.git
    python app.py
    ```
 3. Access the dashboard at `http://127.0.0.1:8050`.
+
+#### Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
+#### Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
