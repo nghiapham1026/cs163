@@ -135,7 +135,7 @@ def layout():
             html.Div([
                 html.Label("Select County:"),
                 dcc.Dropdown(
-                    id='county-dropdown',
+                    id='county-dropdown3',
                     options=[{'label': 'All Counties', 'value': 'All Counties'}] +
                             [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
                     value='All Counties'  # Default value
@@ -164,6 +164,17 @@ def layout():
                 ),
             ]),
             dcc.Graph(id='ols-regression-plot'),
+
+            html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown2',
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                    value='All Counties'  # Default option
+                ),
+            ]),
+            dcc.Graph(id='ols-heatmap'),
         ],
         className="main-container"
     )
@@ -247,7 +258,7 @@ def plot_correlation_matrix(selected_county, selected_crop):
 
 @callback(
     Output('correlation-boxplot', 'figure'),
-    [Input('county-dropdown', 'value')]
+    [Input('county-dropdown3', 'value')]
 )
 def update_correlation_boxplot(selected_county):
     # Filter data for the selected county or use all data if "All Counties" is selected
@@ -380,6 +391,59 @@ def update_ols_regression_plot(selected_county):
         template='plotly_white',
         margin=dict(l=40, r=40, t=40, b=40),
         legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
+    )
+
+    return fig
+
+@callback(
+    Output('ols-heatmap', 'figure'),
+    [Input('county-dropdown2', 'value')]
+)
+def update_ols_heatmap(selected_county):
+    # Filter data based on selected county
+    if selected_county == 'All Counties':
+        filtered_data = results_df
+    else:
+        filtered_data = results_df[results_df['County'] == selected_county]
+
+    # If no data is available, return an empty figure
+    if filtered_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Crop",
+            yaxis_title="Predictor"
+        )
+
+    # Aggregate p-values by taking the median p-value per Predictor and Crop
+    agg_p_values = filtered_data.groupby(['Predictor', 'Crop'])['P-value'].median().reset_index()
+
+    # Pivot the DataFrame to create a heatmap structure
+    p_values_pivot = agg_p_values.pivot(index='Predictor', columns='Crop', values='P-value')
+
+    # Create heatmap
+    fig = go.Figure(
+        data=go.Heatmap(
+            z=p_values_pivot.values,
+            x=p_values_pivot.columns,
+            y=p_values_pivot.index,
+            zmin=0,
+            zmax=1,
+            colorbar=dict(title="Median P-value")
+        )
+    )
+
+    # Customize layout
+    fig.update_layout(
+        title=(
+            'Heatmap of Median P-values per Predictor and Crop (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Heatmap of Median P-values per Predictor and Crop in {selected_county}'
+        ),
+        xaxis_title='Crop',
+        yaxis_title='Predictor',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
     )
 
     return fig
