@@ -10,6 +10,7 @@ merged_yearly = pd.read_csv('./data/merged_yearly.csv')
 results = pd.read_csv('./data/results.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
 correlation_df = pd.read_csv('./data/correlation_df.csv')
+results_df = pd.read_csv('./data/regression_results.csv')
 
 # Define a threshold for strong correlations
 strong_corr_threshold = 0.3
@@ -152,6 +153,17 @@ def layout():
                 ),
             ]),
             dcc.Graph(id='frequency-plot'),
+
+            html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown',
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                    value='All Counties'  # Default value
+                ),
+            ]),
+            dcc.Graph(id='ols-regression-plot'),
         ],
         className="main-container"
     )
@@ -313,6 +325,61 @@ def update_frequency_plot(selected_variable):
         xaxis=dict(tickangle=45),
         template='plotly_white',
         margin=dict(l=40, r=40, t=40, b=40)
+    )
+
+    return fig
+
+@callback(
+    Output('ols-regression-plot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_ols_regression_plot(selected_county):
+    # Filter data for the selected county or use all data if "All Counties" is selected
+    if selected_county == 'All Counties':
+        filtered_data = results_df
+    else:
+        filtered_data = results_df[results_df['County'] == selected_county]
+
+    # If no data is available, return an empty figure
+    if filtered_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Predictor",
+            yaxis_title="P-value"
+        )
+
+    # Create the box plot
+    fig = go.Figure()
+
+    fig.add_trace(go.Box(
+        x=filtered_data['Predictor'],
+        y=filtered_data['P-value'],
+        name=f'OLS Regression in {selected_county}',
+        boxmean=True  # Show mean line in the box plot
+    ))
+
+    # Add a horizontal line for the significance threshold
+    fig.add_trace(go.Scatter(
+        x=filtered_data['Predictor'].unique(),
+        y=[0.05] * len(filtered_data['Predictor'].unique()),
+        mode='lines',
+        line=dict(color='red', dash='dash'),
+        name='Significance Threshold (p=0.05)'
+    ))
+
+    # Customize the layout
+    fig.update_layout(
+        title=(
+            'Distribution of P-values per Predictor (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Distribution of P-values per Predictor in {selected_county}'
+        ),
+        xaxis_title='Predictor',
+        yaxis_title='P-value',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40),
+        legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
     )
 
     return fig
