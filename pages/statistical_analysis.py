@@ -9,6 +9,7 @@ weather_data = pd.read_csv('./data/weather_data.csv')
 merged_yearly = pd.read_csv('./data/merged_yearly.csv')
 results = pd.read_csv('./data/results.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
+correlation_df = pd.read_csv('./data/correlation_df.csv')
 
 correlation_columns = [
     'Yield Per Acre', 'Production Per Acre', 'Value Per Acre',
@@ -113,6 +114,16 @@ def layout():
                 ],
                 className="correlation-matrix-section"
             ),
+
+                html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown',
+                    options=[{'label': county, 'value': county} for county in correlation_df['County'].unique()],
+                    value=correlation_df['County'].unique()[0]
+                ),
+            ]),
+            dcc.Graph(id='correlation-boxplot'),
         ],
         className="main-container"
     )
@@ -192,4 +203,42 @@ def plot_correlation_matrix(selected_county, selected_crop):
         xaxis=dict(tickmode="array", tickvals=list(range(len(correlation_columns))), ticktext=correlation_columns),
         yaxis=dict(tickmode="array", tickvals=list(range(len(correlation_columns))), ticktext=correlation_columns)
     )
+    return fig
+
+@callback(
+    Output('correlation-boxplot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_correlation_boxplot(selected_county):
+    # Filter data for the selected county
+    county_data = correlation_df[correlation_df['County'] == selected_county]
+
+    if county_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Weather Variable",
+            yaxis_title="Correlation Coefficient"
+        )
+
+    # Create box plot
+    fig = go.Figure()
+
+    # Add box plot for correlations
+    fig.add_trace(go.Box(
+        x=county_data['Weather Variable'],
+        y=county_data['Correlation'],
+        name=f'Correlations in {selected_county}',
+        boxmean=True  # Show mean line in the box plot
+    ))
+
+    # Customize layout
+    fig.update_layout(
+        title=f'Correlation of Crop Variables with Weather Variables in {selected_county}',
+        xaxis_title='Weather Variable',
+        yaxis_title='Correlation Coefficient',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
     return fig

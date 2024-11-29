@@ -1,0 +1,225 @@
+County,Crop,Crop Variable,Weather Variable,Correlation
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,high_temp_days,0.2526350170195143
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,low_temp_days,-0.2914333467239651
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,heavy_rain_days,0.06718224063716714
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,snow_days,
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,high_wind_days,-0.39574550981308637
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,low_visibility_days,
+Santa Clara,TOMATOES PROCESSING,Yield Per Acre,cloudy_days,-0.05266447520063421
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,high_temp_days,0.16500496581207902
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,low_temp_days,-0.29639515964876806
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,heavy_rain_days,-0.06683236069057448
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,snow_days,
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,high_wind_days,-0.6068268441731951
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,low_visibility_days,
+Santa Clara,TOMATOES PROCESSING,Production Per Acre,cloudy_days,-0.09923586988220705
+Santa Clara,GRAPES WINE,Yield Per Acre,high_temp_days,-0.28007539997784764
+Santa Clara,GRAPES WINE,Yield Per Acre,low_temp_days,0.024605092505225412
+Santa Clara,GRAPES WINE,Yield Per Acre,heavy_rain_days,0.001811129579070318
+Santa Clara,GRAPES WINE,Yield Per Acre,snow_days,
+Santa Clara,GRAPES WINE,Yield Per Acre,high_wind_days,-0.26452561901942534
+Santa Clara,GRAPES WINE,Yield Per Acre,low_visibility_days,
+Santa Clara,GRAPES WINE,Yield Per Acre,cloudy_days,0.025706496379045665
+Santa Clara,GRAPES WINE,Production Per Acre,high_temp_days,-0.2514696413322052
+Santa Clara,GRAPES WINE,Production Per Acre,low_temp_days,-0.07691006214998959
+Santa Clara,GRAPES WINE,Production Per Acre,heavy_rain_days,0.12063512268697532
+Santa Clara,GRAPES WINE,Production Per Acre,snow_days,
+Santa Clara,GRAPES WINE,Production Per Acre,high_wind_days,-0.32970877260414505
+Santa Clara,GRAPES WINE,Production Per Acre,low_visibility_days,
+Santa Clara,GRAPES WINE,Production Per Acre,cloudy_days,0.05504417626856317
+Kings,TOMATOES PROCESSING,Yield Per Acre,high_temp_days,-0.2842615035101421
+Kings,TOMATOES PROCESSING,Yield Per Acre,low_temp_days,0.09469293146570079
+Kings,TOMATOES PROCESSING,Yield Per Acre,heavy_rain_days,-0.13152043191867768
+Kings,TOMATOES PROCESSING,Yield Per Acre,snow_days,-0.09394290821332092
+Kings,TOMATOES PROCESSING,Yield Per Acre,high_wind_days,-0.3706645344130676
+Kings,TOMATOES PROCESSING,Yield Per Acre,low_visibility_days,0.46733950827322657
+Kings,TOMATOES PROCESSING,Yield Per Acre,cloudy_days,0.1988537644706637
+Kings,TOMATOES PROCESSING,Production Per Acre,high_temp_days,0.520586887201556
+Kings,TOMATOES PROCESSING,Production Per Acre,low_temp_days,-0.3244793363956265
+Kings,TOMATOES PROCESSING,Production Per Acre,heavy_rain_days,0.09477680239407475
+Kings,TOMATOES PROCESSING,Production Per Acre,snow_days,-0.0968693816521528
+Kings,TOMATOES PROCESSING,Production Per Acre,high_wind_days,0.690432642318722
+Kings,TOMATOES PROCESSING,Production Per Acre,low_visibility_days,-0.5672343471349607
+Kings,TOMATOES PROCESSING,Production Per Acre,cloudy_days,-0.2392887988593624
+Kings,ALMONDS ALL,Yield Per Acre,high_temp_days,-0.5516110115183339
+Kings,ALMONDS ALL,Yield Per Acre,low_temp_days,0.28881665764939274
+Kings,ALMONDS ALL,Yield Per Acre,heavy_rain_days,0.04288283821155067
+Kings,ALMONDS ALL,Yield Per Acre,snow_days,-0.07871549045995775
+Kings,ALMONDS ALL,Yield Per Acre,high_wind_days,-0.34017635539506125
+Kings,ALMONDS ALL,Yield Per Acre,low_visibility_days,0.41909697423743447
+Kings,ALMONDS ALL,Yield Per Acre,cloudy_days,-0.05057536904128901
+Kings,ALMONDS ALL,Production Per Acre,high_temp_days,0.5761268345144445
+Kings,ALMONDS ALL,Production Per Acre,low_temp_days,-0.0908838690395188
+Kings,ALMONDS ALL,Production Per Acre,heavy_rain_days,-0.16025102282785997
+Kings,ALMONDS ALL,Production Per Acre,snow_days,-0.00048235209035722015
+Kings,ALMONDS ALL,Production Per Acre,high_wind_days,0.5826383007368587
+Kings,ALMONDS ALL,Production Per Acre,low_visibility_days,-0.5995273325972852
+Kings,ALMONDS ALL,Production Per Acre,cloudy_days,-0.4796017165587886
+Kings,GRAPES WINE,Yield Per Acre,high_temp_days,-0.42938817735739376
+Kings,GRAPES WINE,Yield Per Acre,low_temp_days,0.4723609528999843
+Kings,GRAPES WINE,Yield Per Acre,heavy_rain_days,-0.035587821860785525
+Kings,GRAPES WINE,Yield Per Acre,snow_days,-0.168814367145011
+Kings,GRAPES WINE,Yield Per Acre,high_wind_days,-0.40967501409532053
+Kings,GRAPES WINE,Yield Per Acre,low_visibility_days,0.539363179957776
+Kings,GRAPES WINE,Yield Per Acre,cloudy_days,0.020360163898841606
+Kings,GRAPES WINE,Production Per Acre,high_temp_days,0.29460255844610167
+Kings,GRAPES WINE,Production Per Acre,low_temp_days,-0.0748252076014955
+Kings,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.008345568421647598
+Kings,GRAPES WINE,Production Per Acre,snow_days,-0.1490155023760461
+Kings,GRAPES WINE,Production Per Acre,high_wind_days,0.599008292699226
+Kings,GRAPES WINE,Production Per Acre,low_visibility_days,-0.43980145939344034
+Kings,GRAPES WINE,Production Per Acre,cloudy_days,-0.33122420613375114
+Fresno,TOMATOES PROCESSING,Yield Per Acre,high_temp_days,0.26437584784182894
+Fresno,TOMATOES PROCESSING,Yield Per Acre,low_temp_days,-0.16582685894408278
+Fresno,TOMATOES PROCESSING,Yield Per Acre,heavy_rain_days,0.07826201708851711
+Fresno,TOMATOES PROCESSING,Yield Per Acre,snow_days,-0.14232448268269574
+Fresno,TOMATOES PROCESSING,Yield Per Acre,high_wind_days,0.37766378070745316
+Fresno,TOMATOES PROCESSING,Yield Per Acre,low_visibility_days,-0.09219687274951949
+Fresno,TOMATOES PROCESSING,Yield Per Acre,cloudy_days,0.14802920199209738
+Fresno,TOMATOES PROCESSING,Production Per Acre,high_temp_days,0.5476686047434352
+Fresno,TOMATOES PROCESSING,Production Per Acre,low_temp_days,-0.3585516746665877
+Fresno,TOMATOES PROCESSING,Production Per Acre,heavy_rain_days,-0.036573168319630804
+Fresno,TOMATOES PROCESSING,Production Per Acre,snow_days,-0.009809636119588579
+Fresno,TOMATOES PROCESSING,Production Per Acre,high_wind_days,0.6687382724012457
+Fresno,TOMATOES PROCESSING,Production Per Acre,low_visibility_days,-0.560311692235899
+Fresno,TOMATOES PROCESSING,Production Per Acre,cloudy_days,-0.26957545082045115
+Fresno,ALMONDS ALL,Yield Per Acre,high_temp_days,-0.5058474696999095
+Fresno,ALMONDS ALL,Yield Per Acre,low_temp_days,0.4862455601597457
+Fresno,ALMONDS ALL,Yield Per Acre,heavy_rain_days,-0.07785192690612733
+Fresno,ALMONDS ALL,Yield Per Acre,snow_days,0.04881673024093982
+Fresno,ALMONDS ALL,Yield Per Acre,high_wind_days,-0.5836488107715169
+Fresno,ALMONDS ALL,Yield Per Acre,low_visibility_days,0.599215416989568
+Fresno,ALMONDS ALL,Yield Per Acre,cloudy_days,0.1113052843514828
+Fresno,ALMONDS ALL,Production Per Acre,high_temp_days,0.441248682730467
+Fresno,ALMONDS ALL,Production Per Acre,low_temp_days,-0.03558285127242226
+Fresno,ALMONDS ALL,Production Per Acre,heavy_rain_days,-0.34156989121730164
+Fresno,ALMONDS ALL,Production Per Acre,snow_days,0.17672622992309636
+Fresno,ALMONDS ALL,Production Per Acre,high_wind_days,0.4199093973630277
+Fresno,ALMONDS ALL,Production Per Acre,low_visibility_days,-0.49163010141525937
+Fresno,ALMONDS ALL,Production Per Acre,cloudy_days,-0.42970794389821637
+Fresno,GRAPES WINE,Yield Per Acre,high_temp_days,0.02490080213804315
+Fresno,GRAPES WINE,Yield Per Acre,low_temp_days,0.2905413599769428
+Fresno,GRAPES WINE,Yield Per Acre,heavy_rain_days,-0.04036388657083132
+Fresno,GRAPES WINE,Yield Per Acre,snow_days,-0.16243133962646605
+Fresno,GRAPES WINE,Yield Per Acre,high_wind_days,-0.12170648955065219
+Fresno,GRAPES WINE,Yield Per Acre,low_visibility_days,0.13129706413090683
+Fresno,GRAPES WINE,Yield Per Acre,cloudy_days,0.15154313534220193
+Fresno,GRAPES WINE,Production Per Acre,high_temp_days,0.36379943574707835
+Fresno,GRAPES WINE,Production Per Acre,low_temp_days,-0.17318376629208146
+Fresno,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.05218879544311582
+Fresno,GRAPES WINE,Production Per Acre,snow_days,0.02211804690265336
+Fresno,GRAPES WINE,Production Per Acre,high_wind_days,0.4959904785639593
+Fresno,GRAPES WINE,Production Per Acre,low_visibility_days,-0.39483574011184025
+Fresno,GRAPES WINE,Production Per Acre,cloudy_days,-0.10452599186366862
+Tulare,ALMONDS ALL,Yield Per Acre,high_temp_days,-0.5670356673081639
+Tulare,ALMONDS ALL,Yield Per Acre,low_temp_days,0.4386912184294549
+Tulare,ALMONDS ALL,Yield Per Acre,heavy_rain_days,-0.20171250426517517
+Tulare,ALMONDS ALL,Yield Per Acre,snow_days,0.10203058099854437
+Tulare,ALMONDS ALL,Yield Per Acre,high_wind_days,-0.5973568898408931
+Tulare,ALMONDS ALL,Yield Per Acre,low_visibility_days,0.6108468017624833
+Tulare,ALMONDS ALL,Yield Per Acre,cloudy_days,0.018116221856604994
+Tulare,ALMONDS ALL,Production Per Acre,high_temp_days,0.4674108057303976
+Tulare,ALMONDS ALL,Production Per Acre,low_temp_days,-0.10607884519838545
+Tulare,ALMONDS ALL,Production Per Acre,heavy_rain_days,-0.34586035200099413
+Tulare,ALMONDS ALL,Production Per Acre,snow_days,0.12705584370973846
+Tulare,ALMONDS ALL,Production Per Acre,high_wind_days,0.5222092683113135
+Tulare,ALMONDS ALL,Production Per Acre,low_visibility_days,-0.49489172487542116
+Tulare,ALMONDS ALL,Production Per Acre,cloudy_days,-0.5174104301167745
+Tulare,GRAPES WINE,Yield Per Acre,high_temp_days,0.5829802771286715
+Tulare,GRAPES WINE,Yield Per Acre,low_temp_days,-0.16952755970373953
+Tulare,GRAPES WINE,Yield Per Acre,heavy_rain_days,0.0016412497017617325
+Tulare,GRAPES WINE,Yield Per Acre,snow_days,-0.11489223456293819
+Tulare,GRAPES WINE,Yield Per Acre,high_wind_days,0.612102560670171
+Tulare,GRAPES WINE,Yield Per Acre,low_visibility_days,-0.4708674211777882
+Tulare,GRAPES WINE,Yield Per Acre,cloudy_days,-0.243216011444759
+Tulare,GRAPES WINE,Production Per Acre,high_temp_days,0.6302146375637563
+Tulare,GRAPES WINE,Production Per Acre,low_temp_days,-0.3461788014958186
+Tulare,GRAPES WINE,Production Per Acre,heavy_rain_days,0.00842857231297047
+Tulare,GRAPES WINE,Production Per Acre,snow_days,-0.08233279388092782
+Tulare,GRAPES WINE,Production Per Acre,high_wind_days,0.7636130247166772
+Tulare,GRAPES WINE,Production Per Acre,low_visibility_days,-0.6235360028446378
+Tulare,GRAPES WINE,Production Per Acre,cloudy_days,-0.29230202994583615
+Alameda,GRAPES WINE,Yield Per Acre,high_temp_days,0.05369271795717377
+Alameda,GRAPES WINE,Yield Per Acre,low_temp_days,0.12493581177204675
+Alameda,GRAPES WINE,Yield Per Acre,heavy_rain_days,-0.10246045725953956
+Alameda,GRAPES WINE,Yield Per Acre,snow_days,
+Alameda,GRAPES WINE,Yield Per Acre,high_wind_days,0.08364216063985991
+Alameda,GRAPES WINE,Yield Per Acre,low_visibility_days,
+Alameda,GRAPES WINE,Yield Per Acre,cloudy_days,0.0333794032078865
+Alameda,GRAPES WINE,Production Per Acre,high_temp_days,0.2518717608220057
+Alameda,GRAPES WINE,Production Per Acre,low_temp_days,-0.13619489767913476
+Alameda,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.0547290264967281
+Alameda,GRAPES WINE,Production Per Acre,snow_days,
+Alameda,GRAPES WINE,Production Per Acre,high_wind_days,-0.4333278195896766
+Alameda,GRAPES WINE,Production Per Acre,low_visibility_days,
+Alameda,GRAPES WINE,Production Per Acre,cloudy_days,-0.03720059302504128
+Napa,GRAPES WINE,Yield Per Acre,high_temp_days,-0.22520322318986435
+Napa,GRAPES WINE,Yield Per Acre,low_temp_days,0.2826995631197261
+Napa,GRAPES WINE,Yield Per Acre,heavy_rain_days,0.048337195899761834
+Napa,GRAPES WINE,Yield Per Acre,snow_days,
+Napa,GRAPES WINE,Yield Per Acre,high_wind_days,0.5782498346117094
+Napa,GRAPES WINE,Yield Per Acre,low_visibility_days,
+Napa,GRAPES WINE,Yield Per Acre,cloudy_days,0.12986167620473196
+Napa,GRAPES WINE,Production Per Acre,high_temp_days,-0.20070376606696952
+Napa,GRAPES WINE,Production Per Acre,low_temp_days,0.1402425072794493
+Napa,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.13043141395836627
+Napa,GRAPES WINE,Production Per Acre,snow_days,
+Napa,GRAPES WINE,Production Per Acre,high_wind_days,0.2063854261522461
+Napa,GRAPES WINE,Production Per Acre,low_visibility_days,
+Napa,GRAPES WINE,Production Per Acre,cloudy_days,0.05361516955606202
+Riverside,GRAPES WINE,Yield Per Acre,high_temp_days,-0.05155706199185881
+Riverside,GRAPES WINE,Yield Per Acre,low_temp_days,-0.0871314874924312
+Riverside,GRAPES WINE,Yield Per Acre,heavy_rain_days,0.3924345941871269
+Riverside,GRAPES WINE,Yield Per Acre,snow_days,-0.0683200240803699
+Riverside,GRAPES WINE,Yield Per Acre,high_wind_days,0.18466975834633198
+Riverside,GRAPES WINE,Yield Per Acre,low_visibility_days,0.2722331738138889
+Riverside,GRAPES WINE,Yield Per Acre,cloudy_days,0.05407552424668723
+Riverside,GRAPES WINE,Production Per Acre,high_temp_days,0.024605311790115103
+Riverside,GRAPES WINE,Production Per Acre,low_temp_days,-0.04877538136776588
+Riverside,GRAPES WINE,Production Per Acre,heavy_rain_days,0.2871485621766729
+Riverside,GRAPES WINE,Production Per Acre,snow_days,-0.07914298372885802
+Riverside,GRAPES WINE,Production Per Acre,high_wind_days,0.06334331303096079
+Riverside,GRAPES WINE,Production Per Acre,low_visibility_days,0.03469190207936525
+Riverside,GRAPES WINE,Production Per Acre,cloudy_days,0.23928945159745257
+Sonoma,GRAPES WINE,Yield Per Acre,high_temp_days,-0.12987243956254452
+Sonoma,GRAPES WINE,Yield Per Acre,low_temp_days,0.24017058873151542
+Sonoma,GRAPES WINE,Yield Per Acre,heavy_rain_days,0.0226822353996405
+Sonoma,GRAPES WINE,Yield Per Acre,snow_days,
+Sonoma,GRAPES WINE,Yield Per Acre,high_wind_days,0.5690211604492923
+Sonoma,GRAPES WINE,Yield Per Acre,low_visibility_days,
+Sonoma,GRAPES WINE,Yield Per Acre,cloudy_days,0.08496538415592363
+Sonoma,GRAPES WINE,Production Per Acre,high_temp_days,-0.01498977438718636
+Sonoma,GRAPES WINE,Production Per Acre,low_temp_days,-0.0068530403438486365
+Sonoma,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.11781482683495885
+Sonoma,GRAPES WINE,Production Per Acre,snow_days,
+Sonoma,GRAPES WINE,Production Per Acre,high_wind_days,0.0256263116387856
+Sonoma,GRAPES WINE,Production Per Acre,low_visibility_days,
+Sonoma,GRAPES WINE,Production Per Acre,cloudy_days,-0.02961139452131394
+Mendocino,GRAPES WINE,Yield Per Acre,high_temp_days,0.08031405615779016
+Mendocino,GRAPES WINE,Yield Per Acre,low_temp_days,-0.26285290163598385
+Mendocino,GRAPES WINE,Yield Per Acre,heavy_rain_days,-0.09476495087938684
+Mendocino,GRAPES WINE,Yield Per Acre,snow_days,0.005744558447392645
+Mendocino,GRAPES WINE,Yield Per Acre,high_wind_days,0.22108165259146872
+Mendocino,GRAPES WINE,Yield Per Acre,low_visibility_days,0.32985486321164076
+Mendocino,GRAPES WINE,Yield Per Acre,cloudy_days,0.10049876142701042
+Mendocino,GRAPES WINE,Production Per Acre,high_temp_days,0.07028864055783804
+Mendocino,GRAPES WINE,Production Per Acre,low_temp_days,-0.10908942345380995
+Mendocino,GRAPES WINE,Production Per Acre,heavy_rain_days,-0.03351051992623063
+Mendocino,GRAPES WINE,Production Per Acre,snow_days,-0.13687359108219505
+Mendocino,GRAPES WINE,Production Per Acre,high_wind_days,-0.002024578890835012
+Mendocino,GRAPES WINE,Production Per Acre,low_visibility_days,0.1534925268701597
+Mendocino,GRAPES WINE,Production Per Acre,cloudy_days,0.008372216337256527
+El Dorado,GRAPES WINE,Yield Per Acre,high_temp_days,-0.19555036580659718
+El Dorado,GRAPES WINE,Yield Per Acre,low_temp_days,0.48098734711000213
+El Dorado,GRAPES WINE,Yield Per Acre,heavy_rain_days,-0.08365576752424453
+El Dorado,GRAPES WINE,Yield Per Acre,snow_days,0.3575344651307036
+El Dorado,GRAPES WINE,Yield Per Acre,high_wind_days,-0.5356872762675242
+El Dorado,GRAPES WINE,Yield Per Acre,low_visibility_days,-0.3994056393224114
+El Dorado,GRAPES WINE,Yield Per Acre,cloudy_days,0.30278204438316086
+El Dorado,GRAPES WINE,Production Per Acre,high_temp_days,-0.36161769452114784
+El Dorado,GRAPES WINE,Production Per Acre,low_temp_days,0.40041695121983506
+El Dorado,GRAPES WINE,Production Per Acre,heavy_rain_days,0.07171958548475599
+El Dorado,GRAPES WINE,Production Per Acre,snow_days,0.5076198178339589
+El Dorado,GRAPES WINE,Production Per Acre,high_wind_days,-0.5559643862699443
+El Dorado,GRAPES WINE,Production Per Acre,low_visibility_days,-0.34071546671927033
+El Dorado,GRAPES WINE,Production Per Acre,cloudy_days,0.4574037834045407
