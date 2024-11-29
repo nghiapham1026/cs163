@@ -141,7 +141,7 @@ def layout():
                             dcc.Dropdown(
                                 id='anomalies-county-dropdown',  # Updated ID
                                 options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
-                                value=sorted(df["County"].unique())[0]
+                                value=sorted(df["County"].unique())[-1]
                             ),
                         ]
                     ),
@@ -217,7 +217,7 @@ def layout():
                             dcc.Dropdown(
                                 id="weather-impact-county-dropdown",  # Unique ID
                                 options=[{'label': county, 'value': county} for county in sorted(data_copy["County"].unique())],
-                                value=sorted(data_copy["County"].unique())[0],  # Default selection
+                                value="Fresno",  # Default selection
                                 clearable=False,
                                 className="dropdown"
                             ),
