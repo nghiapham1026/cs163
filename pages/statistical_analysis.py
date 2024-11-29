@@ -131,12 +131,13 @@ def layout():
                 className="correlation-matrix-section"
             ),
 
-                html.Div([
+            html.Div([
                 html.Label("Select County:"),
                 dcc.Dropdown(
                     id='county-dropdown',
-                    options=[{'label': county, 'value': county} for county in correlation_df['County'].unique()],
-                    value=correlation_df['County'].unique()[0]
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
+                    value='All Counties'  # Default value
                 ),
             ]),
             dcc.Graph(id='correlation-boxplot'),
@@ -237,9 +238,13 @@ def plot_correlation_matrix(selected_county, selected_crop):
     [Input('county-dropdown', 'value')]
 )
 def update_correlation_boxplot(selected_county):
-    # Filter data for the selected county
-    county_data = correlation_df[correlation_df['County'] == selected_county]
+    # Filter data for the selected county or use all data if "All Counties" is selected
+    if selected_county == 'All Counties':
+        county_data = correlation_df
+    else:
+        county_data = correlation_df[correlation_df['County'] == selected_county]
 
+    # If no data is available, return an empty figure
     if county_data.empty:
         return go.Figure().update_layout(
             title=f"No data available for {selected_county}",
@@ -247,7 +252,7 @@ def update_correlation_boxplot(selected_county):
             yaxis_title="Correlation Coefficient"
         )
 
-    # Create box plot
+    # Create the box plot
     fig = go.Figure()
 
     # Add box plot for correlations
@@ -258,9 +263,13 @@ def update_correlation_boxplot(selected_county):
         boxmean=True  # Show mean line in the box plot
     ))
 
-    # Customize layout
+    # Customize the layout
     fig.update_layout(
-        title=f'Correlation of Crop Variables with Weather Variables in {selected_county}',
+        title=(
+            'Correlation of Crop Variables with Weather Variables (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Correlation of Crop Variables with Weather Variables in {selected_county}'
+        ),
         xaxis_title='Weather Variable',
         yaxis_title='Correlation Coefficient',
         xaxis=dict(tickangle=45),
