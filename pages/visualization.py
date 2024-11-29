@@ -8,6 +8,8 @@ df = pd.read_csv('./data/merged_yearly.csv')
 techniques_df = pd.read_csv('./data/techniques.csv')
 merged_data = pd.merge(techniques_df, df, on="County")
 
+data_copy = df.copy()
+
 extreme_weather_features = [
     'high_temp_days', 'low_temp_days', 'heavy_rain_days',
     'snow_days', 'high_wind_days', 'low_visibility_days', 'cloudy_days'
@@ -192,6 +194,41 @@ def layout():
                             dcc.Graph(
                                 id='yield-production-graph',  # Unique ID
                                 className="yield-production-graph"
+                            )
+                        ]
+                    )
+                ]
+            ),
+
+            html.Div(
+                className="weather-impact-container",
+                children=[
+                    html.H1(
+                        "Impact of Extreme Weather on Crop Yields",
+                        className="weather-impact-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label(
+                                "Select County:",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id="weather-impact-county-dropdown",  # Unique ID
+                                options=[{'label': county, 'value': county} for county in sorted(data_copy["County"].unique())],
+                                value=sorted(data_copy["County"].unique())[0],  # Default selection
+                                clearable=False,
+                                className="dropdown"
+                            ),
+                        ]
+                    ),
+                    html.Div(
+                        className="graph-container",
+                        children=[
+                            dcc.Graph(
+                                id="weather-impact-plot",  # Unique ID
+                                className="weather-impact-graph"
                             )
                         ]
                     )
@@ -525,5 +562,78 @@ def update_yield_production_graph(selected_var):
     fig.update_xaxes(title_text="Farming Methods", row=1, col=2)
     fig.update_yaxes(title_text="Yield Per Acre", row=1, col=1)
     fig.update_yaxes(title_text="Production Per Acre", row=1, col=2)
+
+    return fig
+
+@callback(
+    Output("weather-impact-plot", "figure"),
+    [Input("weather-impact-county-dropdown", "value")]
+)
+def update_weather_impact_plot(selected_county):
+    # Filter data for the selected county
+    county_data = data_copy[data_copy["County"] == selected_county]
+
+    # Initialize a list to store aggregated results
+    aggregated_results = []
+
+    # Loop through each weather variable, categorize, and calculate average yield
+    for var in extreme_weather_vars:
+        # Create categories for the current weather variable
+        county_data['Category'] = pd.cut(
+            county_data[var],
+            bins=[county_data[var].min() - 0.01, county_data[var].quantile(0.33),
+                  county_data[var].quantile(0.67), county_data[var].max() + 0.01],
+            labels=['Low', 'Moderate', 'High'],
+            include_lowest=True
+        )
+
+        # Aggregate data: Calculate average yield per category and crop name
+        avg_yield = county_data.groupby(['Category', 'Crop Name'], observed=True)['Yield Per Acre'].mean().reset_index()
+        avg_yield['Weather Variable'] = var.replace('_', ' ').title()
+
+        # Calculate percentage change relative to "Low"
+        low_yield = avg_yield[avg_yield['Category'] == 'Low'][['Crop Name', 'Yield Per Acre']].rename(
+            columns={'Yield Per Acre': 'Low Yield'}
+        )
+        avg_yield = avg_yield.merge(low_yield, on='Crop Name', how='left')
+        avg_yield['Percent Change'] = ((avg_yield['Yield Per Acre'] - avg_yield['Low Yield']) / avg_yield['Low Yield']) * 100
+        avg_yield['Percent Change'] = avg_yield['Percent Change'].round(2)  # Round to two decimal places
+        aggregated_results.append(avg_yield)
+
+    # Combine all results into a single DataFrame
+    combined_data = pd.concat(aggregated_results)
+
+    # Create the grouped bar plot for both raw yield and percentage change
+    fig = px.bar(
+        combined_data,
+        x="Category",
+        y="Yield Per Acre",
+        color="Crop Name",
+        barmode="group",
+        facet_col="Weather Variable",
+        text="Percent Change",
+        title=f"Impact of Extreme Weather on Crop Yields in {selected_county}",
+        labels={
+            "Yield Per Acre": "Average Yield Per Acre",
+            "Category": "Weather Severity",
+            "Weather Variable": "Extreme Weather Variable",
+            "Percent Change": "Change (%)"
+        }
+    )
+
+    # Add text annotations for percentage changes
+    fig.for_each_annotation(lambda a: a.update(text=a.text.split("=")[-1]))
+    fig.update_traces(
+        texttemplate="%{text}%",  # Show percentage change inside bars
+        textposition="outside"
+    )
+
+    # Enhance layout for better readability
+    fig.update_layout(
+        legend_title_text="Crop Type",
+        xaxis_title="Weather Severity",
+        yaxis_title="Average Yield Per Acre",
+        title_x=0.5  # Center the title
+    )
 
     return fig
