@@ -9,6 +9,24 @@ weather_data = pd.read_csv('./data/weather_data.csv')
 merged_yearly = pd.read_csv('./data/merged_yearly.csv')
 results = pd.read_csv('./data/results.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
+correlation_df = pd.read_csv('./data/correlation_df.csv')
+results_df = pd.read_csv('./data/regression_results.csv')
+
+# Define a threshold for strong correlations
+strong_corr_threshold = 0.3
+
+# Filter for strong positive correlations
+strong_positive = correlation_df[
+    (correlation_df['Correlation'] >= strong_corr_threshold)
+]
+
+# Filter for strong negative correlations
+strong_negative = correlation_df[
+    (correlation_df['Correlation'] <= -strong_corr_threshold)
+]
+
+# Combine strong correlations
+strong_correlations = pd.concat([strong_positive, strong_negative])
 
 correlation_columns = [
     'Yield Per Acre', 'Production Per Acre', 'Value Per Acre',
@@ -18,7 +36,7 @@ correlation_columns = [
 ]
 
 # Define targets and predictors
-targets = ['Harvested Acres', 'Yield Per Acre', 'Production Per Acre']
+targets = ['Yield Per Acre', 'Production Per Acre']
 predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days',
               'snow_days', 'high_wind_days', 'low_visibility_days',
               'cloudy_days']
@@ -114,212 +132,49 @@ def layout():
                 className="correlation-matrix-section"
             ),
 
-            html.H1(
-                "Statistical Analysis Results",
-                className="statistical-analysis-title"
-            ),
-
-            # Dropdown for selecting multiple counties
-            html.Label(
-                "Select Counties:",
-                className="county-selection-label"
-            ),
-            dcc.Dropdown(
-                id="county-dropdown",
-                options=[
-                    {"label": county, "value": county}
-                    for county in results['County'].unique()
-                ],
-                value=[results['County'].unique()[0]],
-                multi=True,
-                clearable=False,
-                className="county-dropdown"
-            ),
-
-            # Dropdown for selecting the target variable
-            html.Label(
-                "Select an Outcome Variable:",
-                className="target-selection-label"
-            ),
-            dcc.Dropdown(
-                id="target-dropdown",
-                options=[
-                    {"label": target, "value": target}
-                    for target in results['Target'].unique()
-                ],
-                value=results['Target'].unique()[0],
-                clearable=False,
-                className="target-dropdown"
-            ),
-
-            # P-Value Plot
-            html.H3(
-                "P-Value Significance",
-                className="p-value-title"
-            ),
-            dcc.Graph(
-                id="p-value-plot",
-                className="p-value-graph"
-            ),
-
-            # Coefficient Plot
-            html.H3(
-                "Coefficient Analysis",
-                className="coefficient-analysis-title"
-            ),
-            dcc.Graph(
-                id="coefficient-plot",
-                className="coefficient-graph"
-            ),
-
-            # R-Squared Plot
-            html.H3(
-                "R-Squared Analysis",
-                className="r-squared-title"
-            ),
-            dcc.Graph(
-                id="r-squared-plot",
-                className="r-squared-graph"
-            ),
-
-            html.H2(
-                "Hypothesis Summary Table",
-                className="hypothesis-summary-title"
-            ),
-
-            # Wrap DataTable in html.Div with className
-            html.Div(
-                dash_table.DataTable(
-                    data=summary_data.to_dict("records"),
-                    columns=[
-                        {"name": i, "id": i}
-                        for i in summary_data.columns
-                    ],
-                    style_table={'overflowX': 'auto'},
-                    style_header={
-                        'backgroundColor': 'rgb(230, 230, 230)',
-                        'fontWeight': 'bold'
-                    },
-                    style_cell={
-                        'textAlign': 'left',
-                        'padding': '5px',
-                        'whiteSpace': 'normal',
-                        'height': 'auto'
-                    },
-                    style_data_conditional=[
-                        {
-                            'if': {
-                                'filter_query':
-                                    '{Hypothesis Conclusion} = "Reject H₀"',
-                                'column_id': 'Hypothesis Conclusion'
-                            },
-                            'backgroundColor': 'tomato',
-                            'color': 'white'
-                        },
-                        {
-                            'if': {
-                                'filter_query':
-                                    '{Hypothesis Conclusion} = "Fail to Reject H₀"',
-                                'column_id': 'Hypothesis Conclusion'
-                            },
-                            'backgroundColor': 'lightgreen',
-                            'color': 'black'
-                        }
-                    ],
-                    sort_action="native",
-                    filter_action="native",
-                    page_size=100  # Customize the number of rows per page
+            html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown3',
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
+                    value='All Counties'  # Default value
                 ),
-                className="hypothesis-summary-table"
-            ),
+            ]),
+            dcc.Graph(id='correlation-boxplot'),
 
-            html.H1(
-                "Statistical Analysis Results - Some Additional Plots",
-                className="additional-plots-title"
-            ),
+            html.Div([
+                html.Label("Select Weather Variable:"),
+                dcc.Dropdown(
+                    id='weather-variable-dropdown',
+                    options=[{'label': 'All Variables', 'value': 'All Variables'}] + 
+                            [{'label': var, 'value': var} for var in strong_correlations['Weather Variable'].unique()],
+                    value='All Variables'
+                ),
+            ]),
+            dcc.Graph(id='frequency-plot'),
 
-            # Crop selection dropdown
-            html.Label(
-                "Select a Crop:",
-                className="crop-selection-label"
-            ),
-            dcc.Dropdown(
-                id="crop-dropdown",
-                options=[
-                    {"label": crop, "value": crop}
-                    for crop in results['Crop'].unique()
-                ],
-                value=results['Crop'].unique()[0],
-                clearable=False,
-                className="crop-dropdown"
-            ),
+            html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown',
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                    value='All Counties'  # Default value
+                ),
+            ]),
+            dcc.Graph(id='ols-regression-plot'),
 
-            # Coefficient Plot
-            html.H3(
-                "Interactive Regression Coefficients by County",
-                className="interactive-coefficient-title"
-            ),
-            dcc.Graph(
-                id="coefficient-graph",
-                className="interactive-coefficient-graph"
-            ),
-
-            html.H1(
-                "Statistical Analysis Results",
-                className="statistical-analysis-results-title"
-            ),
-
-            # Dropdown for selecting a crop
-            html.Label(
-                "Select a Crop:",
-                className="crop-heatmap-selection-label"
-            ),
-            dcc.Dropdown(
-                id="crop-heatmap-dropdown",
-                options=[
-                    {"label": crop, "value": crop}
-                    for crop in results['Crop'].unique()
-                ],
-                value=results['Crop'].unique()[0],
-                clearable=False,
-                className="crop-heatmap-dropdown"
-            ),
-
-            # Coefficient Heatmap
-            html.H3(
-                "Interactive Coefficient Heatmap by County",
-                className="coefficient-heatmap-title"
-            ),
-            dcc.Graph(
-                id="coefficient-heatmap",
-                className="coefficient-heatmap-graph"
-            ),
-
-            # Dropdown for selecting a crop
-            html.Label(
-                "Select a Crop:",
-                className="crop-r2-selection-label"
-            ),
-            dcc.Dropdown(
-                id="crop-r2-dropdown",
-                options=[
-                    {"label": crop, "value": crop}
-                    for crop in results['Crop'].unique()
-                ],
-                value=results['Crop'].unique()[0],
-                clearable=False,
-                className="crop-r2-dropdown"
-            ),
-
-            # R-Squared Plot
-            html.H3(
-                "R-Squared Values by County and Target",
-                className="r-squared-barplot-title"
-            ),
-            dcc.Graph(
-                id="r-squared-barplot",
-                className="r-squared-barplot-graph"
-            ),
+            html.Div([
+                html.Label("Select County:"),
+                dcc.Dropdown(
+                    id='county-dropdown2',
+                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                    value='All Counties'  # Default option
+                ),
+            ]),
+            dcc.Graph(id='ols-heatmap'),
         ],
         className="main-container"
     )
@@ -402,175 +257,193 @@ def plot_correlation_matrix(selected_county, selected_crop):
     return fig
 
 @callback(
-    Output("p-value-plot", "figure"),
-    Input("county-dropdown", "value"),
-    Input("target-dropdown", "value")
+    Output('correlation-boxplot', 'figure'),
+    [Input('county-dropdown3', 'value')]
 )
-def plot_p_values(selected_counties, selected_target):
-    # Filter data for selected counties and target
-    filtered_data = results[(results["County"].isin(selected_counties)) & (results["Target"] == selected_target)]
+def update_correlation_boxplot(selected_county):
+    # Filter data for the selected county or use all data if "All Counties" is selected
+    if selected_county == 'All Counties':
+        county_data = correlation_df
+    else:
+        county_data = correlation_df[correlation_df['County'] == selected_county]
 
-    # Plot p-values, grouped by county
-    fig = px.bar(
-        filtered_data,
-        x="Predictor",
-        y="P-Value",
-        color="County",
-        barmode="group",
-        title=f"P-Values for Selected Counties - {selected_target}",
-        labels={"P-Value": "P-Value", "County": "County"}
-    )
-    
-    # Add a significance line at p=0.05
-    fig.add_hline(y=0.05, line_dash="dash", line_color="blue", 
-                  annotation_text="Significance Level (0.05)", annotation_position="top left")
-    fig.update_layout(xaxis_title="Predictor", yaxis_title="P-Value")
-    
-    return fig
+    # If no data is available, return an empty figure
+    if county_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Weather Variable",
+            yaxis_title="Correlation Coefficient"
+        )
 
-@callback(
-    Output("coefficient-plot", "figure"),
-    Input("county-dropdown", "value"),
-    Input("target-dropdown", "value")
-)
-def plot_coefficients(selected_counties, selected_target):
-    # Filter data for selected counties, target, and significant predictors (p < 0.05)
-    filtered_data = results[(results["County"].isin(selected_counties)) & 
-                            (results["Target"] == selected_target) & 
-                            (results["P-Value"] < 0.05)]
+    # Create the box plot
+    fig = go.Figure()
 
-    # Plot coefficients, grouped by county
-    fig = px.bar(
-        filtered_data,
-        x="Predictor",
-        y="Coefficient",
-        color="County",
-        barmode="group",
-        title=f"Significant Coefficients for Selected Counties - {selected_target}",
-        labels={"Coefficient": "Coefficient", "County": "County"}
-    )
-    fig.update_layout(xaxis_title="Predictor", yaxis_title="Coefficient")
-    
-    return fig
-
-@callback(
-    Output("r-squared-plot", "figure"),
-    Input("county-dropdown", "value"),
-    Input("target-dropdown", "value")
-)
-def plot_r_squared(selected_counties, selected_target):
-    # Filter data for selected counties and target
-    filtered_data = results[(results["County"].isin(selected_counties)) & (results["Target"] == selected_target)]
-
-    # Plot R-squared values for each selected county
-    fig = px.bar(
-        filtered_data,
-        x="County",
-        y="R-Squared",
-        color="County",
-        title=f"R-Squared Values for Selected Counties - {selected_target}",
-        labels={"R-Squared": "R-Squared"}
-    )
-    fig.update_layout(xaxis_title="County", yaxis_title="R-Squared")
-    
-    return fig
-
-@callback(
-    Output("coefficient-graph", "figure"),
-    Input("crop-dropdown", "value")
-)
-def update_coefficient_plot(selected_crop):
-    # Filter data for the selected crop
-    subset = results[results['Crop'] == selected_crop]
-
-    # Create the interactive bar plot
-    fig = px.bar(
-        subset,
-        x='Predictor',
-        y='Coefficient',
-        color='County',
-        title=f"Interactive Regression Coefficients by County for {selected_crop}",
-        labels={'Coefficient': 'Coefficient Value'},
-        hover_data={'P-Value': True, 'Target': True},
-        barmode='group'
-    )
-
-    # Add a horizontal line at y=0 for reference
-    fig.add_shape(type='line', x0=-0.5, y0=0, x1=len(subset['Predictor'].unique()) - 0.5, y1=0,
-                  line=dict(color="Gray", width=1, dash="dash"))
-
-    fig.update_layout(
-        xaxis_title="Predictor",
-        yaxis_title="Coefficient",
-        legend_title="County"
-    )
-    
-    return fig
-
-@callback(
-    Output("coefficient-heatmap", "figure"),
-    Input("crop-heatmap-dropdown", "value")
-)
-def update_coefficient_heatmap(selected_crop):
-    # Filter data for the selected crop across all counties
-    subset = results[results['Crop'] == selected_crop]
-
-    # Pivot data to create heatmap format
-    heatmap_data = subset.pivot_table(index='County', columns='Predictor', values='Coefficient')
-
-    # Create the interactive heatmap
-    fig = go.Figure(data=go.Heatmap(
-        z=heatmap_data.values,
-        x=heatmap_data.columns,
-        y=heatmap_data.index,
-        colorscale='RdBu',  # Red to Blue color scale
-        zmid=0,  # Center the color scale at 0
-        colorbar=dict(title="Coefficient")
+    # Add box plot for correlations
+    fig.add_trace(go.Box(
+        x=county_data['Weather Variable'],
+        y=county_data['Correlation'],
+        name=f'Correlations in {selected_county}',
+        boxmean=True  # Show mean line in the box plot
     ))
 
-    # Update layout with title and axis labels
+    # Customize the layout
     fig.update_layout(
-        title=f"Coefficient Heatmap for {selected_crop}",
-        xaxis_title="Predictor",
-        yaxis_title="County",
-        height=500,  # Adjust for readability
-        width=800   # Adjust for readability
+        title=(
+            'Correlation of Crop Variables with Weather Variables (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Correlation of Crop Variables with Weather Variables in {selected_county}'
+        ),
+        xaxis_title='Weather Variable',
+        yaxis_title='Correlation Coefficient',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
     )
-    
+
     return fig
 
 @callback(
-    Output("r-squared-barplot", "figure"),
-    Input("crop-r2-dropdown", "value")
+    Output('frequency-plot', 'figure'),
+    [Input('weather-variable-dropdown', 'value')]
 )
-def update_r_squared_plot(selected_crop):
-    # Filter data for the selected crop
-    subset = results[results['Crop'] == selected_crop]
+def update_frequency_plot(selected_variable):
+    # Filter data based on the selected variable
+    if selected_variable == 'All Variables':
+        filtered_data = strong_correlations
+    else:
+        filtered_data = strong_correlations[strong_correlations['Weather Variable'] == selected_variable]
 
-    # Prepare R-squared data, ensuring each (County, Target) combination is unique
-    r_squared_data = subset.drop_duplicates(subset=['County', 'Target'])[['County', 'Target', 'R-Squared']]
+    # Count the frequency of strong correlations per county
+    county_frequency = filtered_data['County'].value_counts().reset_index()
+    county_frequency.columns = ['County', 'Frequency']
+    county_frequency = county_frequency.sort_values(by='Frequency', ascending=False)
 
     # Create the bar plot
-    fig = px.bar(
-        r_squared_data,
-        x='Target',
-        y='R-Squared',
-        color='County',
-        barmode='group',
-        title=f"R-Squared Values by County for {selected_crop}",
-        labels={'R-Squared': 'R-Squared Value'},
-    )
+    fig = go.Figure()
 
-    # Set y-axis limit from 0 to 1 for R-squared values
-    fig.update_yaxes(range=[0, 1])
+    fig.add_trace(go.Bar(
+        x=county_frequency['County'],
+        y=county_frequency['Frequency'],
+        marker=dict(color='skyblue'),
+        name='Frequency'
+    ))
 
-    # Update layout for legend and titles
+    # Customize layout
     fig.update_layout(
-        xaxis_title="Outcome Variable (Target)",
-        yaxis_title="R-Squared Value",
-        legend_title="County",
-        height=500,
-        width=800
+        title=f'Frequency of Strong Correlations by County ({selected_variable})',
+        xaxis_title='County',
+        yaxis_title='Number of Strong Correlations',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
     )
-    
+
+    return fig
+
+@callback(
+    Output('ols-regression-plot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_ols_regression_plot(selected_county):
+    # Filter data for the selected county or use all data if "All Counties" is selected
+    if selected_county == 'All Counties':
+        filtered_data = results_df
+    else:
+        filtered_data = results_df[results_df['County'] == selected_county]
+
+    # If no data is available, return an empty figure
+    if filtered_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Predictor",
+            yaxis_title="P-value"
+        )
+
+    # Create the box plot
+    fig = go.Figure()
+
+    fig.add_trace(go.Box(
+        x=filtered_data['Predictor'],
+        y=filtered_data['P-value'],
+        name=f'OLS Regression in {selected_county}',
+        boxmean=True  # Show mean line in the box plot
+    ))
+
+    # Add a horizontal line for the significance threshold
+    fig.add_trace(go.Scatter(
+        x=filtered_data['Predictor'].unique(),
+        y=[0.05] * len(filtered_data['Predictor'].unique()),
+        mode='lines',
+        line=dict(color='red', dash='dash'),
+        name='Significance Threshold (p=0.05)'
+    ))
+
+    # Customize the layout
+    fig.update_layout(
+        title=(
+            'Distribution of P-values per Predictor (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Distribution of P-values per Predictor in {selected_county}'
+        ),
+        xaxis_title='Predictor',
+        yaxis_title='P-value',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40),
+        legend=dict(orientation='h', yanchor='bottom', y=1.02, xanchor='right', x=1)
+    )
+
+    return fig
+
+@callback(
+    Output('ols-heatmap', 'figure'),
+    [Input('county-dropdown2', 'value')]
+)
+def update_ols_heatmap(selected_county):
+    # Filter data based on selected county
+    if selected_county == 'All Counties':
+        filtered_data = results_df
+    else:
+        filtered_data = results_df[results_df['County'] == selected_county]
+
+    # If no data is available, return an empty figure
+    if filtered_data.empty:
+        return go.Figure().update_layout(
+            title=f"No data available for {selected_county}",
+            xaxis_title="Crop",
+            yaxis_title="Predictor"
+        )
+
+    # Aggregate p-values by taking the median p-value per Predictor and Crop
+    agg_p_values = filtered_data.groupby(['Predictor', 'Crop'])['P-value'].median().reset_index()
+
+    # Pivot the DataFrame to create a heatmap structure
+    p_values_pivot = agg_p_values.pivot(index='Predictor', columns='Crop', values='P-value')
+
+    # Create heatmap
+    fig = go.Figure(
+        data=go.Heatmap(
+            z=p_values_pivot.values,
+            x=p_values_pivot.columns,
+            y=p_values_pivot.index,
+            zmin=0,
+            zmax=1,
+            colorbar=dict(title="Median P-value")
+        )
+    )
+
+    # Customize layout
+    fig.update_layout(
+        title=(
+            'Heatmap of Median P-values per Predictor and Crop (All Counties)'
+            if selected_county == 'All Counties'
+            else f'Heatmap of Median P-values per Predictor and Crop in {selected_county}'
+        ),
+        xaxis_title='Crop',
+        yaxis_title='Predictor',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
     return fig

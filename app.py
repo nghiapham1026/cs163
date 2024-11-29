@@ -5,10 +5,10 @@ import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
 # Import each page layout
-from pages import home, data, statistical_analysis, prediction, weather_visualization, crops_visualization
+from pages import home, data, statistical_analysis, prediction, weather_visualization, crops_visualization, visualization
 
 # Initialize the Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Weather & Crop Data Analysis"
 
 # Define layout with a sidebar for navigation
@@ -22,6 +22,7 @@ app.layout = dbc.Container([
                 dbc.NavLink("Weather Visualization", href="/weather_visualization", active="exact"),
                 dbc.NavLink("Crops Visualization", href="/crops_visualization", active="exact"),
                 dbc.NavLink("Statistical Analysis", href="/statistical_analysis", active="exact"),
+                dbc.NavLink("Visualization", href="/visualization", active="exact"),
                 dbc.NavLink("Prediction", href="/prediction", active="exact"),
             ], vertical=True, pills=True),
         ], width=2),
@@ -48,6 +49,8 @@ def display_page(pathname):
         return statistical_analysis.layout()
     elif pathname == "/prediction":
         return prediction.layout()
+    elif pathname == "/visualization":
+        return visualization.layout()
     return "404 Page Not Found"
 
 if __name__ == "__main__":
