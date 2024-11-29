@@ -11,6 +11,22 @@ results = pd.read_csv('./data/results.csv')
 summary_data = pd.read_csv('./data/hypothesis_summary.csv')
 correlation_df = pd.read_csv('./data/correlation_df.csv')
 
+# Define a threshold for strong correlations
+strong_corr_threshold = 0.3
+
+# Filter for strong positive correlations
+strong_positive = correlation_df[
+    (correlation_df['Correlation'] >= strong_corr_threshold)
+]
+
+# Filter for strong negative correlations
+strong_negative = correlation_df[
+    (correlation_df['Correlation'] <= -strong_corr_threshold)
+]
+
+# Combine strong correlations
+strong_correlations = pd.concat([strong_positive, strong_negative])
+
 correlation_columns = [
     'Yield Per Acre', 'Production Per Acre', 'Value Per Acre',
     'high_temp_days', 'low_temp_days', 'heavy_rain_days',
@@ -19,7 +35,7 @@ correlation_columns = [
 ]
 
 # Define targets and predictors
-targets = ['Harvested Acres', 'Yield Per Acre', 'Production Per Acre']
+targets = ['Yield Per Acre', 'Production Per Acre']
 predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days',
               'snow_days', 'high_wind_days', 'low_visibility_days',
               'cloudy_days']
@@ -124,6 +140,17 @@ def layout():
                 ),
             ]),
             dcc.Graph(id='correlation-boxplot'),
+
+            html.Div([
+                html.Label("Select Weather Variable:"),
+                dcc.Dropdown(
+                    id='weather-variable-dropdown',
+                    options=[{'label': 'All Variables', 'value': 'All Variables'}] + 
+                            [{'label': var, 'value': var} for var in strong_correlations['Weather Variable'].unique()],
+                    value='All Variables'
+                ),
+            ]),
+            dcc.Graph(id='frequency-plot'),
         ],
         className="main-container"
     )
@@ -236,6 +263,44 @@ def update_correlation_boxplot(selected_county):
         title=f'Correlation of Crop Variables with Weather Variables in {selected_county}',
         xaxis_title='Weather Variable',
         yaxis_title='Correlation Coefficient',
+        xaxis=dict(tickangle=45),
+        template='plotly_white',
+        margin=dict(l=40, r=40, t=40, b=40)
+    )
+
+    return fig
+
+@callback(
+    Output('frequency-plot', 'figure'),
+    [Input('weather-variable-dropdown', 'value')]
+)
+def update_frequency_plot(selected_variable):
+    # Filter data based on the selected variable
+    if selected_variable == 'All Variables':
+        filtered_data = strong_correlations
+    else:
+        filtered_data = strong_correlations[strong_correlations['Weather Variable'] == selected_variable]
+
+    # Count the frequency of strong correlations per county
+    county_frequency = filtered_data['County'].value_counts().reset_index()
+    county_frequency.columns = ['County', 'Frequency']
+    county_frequency = county_frequency.sort_values(by='Frequency', ascending=False)
+
+    # Create the bar plot
+    fig = go.Figure()
+
+    fig.add_trace(go.Bar(
+        x=county_frequency['County'],
+        y=county_frequency['Frequency'],
+        marker=dict(color='skyblue'),
+        name='Frequency'
+    ))
+
+    # Customize layout
+    fig.update_layout(
+        title=f'Frequency of Strong Correlations by County ({selected_variable})',
+        xaxis_title='County',
+        yaxis_title='Number of Strong Correlations',
         xaxis=dict(tickangle=45),
         template='plotly_white',
         margin=dict(l=40, r=40, t=40, b=40)
