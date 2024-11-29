@@ -796,7 +796,3 @@ The following sections should be used for the visualization planning. These are 
 **E. Weather Anomalies and Yield (Time Series Plot)**
    - **Description**: Highlight years with weather anomalies (e.g., unusually high temperatures) and their impact on crop yields.
    - **Purpose**: Show trends and relationships without relying on predictions.
-
-
-## Web Page Plan
-<!--- Explain how many pages you will have in total and what content will be shown in each page. (Each diagram discussed above should be given a proper location in this section. Also, it is required to have (1) "Project Objective" page, which explains the main goals and data sources, and (2) "Analytical Methods" page, where you explain the major techniques used in the project and provide further references. -->

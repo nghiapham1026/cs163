@@ -1,43 +1,87 @@
-# Weather Data Analysis and Forecasting
-## **Project Summary: Weather Data Analysis and Forecasting**
+# Analyzing Weather Impacts on Crop Production in California Counties
 
-#### **Project Goals:**
-The primary goal of this project is to develop a robust system for analyzing historical and real-time weather data to forecast weather conditions and identify long-term climate trends. By applying time series analysis and machine learning techniques, the project aims to create accurate weather predictions that can be used to inform decisions in agriculture, disaster preparedness, and climate studies. Additionally, the project will focus on detecting anomalies in weather patterns, which could signal significant shifts in climate or unexpected weather events.
+## Overview
+This project explores the relationship between extreme weather conditions and crop performance across California counties. By integrating historical weather and crop yield data, the analysis identifies key weather variables influencing crop outcomes. Additionally, the project develops predictive models and visualizations to assist agricultural stakeholders in mitigating risks and optimizing crop management.
 
-#### **Broader Impacts:**
-This project has the potential to make a meaningful impact across various sectors:
+---
 
-1. **Agriculture:** Farmers and agricultural stakeholders can use accurate weather forecasts to optimize planting schedules, irrigation, and harvest times, thereby increasing crop yields and reducing losses due to unexpected weather events.
+## Goals
+
+1. **Assess Weather-Crop Relationships**:
+   - Analyze the impact of extreme weather variables (e.g., high temperature days, heavy rainfall) on crop outcomes.
+   - Identify county-specific weather variables that significantly affect yields for key crops like almonds, tomatoes, and wine grapes.
+
+2. **Predict Crop Yields**:
+   - Develop predictive models using machine learning (e.g., Random Forest, Ridge Regression) to forecast crop outcomes.
+   - Incorporate lagged weather and crop variables to enhance model accuracy.
+
+3. **Empower Decision-Making**:
+   - Provide actionable insights and interactive visualizations to support farmers and agricultural planners.
+
+---
+
+## Features
+
+### **Data Analysis and Modeling**
+- **Weather Feature Engineering**:
+  - Calculated extreme weather metrics (e.g., `high_temp_days`, `heavy_rain_days`) for each county using location-specific thresholds.
+- **Statistical Analysis**:
+  - Regression analysis and hypothesis testing to identify significant predictors for crop outcomes.
+- **Machine Learning Models**:
+  - Built models to predict yield and production using weather and lagged crop variables.
+
+### **Visualizations**
+- **Interactive Dashboards**:
+  - Simulate extreme weather impacts using dynamic plots.
+  - Explore crop yield patterns and farming practices through geographical heatmaps.
+- **Static Insights**:
+  - Compare historical yield data under varying weather conditions using bar plots and scatter plots.
+
+---
+
+## Dataset Highlights
+
+- **Weather Data**: Daily and yearly metrics sourced from NOAA and OpenWeatherMap API.
+- **Crop Data**: USDA crop yield data spanning 1980 to present.
+- **Key Crops**:
+  - **Almonds** (Fresno, Tulare, Kings)
+  - **Tomatoes** (Fresno, Kings, Santa Clara)
+  - **Wine Grapes** (Napa, Sonoma, Mendocino)
+
+---
+
+## Key Findings
+
+1. **Significant Weather Predictors**:
+   - **High Wind Days** negatively affect grape yields in Alameda and Mendocino.
+   - **High Temperature Days** benefit almond yields in Tulare but hinder tomato production in Fresno.
    
-2. **Disaster Preparedness:** Accurate short-term weather predictions and anomaly detection can help governments and organizations prepare for and mitigate the effects of natural disasters such as hurricanes, floods, and heatwaves.
+2. **Predictive Modeling**:
+   - Lagged features improved model accuracy but highlighted variability across counties and crops.
+   - Simpler regression models often outperformed machine learning models on smaller datasets.
 
-3. **Climate Studies:** By analyzing long-term weather data, the project will contribute to understanding climate trends, which is critical for addressing climate change and its impacts on ecosystems and human societies.
+3. **Visual Insights**:
+   - Correlation heatmaps and time series plots revealed critical weather-crop relationships and regional variations.
 
-#### **Data Sources:**
-The project will utilize a combination of historical and real-time weather data from the following sources:
+---
 
-1. **OpenWeatherMap API:** Provides real-time weather data, including temperature, humidity, precipitation, and wind speed for locations worldwide.
+## How to Use
 
-2. **NOAA Climate Data:** Offers a vast repository of historical weather data, including temperature records, precipitation, and other climate indicators, allowing for in-depth analysis of long-term trends.
+### Clone the Repository
+```bash
+git clone https://github.com/your-username/weather-crop-analysis.git
+```
 
-3. **Weather Underground API:** Supplies hyper-local weather data and forecasts, which can be used to enhance the accuracy of the prediction models and provide granular insights into local weather patterns.
+### Run the Application
+1. Install required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+2. Start the Dash app:
+   ```bash
+   python app.py
+   ```
+3. Access the dashboard at `http://127.0.0.1:8050`.
 
-#### **Key Components:**
-1. **Time Series Analysis:** Analyze the historical weather data to identify trends, seasonality, and potential anomalies. This analysis will serve as the foundation for the predictive models.
-
-2. **Machine Learning Models:** Develop and train machine learning models, such as ARIMA, LSTM, or Prophet, to forecast future weather conditions based on the historical data.
-
-3. **Anomaly Detection:** Implement algorithms to detect unusual weather patterns that deviate significantly from historical norms, which could indicate extreme weather events or long-term climate shifts.
-
-4. **Data Visualization:** Create interactive visualizations to present the analysis and forecast results. This will include dashboards that display real-time weather data, predicted conditions, and detected anomalies.
-
-## Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
-## Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
-
-## Repo Structure
-<!--- You can create additional directories and subdirectories but do not remove and rename the following basic directories -->
-- [src](src/) contains all source codes used in this project
-  - [src/dash](src/webpage/) contains all files related to your webpage
-  - [src/analysis](src/analysis/) contains all files related to data analysis and visualization
-- [docs](docs/) contains all documents, including proposal, analysis and visualization plans, analysis outcome presentation, and final presentation
-- [src_sample] contains sample files to test your pythonanywhere env.
+#### Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
+#### Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
