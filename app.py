@@ -8,7 +8,7 @@ from dash.dependencies import Input, Output
 from pages import home, data, statistical_analysis, prediction, weather_visualization, crops_visualization, visualization
 
 # Initialize the Dash app
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Weather & Crop Data Analysis"
 
 # Define layout with a sidebar for navigation

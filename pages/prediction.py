@@ -1,60 +1,175 @@
 import dash
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, State, ALL
+import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import pandas as pd
 import joblib
+import random
 
 # Load data
 results_df = pd.read_csv('./data/results.csv')
 all_models = joblib.load("./data/all_models.joblib")
+df = pd.read_csv('./data/merged_yearly.csv')
+data = df.copy()
 
 def layout():
-    return html.Div([
-        # Performance Metrics Dropdowns
-        html.Div([
-            html.Label("Select Target Variable:"),
-            dcc.Dropdown(
-                id='target-dropdown',
-                options=[
-                    {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
-                    {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
-                ],
-                value='Yield Per Acre'
+    return html.Div(
+        className="main-container",
+        children=[
+            # Section 1: Performance Metrics
+            html.Div(
+                className="performance-metrics-container",
+                children=[
+                    html.H2("Performance Metrics"),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Target Variable:"),
+                            dcc.Dropdown(
+                                id='target-dropdown',
+                                options=[
+                                    {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
+                                    {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
+                                ],
+                                value='Yield Per Acre',
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Crop (Performance Metrics):"),
+                            dcc.Dropdown(
+                                id='performance-crop-dropdown',
+                                options=[
+                                    {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
+                                ],
+                                value=results_df['Crop'].unique()[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(id='mae-bar-plot', className="performance-graph"),
+                    dcc.Graph(id='rmse-bar-plot', className="performance-graph")
+                ]
             ),
-        ]),
-        html.Div([
-            html.Label("Select Crop (Performance Metrics):"),
-            dcc.Dropdown(
-                id='performance-crop-dropdown',
-                options=[{'label': crop, 'value': crop} for crop in results_df['Crop'].unique()],
-                value=results_df['Crop'].unique()[0]
-            ),
-        ]),
-        dcc.Graph(id='mae-bar-plot'),
-        dcc.Graph(id='rmse-bar-plot'),
 
-        html.Hr(),
+            html.Hr(className="divider"),
 
-        # Training Data Dropdowns
-        html.Div([
-            html.Label("Select County (Training Data):"),
-            dcc.Dropdown(
-                id='training-county-dropdown',
-                options=[{'label': county, 'value': county} for county in results_df['County'].unique()],
-                value=results_df['County'].unique()[0]
+            # Section 2: Training Data Visualization
+            html.Div(
+                className="training-data-container",
+                children=[
+                    html.H2("Training Data Visualization"),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select County (Training Data):"),
+                            dcc.Dropdown(
+                                id='training-county-dropdown',
+                                options=[
+                                    {'label': county, 'value': county} for county in results_df['County'].unique()
+                                ],
+                                value=results_df['County'].unique()[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Crop (Training Data):"),
+                            dcc.Dropdown(
+                                id='training-crop-dropdown',
+                                options=[
+                                    {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
+                                ],
+                                value=results_df['Crop'].unique()[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(id='yield-per-acre-plot', className="training-graph"),
+                    dcc.Graph(id='production-per-acre-plot', className="training-graph")
+                ]
             ),
-        ]),
-        html.Div([
-            html.Label("Select Crop (Training Data):"),
-            dcc.Dropdown(
-                id='training-crop-dropdown',
-                options=[{'label': crop, 'value': crop} for crop in results_df['Crop'].unique()],
-                value=results_df['Crop'].unique()[0]
-            ),
-        ]),
-        dcc.Graph(id='yield-per-acre-plot'),
-        dcc.Graph(id='production-per-acre-plot'),
-    ])
+
+            html.Hr(className="divider"),
+
+            # Section 3: Prediction Demo
+            dbc.Container(
+                className="prediction-demo-container",
+                children=[
+                    html.H2("Crop Yield and Production Prediction Demo"),
+                    html.Br(),
+                    dbc.Row(
+                        children=[
+                            dbc.Col(
+                                width=6,
+                                children=[
+                                    html.Div(
+                                        className="dropdown-container",
+                                        children=[
+                                            html.Label("Select County:"),
+                                            dcc.Dropdown(
+                                                id='county-dropdown2',
+                                                options=[
+                                                    {'label': county, 'value': county} for county in sorted(data["County"].unique())
+                                                ],
+                                                value=sorted(data["County"].unique())[0],
+                                                className="dropdown"
+                                            ),
+                                            html.Br(),
+                                            html.Label("Select Crop:"),
+                                            dcc.Dropdown(
+                                                id='crop-dropdown2',
+                                                options=[
+                                                    {'label': crop, 'value': crop} for crop in sorted(data["Crop Name"].unique())
+                                                ],
+                                                value=sorted(data["Crop Name"].unique())[0],
+                                                className="dropdown"
+                                            ),
+                                            html.Br(),
+                                            html.Label("Select Target Variable:"),
+                                            dcc.RadioItems(
+                                                id='target-variable',
+                                                options=[
+                                                    {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
+                                                    {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
+                                                ],
+                                                value='Yield Per Acre',
+                                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                                            ),
+                                            html.Br(),
+                                            html.Label("Select Model:"),
+                                            dcc.RadioItems(
+                                                id='model-name',
+                                                options=[
+                                                    {'label': model, 'value': model} for model in ['KNN', 'DecisionTree', 'GradientBoosting']
+                                                ],
+                                                value='GradientBoosting',
+                                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                                            ),
+                                            html.Br(),
+                                            html.H4("Input Features:"),
+                                            html.Div(id='feature-inputs'),
+                                            html.Br(),
+                                            dbc.Button("Randomize Input", id='randomize-button', color='secondary', className='me-2'),
+                                            dbc.Button("Predict", id='predict-button', color='primary'),
+                                            html.Br(),
+                                            html.Br(),
+                                            html.Div(id='prediction-output')
+                                        ]
+                                    )
+                                ]
+                            )
+                        ]
+                    )
+                ]
+            )
+        ]
+    )
 
 # Callback for updating both plots
 @callback(
@@ -195,3 +310,114 @@ def update_yield_and_production_plots(selected_county, selected_crop):
     )
 
     return yield_fig, production_fig
+
+@callback(
+    [Output({'type': 'feature-input', 'index': ALL}, 'value')],
+    [Input('randomize-button', 'n_clicks')],
+    [State('county-dropdown2', 'value'),
+     State('crop-dropdown2', 'value'),
+     State('target-variable', 'value'),
+     State('model-name', 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'id')]
+)
+def randomize_input(n_clicks, county, crop, target, model_name, input_ids):
+    if n_clicks is None:
+        raise dash.exceptions.PreventUpdate
+
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key not in all_models:
+        return [[]]  # No randomization if model is not found
+
+    # Generate random values
+    random_values = []
+    for id_dict in input_ids:
+        feature = id_dict['index']
+        if "days" in feature:  # Extreme weather variables
+            random_values.append(random.randint(10, 100))
+        elif "crop" in feature or "lag" in feature:  # Crop variables
+            random_values.append(round(random.uniform(0.1, 1), 2))
+        else:
+            random_values.append(0.0)  # Default for other features
+
+    return [random_values]
+
+@callback(
+    Output('feature-inputs', 'children'),
+    [Input('county-dropdown2', 'value'),
+     Input('crop-dropdown2', 'value'),
+     Input('target-variable', 'value'),
+     Input('model-name', 'value')]
+)
+def update_feature_inputs(county, crop, target, model_name):
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key in all_models:
+        # Use all features directly
+        all_features = all_models[model_key].get('selected_features')
+        if all_features is None:
+            return html.Div("Error: Feature metadata missing in the model.")
+
+        input_fields = [
+            html.Div([
+                html.Label(f"{feature.replace('_', ' ').title()}"),
+                dcc.Input(
+                    id={'type': 'feature-input', 'index': feature},
+                    type='number',
+                    placeholder=f"Enter {feature}",
+                    style={'margin-bottom': '10px', 'width': '100%'}
+                )
+            ]) for feature in all_features
+        ]
+        return input_fields
+    else:
+        return html.Div("Model not available for the selected combination.")
+
+
+@callback(
+    Output('prediction-output', 'children'),
+    [Input('predict-button', 'n_clicks')],
+    [State('county-dropdown2', 'value'),
+     State('crop-dropdown2', 'value'),
+     State('target-variable', 'value'),
+     State('model-name', 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'value'),
+     State({'type': 'feature-input', 'index': ALL}, 'id')]
+)
+def make_prediction(n_clicks, county, crop, target, model_name, input_values, input_ids):
+    if n_clicks is None:
+        return ""
+
+    model_key = f"{model_name}_{county}_{crop}_{target}"
+    if model_key not in all_models:
+        return f"Model not available for the combination: {model_name}, {county}, {crop}, {target}."
+
+    try:
+        model_entry = all_models[model_key]
+        model = model_entry['model']
+        scaler = model_entry['scaler']
+        all_features = model_entry.get('selected_features')
+
+        if all_features is None:
+            return "Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training."
+
+        # Initialize feature values for all features
+        feature_values = {feature: 0.0 for feature in all_features}
+
+        # Update feature values with user inputs
+        for value, id_dict in zip(input_values, input_ids):
+            feature = id_dict['index']
+            if feature in feature_values:
+                feature_values[feature] = float(value) if value is not None else 0.0
+
+        # Prepare input DataFrame
+        X_input = pd.DataFrame([feature_values])
+
+        # Scale the input
+        X_scaled = scaler.transform(X_input)
+
+        # Make prediction
+        prediction = model.predict(X_scaled)[0]
+
+        return html.Div([html.H4(f"Predicted {target}: {prediction:.2f}")])
+
+    except Exception as e:
+        return f"An error occurred during prediction: {e}"
