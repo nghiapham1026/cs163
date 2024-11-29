@@ -1,6 +1,4 @@
 # Weather Data Analysis and Forecasting
-# Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
-# Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
 ## **Project Summary: Weather Data Analysis and Forecasting**
 
 #### **Project Goals:**
@@ -32,6 +30,9 @@ The project will utilize a combination of historical and real-time weather data 
 3. **Anomaly Detection:** Implement algorithms to detect unusual weather patterns that deviate significantly from historical norms, which could indicate extreme weather events or long-term climate shifts.
 
 4. **Data Visualization:** Create interactive visualizations to present the analysis and forecast results. This will include dashboards that display real-time weather data, predicted conditions, and detected anomalies.
+
+## Colab Notebook (Analysis and ML Model): https://colab.research.google.com/drive/1xZXZ7lU_aWVcM8PXUi_K44Iom1WTDiGp?usp=sharing
+## Colab Notebook (Visualization Plan): https://colab.research.google.com/drive/1eXGaCdHmqq_IcxItqU5Y1ujAiClHqDID?usp=sharing
 
 ## Repo Structure
 <!--- You can create additional directories and subdirectories but do not remove and rename the following basic directories -->
