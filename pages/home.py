@@ -1,13 +1,13 @@
-from dash import html, dcc, callback, Output, Input
+from dash import html, dcc
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.express as px
 import pandas as pd
 import json
 
 # Load California county boundaries GeoJSON
 with open('./data/California_County_Boundaries.geojson') as f:
     california_counties = json.load(f)
+
+techniques_df = pd.read_csv('./data/techniques.csv')
 
 # City coordinates
 city_data = [
@@ -93,7 +93,7 @@ def layout():
                         children=[
                             dcc.Graph(
                                 id="california-map",
-                                figure=california_map(),  # Assuming this function generates the map figure
+                                figure=california_map(),
                                 className="california-map-graph"
                             )
                         ]
@@ -104,16 +104,16 @@ def layout():
     )
 
 def california_map():
+# Initialize the map figure
     fig = go.Figure()
 
-    # Add county boundaries as filled areas from the filtered GeoJSON
+    # Add GeoJSON polygons for each selected county with a semi-transparent fill
     fig.update_layout(mapbox=dict(
         style="carto-positron",
         center={"lat": 37.5, "lon": -119.5},
         zoom=5
     ))
 
-    # Add GeoJSON polygons for each selected county with a semi-transparent fill
     fig.update_layout(mapbox_layers=[
         {
             "source": filtered_counties,
@@ -136,18 +136,40 @@ def california_map():
             name="Cities"
         ))
 
-    # Add county labels at the centroids
+    # Add county markers for farming techniques
     for county_item in county_data:
-        fig.add_trace(go.Scattermapbox(
-            lat=[county_item["lat"]],
-            lon=[county_item["lon"]],
-            mode="text",
-            text=county_item["name"],
-            textposition="middle center",
-            textfont=dict(size=12, color="green"),
-            hoverinfo="none",
-            name="Counties"
-        ))
+        county_name = county_item["name"]
+
+        # Filter techniques for this county
+        county_techniques = techniques_df[techniques_df["County"] == county_name]
+
+        if not county_techniques.empty:
+            # Create hover text for techniques
+            hover_text = (
+                f"<b>{county_name}</b><br>" +
+                "<br>".join([
+                    f"<b>Crop:</b> {row['Primary Crops']}<br>"
+                    f"<b>Farming:</b> {row['Farming Methods']}<br>"
+                    f"<b>Irrigation:</b> {row['Irrigation Techniques']}<br>"
+                    f"<b>Pesticide:</b> {row['Pesticide Usage']}"
+                    for _, row in county_techniques.iterrows()
+                ])
+            )
+
+            # Add marker for the county
+            fig.add_trace(go.Scattermapbox(
+                lat=[county_item["lat"]],
+                lon=[county_item["lon"]],
+                mode="markers",
+                marker=go.scattermapbox.Marker(
+                    size=15,
+                    color="rgba(255, 100, 0, 0.7)",
+                    symbol="circle"
+                ),
+                text=hover_text,
+                hoverinfo="text",
+                name=county_name
+            ))
 
     # Update layout settings
     fig.update_layout(

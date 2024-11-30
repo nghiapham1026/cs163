@@ -1,8 +1,7 @@
 import pandas as pd
-from dash import html, dcc, callback, Input, Output, dash_table
+from dash import html, dcc, callback, Input, Output
 import plotly.express as px
 import plotly.graph_objs as go
-import numpy as np
 
 # Load the weather data
 weather_data = pd.read_csv('./data/weather_data.csv')
