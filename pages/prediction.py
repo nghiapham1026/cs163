@@ -2,6 +2,7 @@ import dash
 from dash import html, dcc, Input, Output, callback, State, ALL
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
+import plotly.express as px
 import pandas as pd
 import joblib
 import random
@@ -109,65 +110,142 @@ def layout():
             dbc.Container(
                 className="section prediction-demo-section",
                 children=[
-                    html.H2("Crop Yield and Production Prediction Demo", className="section-title"),
+                    # Section Title
+                    html.H2(
+                        "Crop Yield and Production Prediction Demo",
+                        className="section-title"
+                    ),
                     html.Br(),
+
+                    # Input and Output Row
                     dbc.Row(
                         children=[
                             dbc.Col(
                                 width=6,
                                 children=[
+                                    # Input Section
                                     html.Div(
                                         className="dropdown-container",
                                         children=[
-                                            html.Label("Select County:", className="dropdown-label"),
+                                            html.Label(
+                                                "Select County:",
+                                                className="dropdown-label"
+                                            ),
                                             dcc.Dropdown(
-                                                id='county-dropdown2',  # Updated ID
+                                                id='county-dropdown2',
                                                 options=[
-                                                    {'label': county, 'value': county} for county in sorted(data["County"].unique())
+                                                    {'label': county, 'value': county}
+                                                    for county in sorted(data["County"].unique())
                                                 ],
                                                 value=sorted(data["County"].unique())[0],
                                                 className="dropdown"
                                             ),
                                             html.Br(),
-                                            html.Label("Select Crop:", className="dropdown-label"),
+
+                                            html.Label(
+                                                "Select Crop:",
+                                                className="dropdown-label"
+                                            ),
                                             dcc.Dropdown(
-                                                id='crop-dropdown2',  # Updated ID
+                                                id='crop-dropdown2',
                                                 options=[
-                                                    {'label': crop, 'value': crop} for crop in sorted(data["Crop Name"].unique())
+                                                    {'label': crop, 'value': crop}
+                                                    for crop in sorted(data["Crop Name"].unique())
                                                 ],
-                                                value=sorted(data["Crop Name"].unique())[1],
+                                                value=sorted(data["Crop Name"].unique())[0],
                                                 className="dropdown"
                                             ),
                                             html.Br(),
-                                            html.Label("Select Target Variable:", className="dropdown-label"),
+
+                                            html.Label(
+                                                "Select Target Variable:",
+                                                className="dropdown-label"
+                                            ),
                                             dcc.RadioItems(
-                                                id='target-variable',  # Updated ID
+                                                id='target-variable',
                                                 options=[
                                                     {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
                                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
                                                 ],
                                                 value='Yield Per Acre',
-                                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                                                labelStyle={
+                                                    'display': 'inline-block',
+                                                    'margin-right': '10px'
+                                                },
+                                                className="radio-items"
                                             ),
                                             html.Br(),
-                                            html.Label("Select Model:", className="dropdown-label"),
+
+                                            html.Label(
+                                                "Select Model:",
+                                                className="dropdown-label"
+                                            ),
                                             dcc.RadioItems(
-                                                id='model-name',  # Updated ID
+                                                id='model-name',
                                                 options=[
-                                                    {'label': model, 'value': model} for model in ['KNN', 'DecisionTree', 'GradientBoosting']
+                                                    {'label': model, 'value': model}
+                                                    for model in ['KNN', 'DecisionTree', 'GradientBoosting']
                                                 ],
                                                 value='GradientBoosting',
-                                                labelStyle={'display': 'inline-block', 'margin-right': '10px'}
+                                                labelStyle={
+                                                    'display': 'inline-block',
+                                                    'margin-right': '10px'
+                                                },
+                                                className="radio-items"
                                             ),
                                             html.Br(),
-                                            html.H4("Input Features:", className="features-title"),
-                                            html.Div(id='feature-inputs', className="feature-inputs"),
+
+                                            # Input Features
+                                            html.H4(
+                                                "Input Features:",
+                                                className="features-title"
+                                            ),
+                                            html.Div(
+                                                id='feature-inputs',
+                                                className="feature-inputs"
+                                            ),
                                             html.Br(),
-                                            dbc.Button("Randomize Input", id='randomize-button', color='secondary', className='me-2'),
-                                            dbc.Button("Predict", id='predict-button', color='primary'),
+
+                                            # Buttons
+                                            dbc.Button(
+                                                "Randomize Input",
+                                                id='randomize-button',
+                                                color='secondary',
+                                                className='me-2'
+                                            ),
+                                            dbc.Button(
+                                                "Predict",
+                                                id='predict-button',
+                                                color='primary'
+                                            ),
                                             html.Br(),
                                             html.Br(),
-                                            html.Div(id='prediction-output', className="prediction-output")
+
+                                            # Prediction Output
+                                            html.Div(
+                                                id='prediction-text-output',
+                                                className="prediction-output"
+                                            )
+                                        ]
+                                    )
+                                ]
+                            ),
+
+                            # Feature Importance Graph Section
+                            dbc.Col(
+                                width=6,
+                                children=[
+                                    html.Div(
+                                        className="graph-container",
+                                        children=[
+                                            html.H4(
+                                                "Feature Importance",
+                                                className="graph-title"
+                                            ),
+                                            dcc.Graph(
+                                                id='feature-importance-graph',
+                                                className="feature-importance-graph"
+                                            )
                                         ]
                                     )
                                 ]
@@ -381,7 +459,8 @@ def update_feature_inputs(county, crop, target, model_name):
 
 
 @callback(
-    Output('prediction-output', 'children'),
+    [Output('prediction-text-output', 'children'),
+     Output('feature-importance-graph', 'figure')],
     [Input('predict-button', 'n_clicks')],
     [State('county-dropdown2', 'value'),
      State('crop-dropdown2', 'value'),
@@ -390,13 +469,13 @@ def update_feature_inputs(county, crop, target, model_name):
      State({'type': 'feature-input', 'index': ALL}, 'value'),
      State({'type': 'feature-input', 'index': ALL}, 'id')]
 )
-def make_prediction(n_clicks, county, crop, target, model_name, input_values, input_ids):
+def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_name, input_values, input_ids):
     if n_clicks is None:
-        return ""
+        return "", go.Figure()
 
     model_key = f"{model_name}_{county}_{crop}_{target}"
     if model_key not in all_models:
-        return f"Model not available for the combination: {model_name}, {county}, {crop}, {target}."
+        return (f"Model not available for the combination: {model_name}, {county}, {crop}, {target}.", go.Figure())
 
     try:
         model_entry = all_models[model_key]
@@ -405,7 +484,7 @@ def make_prediction(n_clicks, county, crop, target, model_name, input_values, in
         all_features = model_entry.get('selected_features')
 
         if all_features is None:
-            return "Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training."
+            return ("Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training.", go.Figure())
 
         # Initialize feature values for all features
         feature_values = {feature: 0.0 for feature in all_features}
@@ -425,7 +504,37 @@ def make_prediction(n_clicks, county, crop, target, model_name, input_values, in
         # Make prediction
         prediction = model.predict(X_scaled)[0]
 
-        return html.Div([html.H4(f"Predicted {target}: {prediction:.2f}")])
+        # Extract feature importance
+        if hasattr(model, "feature_importances_"):
+            feature_importances = model.feature_importances_
+            importance_df = pd.DataFrame({
+                "Feature": all_features,
+                "Importance": feature_importances
+            }).sort_values(by="Importance", ascending=False)
+
+            # Create feature importance plot
+            fig = px.bar(
+                importance_df,
+                x="Importance",
+                y="Feature",
+                orientation='h',
+                title="Feature Importance",
+                labels={"Importance": "Importance", "Feature": "Feature"},
+                height=500
+            )
+            fig.update_layout(
+                yaxis=dict(autorange="reversed"),  # Reverse y-axis for better readability
+                margin=dict(l=50, r=50, t=50, b=50)
+            )
+        else:
+            fig = go.Figure()
+            fig.add_annotation(
+                text="Feature importance is not available for this model.",
+                showarrow=False,
+                font=dict(size=16)
+            )
+
+        return (html.Div([html.H4(f"Predicted {target}: {prediction:.2f}")]), fig)
 
     except Exception as e:
-        return f"An error occurred during prediction: {e}"
+        return (f"An error occurred during prediction: {e}", go.Figure())
