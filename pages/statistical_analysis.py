@@ -43,140 +43,211 @@ predictors = ['high_temp_days', 'low_temp_days', 'heavy_rain_days',
 
 def layout():
     return html.Div(
-        [
+        className="main-container",
+        children=[
+            # Page Title
             html.H1(
-                "Extreme Weather Threshold Analysis",
-                className="extreme-weather-title"
+                "Visualization Dashboard: Weather and Crop Analysis",
+                className="page-title"
             ),
+            
+            html.Hr(className="divider"),
 
-            # Extreme Weather Section
+            # Section 1: Extreme Weather Threshold Analysis
             html.Div(
-                [
-                    html.Label(
-                        "Select a County (Extreme Weather):",
-                        className="extreme-weather-county-label"
+                className="section extreme-weather-section",
+                children=[
+                    html.H2(
+                        "Extreme Weather Threshold Analysis",
+                        className="section-title"
                     ),
-                    dcc.Dropdown(
-                        id="extreme-weather-county-dropdown",
-                        options=[
-                            {"label": county, "value": county}
-                            for county in weather_data['city_name'].unique()
-                        ],
-                        value=weather_data['city_name'].unique()[0],
-                        clearable=False,
-                        className="extreme-weather-county-dropdown"
-                    ),
-                    html.Label(
-                        "Select a Weather Variable:",
-                        className="extreme-weather-variable-label"
-                    ),
-                    dcc.Dropdown(
-                        id="extreme-weather-variable-dropdown",
-                        options=[
-                            {"label": "Temperature", "value": "temp"},
-                            {"label": "Rain (1 Hour)", "value": "rain_1h"},
-                            {"label": "Dew Point", "value": "dew_point"},
-                            {"label": "Cloud Cover", "value": "clouds_all"}
-                        ],
-                        value="temp",
-                        clearable=False,
-                        className="extreme-weather-variable-dropdown"
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label(
+                                "Select a County (Extreme Weather):",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id="extreme-weather-county-dropdown",
+                                options=[
+                                    {"label": county, "value": county}
+                                    for county in weather_data['city_name'].unique()
+                                ],
+                                value=weather_data['city_name'].unique()[0],
+                                clearable=False,
+                                className="dropdown"
+                            ),
+                            html.Label(
+                                "Select a Weather Variable:",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id="extreme-weather-variable-dropdown",
+                                options=[
+                                    {"label": "Temperature", "value": "temp"},
+                                    {"label": "Rain (1 Hour)", "value": "rain_1h"},
+                                    {"label": "Dew Point", "value": "dew_point"},
+                                    {"label": "Cloud Cover", "value": "clouds_all"}
+                                ],
+                                value="temp",
+                                clearable=False,
+                                className="dropdown"
+                            )
+                        ]
                     ),
                     dcc.Graph(
                         id="extreme-weather-graph",
-                        className="extreme-weather-graph"
-                    ),
-                ],
-                className="extreme-weather-section",
-                style={"margin-bottom": "50px"}
+                        className="graph"
+                    )
+                ]
             ),
 
-            html.H1(
-                "County-Crop Correlation Analysis",
-                className="correlation-analysis-title"
-            ),
+            html.Hr(className="divider"),
 
-            # Correlation Matrix Section
+            # Section 2: County-Crop Correlation Analysis
             html.Div(
-                [
-                    html.Label(
-                        "Select a County (Correlation Matrix):",
-                        className="correlation-county-label"
+                className="section correlation-analysis-section",
+                children=[
+                    html.H2(
+                        "County-Crop Correlation Analysis",
+                        className="section-title"
                     ),
-                    dcc.Dropdown(
-                        id="correlation-county-dropdown",
-                        options=[
-                            {"label": county, "value": county}
-                            for county in merged_yearly['County'].unique()
-                        ],
-                        value=merged_yearly['County'].unique()[0],
-                        clearable=False,
-                        className="correlation-county-dropdown"
-                    ),
-                    html.Label(
-                        "Select a Crop:",
-                        className="correlation-crop-label"
-                    ),
-                    dcc.Dropdown(
-                        id="correlation-crop-dropdown",
-                        options=[],  # Populated by callback based on county selection
-                        value=None,
-                        clearable=False,
-                        className="correlation-crop-dropdown"
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label(
+                                "Select a County (Correlation Matrix):",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id="correlation-county-dropdown",
+                                options=[
+                                    {"label": county, "value": county}
+                                    for county in merged_yearly['County'].unique()
+                                ],
+                                value=merged_yearly['County'].unique()[0],
+                                clearable=False,
+                                className="dropdown"
+                            ),
+                            html.Label(
+                                "Select a Crop:",
+                                className="dropdown-label"
+                            ),
+                            dcc.Dropdown(
+                                id="correlation-crop-dropdown",
+                                options=[],  # Populated by callback based on county selection
+                                value=None,
+                                clearable=False,
+                                className="dropdown"
+                            )
+                        ]
                     ),
                     dcc.Graph(
                         id="correlation-matrix-plot",
-                        className="correlation-matrix-graph"
-                    ),
-                ],
-                className="correlation-matrix-section"
+                        className="graph"
+                    )
+                ]
             ),
 
-            html.Div([
-                html.Label("Select County:"),
-                dcc.Dropdown(
-                    id='county-dropdown3',
-                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
-                            [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
-                    value='All Counties'  # Default value
-                ),
-            ]),
-            dcc.Graph(id='correlation-boxplot'),
+            html.Hr(className="divider"),
 
-            html.Div([
-                html.Label("Select Weather Variable:"),
-                dcc.Dropdown(
-                    id='weather-variable-dropdown',
-                    options=[{'label': 'All Variables', 'value': 'All Variables'}] + 
-                            [{'label': var, 'value': var} for var in strong_correlations['Weather Variable'].unique()],
-                    value='All Variables'
-                ),
-            ]),
-            dcc.Graph(id='frequency-plot'),
+            # Section 3: Weather Variable Frequency Analysis
+            html.Div(
+                className="section frequency-analysis-section",
+                children=[
+                    html.H2(
+                        "Weather Variable Frequency Analysis",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select County:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='county-dropdown3',
+                                options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                                        [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
+                                value='All Counties',
+                                className="dropdown"
+                            ),
+                            html.Label("Select Weather Variable:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='weather-variable-dropdown',
+                                options=[{'label': 'All Variables', 'value': 'All Variables'}] + 
+                                        [{'label': var, 'value': var} for var in strong_correlations['Weather Variable'].unique()],
+                                value='All Variables',
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(
+                        id='frequency-plot',
+                        className="graph"
+                    )
+                ]
+            ),
 
-            html.Div([
-                html.Label("Select County:"),
-                dcc.Dropdown(
-                    id='county-dropdown',
-                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
-                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
-                    value='All Counties'  # Default value
-                ),
-            ]),
-            dcc.Graph(id='ols-regression-plot'),
+            html.Hr(className="divider"),
 
-            html.Div([
-                html.Label("Select County:"),
-                dcc.Dropdown(
-                    id='county-dropdown2',
-                    options=[{'label': 'All Counties', 'value': 'All Counties'}] +
-                            [{'label': county, 'value': county} for county in results_df['County'].unique()],
-                    value='All Counties'  # Default option
-                ),
-            ]),
-            dcc.Graph(id='ols-heatmap'),
-        ],
-        className="main-container"
+            # Section 4: OLS Regression Analysis
+            html.Div(
+                className="section ols-regression-section",
+                children=[
+                    html.H2(
+                        "OLS Regression Analysis",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select County (OLS Regression):", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='county-dropdown',
+                                options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                                        [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                                value='All Counties',
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(
+                        id='ols-regression-plot',
+                        className="graph"
+                    )
+                ]
+            ),
+
+            html.Hr(className="divider"),
+
+            # Section 5: OLS Regression Heatmap
+            html.Div(
+                className="section ols-heatmap-section",
+                children=[
+                    html.H2(
+                        "OLS Regression Heatmap",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select County (OLS Heatmap):", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='county-dropdown2',
+                                options=[{'label': 'All Counties', 'value': 'All Counties'}] +
+                                        [{'label': county, 'value': county} for county in results_df['County'].unique()],
+                                value='All Counties',
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(
+                        id='ols-heatmap',
+                        className="graph"
+                    )
+                ]
+            )
+        ]
     )
 
 @callback(

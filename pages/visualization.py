@@ -41,196 +41,181 @@ def layout():
     return html.Div(
         className="visualization-container",
         children=[
-            # Page title
+            # Page Title
             html.H1(
                 "Visualization of The Impact of Weather on Crop Yield",
                 className="page-title"
             ),
             
-            # Section: Impact of Extreme Weather on Crop Yield
+            html.Hr(className="divider"),
+
+            # Section 1: Impact of Extreme Weather on Crop Yield
             html.Div(
-                className="impact-weather-container",
+                className="section impact-weather-section",
                 children=[
-                    html.H1(
+                    html.H2(
                         "Impact of Extreme Weather on Crop Yield",
-                        className="impact-weather-title"
-                    ),
-                    html.Div(
-                        className="impact-weather-dropdowns",
-                        children=[
-                            html.Div(
-                                children=[
-                                    html.Label(
-                                        "Select Crop:",
-                                        className="impact-weather-dropdown-label"
-                                    ),
-                                    dcc.Dropdown(
-                                        id='impact-weather-crop-dropdown',  # Updated ID
-                                        options=[{'label': crop, 'value': crop} for crop in df["Crop Name"].unique()],
-                                        value=df["Crop Name"].unique()[0],
-                                        className="impact-weather-dropdown"
-                                    ),
-                                ],
-                                className="dropdown-container"
-                            ),
-                            html.Div(
-                                children=[
-                                    html.Label(
-                                        "Select Extreme Weather Variable:",
-                                        className="impact-weather-dropdown-label"
-                                    ),
-                                    dcc.Dropdown(
-                                        id='impact-extreme-variable-dropdown',  # Updated ID
-                                        options=[{'label': var, 'value': var} for var in extreme_weather_features],
-                                        value=extreme_weather_features[0],
-                                        className="impact-weather-dropdown"
-                                    ),
-                                ],
-                                className="dropdown-container"
-                            ),
-                        ]
-                    ),
-                    html.Div(
-                        className="yield-comparison-graph-container",
-                        children=[
-                            dcc.Graph(
-                                id='impact-yield-comparison-graph',  # Updated ID
-                                className="yield-comparison-graph"
-                            )
-                        ]
-                    ),
-                ]
-            ),
-
-            # Section: Weather Impact on Crop Yield
-            html.Div(
-                className="weather-impact-container",
-                children=[
-                    html.H1("Weather Impact on Crop Yield"),
-                    html.Label("Select Crop:"),
-                    dcc.Dropdown(
-                        id='weather-impact-crop-dropdown',  # Updated ID
-                        options=[{'label': crop, 'value': crop} for crop in sorted(crops)],
-                        value=sorted(crops)[0]
-                    ),
-                    html.Label("Select Extreme Weather Variable:"),
-                    dcc.Dropdown(
-                        id='weather-impact-feature-dropdown',  # Updated ID
-                        options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
-                        value=extreme_weather_features[0]
-                    ),
-                    html.Div(
-                        className="graphs-container",
-                        children=[
-                            dcc.Graph(id='weather-yield-per-acre-graph'),  # Updated ID
-                            dcc.Graph(id='weather-production-per-acre-graph')  # Updated ID
-                        ]
-                    )
-                ]
-            ),
-
-            # Section: Weather Anomalies and Crop Yield
-            html.Div(
-                className="weather-anomalies-container",
-                children=[
-                    html.H1("Weather Anomalies and Crop Yield", className="section-title"),
-                    html.Div(
-                        className="dropdown-container",
-                        children=[
-                            html.Label("Select County:", className="dropdown-label"),
-                            dcc.Dropdown(
-                                id='anomalies-county-dropdown',  # Updated ID
-                                options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
-                                value=sorted(df["County"].unique())[-1]
-                            ),
-                        ]
+                        className="section-title"
                     ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label("Select Crop:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='anomalies-crop-dropdown',  # Updated ID
-                                options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
-                                value=sorted(df["Crop Name"].unique())[0]
+                                id='impact-weather-crop-dropdown',
+                                options=[{'label': crop, 'value': crop} for crop in df["Crop Name"].unique()],
+                                value=df["Crop Name"].unique()[-1],
+                                className="dropdown"
                             ),
+                            html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='impact-extreme-variable-dropdown',
+                                options=[{'label': var, 'value': var} for var in extreme_weather_features],
+                                value=extreme_weather_features[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    dcc.Graph(
+                        id='impact-yield-comparison-graph',
+                        className="graph"
+                    )
+                ]
+            ),
+
+            html.Hr(className="divider"),
+
+            # Section 2: Weather Impact on Crop Yield
+            html.Div(
+                className="section weather-impact-section",
+                children=[
+                    html.H2(
+                        "Weather Impact on Crop Yield",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Crop:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='weather-impact-crop-dropdown',
+                                options=[{'label': crop, 'value': crop} for crop in sorted(crops)],
+                                value=sorted(crops)[0],
+                                className="dropdown"
+                            ),
+                            html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='weather-impact-feature-dropdown',
+                                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
+                                value=extreme_weather_features[0],
+                                className="dropdown"
+                            )
                         ]
                     ),
                     html.Div(
                         className="graphs-container",
                         children=[
-                            dcc.Graph(id='anomalies-yield-graph'),  # Updated ID
-                            dcc.Graph(id='anomalies-production-graph')  # Updated ID
+                            dcc.Graph(id='weather-yield-per-acre-graph', className="graph"),
+                            dcc.Graph(id='weather-production-per-acre-graph', className="graph")
                         ]
                     )
                 ]
             ),
 
+            html.Hr(className="divider"),
+
+            # Section 3: Weather Anomalies and Crop Yield
             html.Div(
-                className="yield-production-container",
+                className="section weather-anomalies-section",
                 children=[
-                    html.H1(
-                        "Crop Yield and Production by Farming Method Under Different Weather Conditions",
-                        className="yield-production-title"
+                    html.H2(
+                        "Weather Anomalies and Crop Yield",
+                        className="section-title"
                     ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label(
-                                "Select Extreme Weather Variable:",
-                                className="dropdown-label"
-                            ),
+                            html.Label("Select County:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='yield-production-weather-variable-dropdown',  # Unique ID
+                                id='anomalies-county-dropdown',
+                                options=[{'label': county, 'value': county} for county in sorted(df["County"].unique())],
+                                value=sorted(df["County"].unique())[-1],
+                                className="dropdown"
+                            ),
+                            html.Label("Select Crop:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='anomalies-crop-dropdown',
+                                options=[{'label': crop, 'value': crop} for crop in sorted(df["Crop Name"].unique())],
+                                value=sorted(df["Crop Name"].unique())[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="graphs-container",
+                        children=[
+                            dcc.Graph(id='anomalies-yield-graph', className="graph"),
+                            dcc.Graph(id='anomalies-production-graph', className="graph")
+                        ]
+                    )
+                ]
+            ),
+
+            html.Hr(className="divider"),
+
+            # Section 4: Crop Yield and Production by Farming Method
+            html.Div(
+                className="section yield-production-section",
+                children=[
+                    html.H2(
+                        "Crop Yield and Production by Farming Method Under Different Weather Conditions",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='yield-production-weather-variable-dropdown',
                                 options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
                                 value=extreme_weather_features[0],
                                 className="dropdown"
-                            ),
-                        ]
-                    ),
-                    html.Div(
-                        className="graph-container",
-                        children=[
-                            dcc.Graph(
-                                id='yield-production-graph',  # Unique ID
-                                className="yield-production-graph"
                             )
                         ]
+                    ),
+                    dcc.Graph(
+                        id='yield-production-graph',
+                        className="graph"
                     )
                 ]
             ),
 
+            html.Hr(className="divider"),
+
+            # Section 5: Weather Impact on Crop Yields by County
             html.Div(
-                className="weather-impact-container",
+                className="section county-impact-section",
                 children=[
-                    html.H1(
+                    html.H2(
                         "Impact of Extreme Weather on Crop Yields",
-                        className="weather-impact-title"
+                        className="section-title"
                     ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label(
-                                "Select County:",
-                                className="dropdown-label"
-                            ),
+                            html.Label("Select County:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id="weather-impact-county-dropdown",  # Unique ID
+                                id="weather-impact-county-dropdown",
                                 options=[{'label': county, 'value': county} for county in sorted(data_copy["County"].unique())],
-                                value="Fresno",  # Default selection
+                                value="Fresno",
                                 clearable=False,
                                 className="dropdown"
-                            ),
-                        ]
-                    ),
-                    html.Div(
-                        className="graph-container",
-                        children=[
-                            dcc.Graph(
-                                id="weather-impact-plot",  # Unique ID
-                                className="weather-impact-graph"
                             )
                         ]
+                    ),
+                    dcc.Graph(
+                        id="weather-impact-plot",
+                        className="graph"
                     )
                 ]
             )

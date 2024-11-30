@@ -16,17 +16,25 @@ def layout():
     return html.Div(
         className="main-container",
         children=[
+            # Page Title
+            html.H1(
+                "Visualization Dashboard: Weather Impact on Crop Yields",
+                className="page-title"
+            ),
+            
+            html.Hr(className="divider"),
+
             # Section 1: Performance Metrics
             html.Div(
-                className="performance-metrics-container",
+                className="section performance-metrics-section",
                 children=[
-                    html.H2("Performance Metrics"),
+                    html.H2("Performance Metrics", className="section-title"),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select Target Variable:"),
+                            html.Label("Select Target Variable:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='target-dropdown',
+                                id='target-dropdown',  # Updated ID
                                 options=[
                                     {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
@@ -39,9 +47,9 @@ def layout():
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select Crop (Performance Metrics):"),
+                            html.Label("Select Crop (Performance Metrics):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='performance-crop-dropdown',
+                                id='performance-crop-dropdown',  # Updated ID
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -59,15 +67,15 @@ def layout():
 
             # Section 2: Training Data Visualization
             html.Div(
-                className="training-data-container",
+                className="section training-data-section",
                 children=[
-                    html.H2("Training Data Visualization"),
+                    html.H2("Training Data Visualization", className="section-title"),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select County (Training Data):"),
+                            html.Label("Select County (Training Data):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-county-dropdown',
+                                id='training-county-dropdown',  # Updated ID
                                 options=[
                                     {'label': county, 'value': county} for county in results_df['County'].unique()
                                 ],
@@ -79,9 +87,9 @@ def layout():
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select Crop (Training Data):"),
+                            html.Label("Select Crop (Training Data):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-crop-dropdown',
+                                id='training-crop-dropdown',  # Updated ID
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -99,9 +107,9 @@ def layout():
 
             # Section 3: Prediction Demo
             dbc.Container(
-                className="prediction-demo-container",
+                className="section prediction-demo-section",
                 children=[
-                    html.H2("Crop Yield and Production Prediction Demo"),
+                    html.H2("Crop Yield and Production Prediction Demo", className="section-title"),
                     html.Br(),
                     dbc.Row(
                         children=[
@@ -111,9 +119,9 @@ def layout():
                                     html.Div(
                                         className="dropdown-container",
                                         children=[
-                                            html.Label("Select County:"),
+                                            html.Label("Select County:", className="dropdown-label"),
                                             dcc.Dropdown(
-                                                id='county-dropdown2',
+                                                id='county-dropdown2',  # Updated ID
                                                 options=[
                                                     {'label': county, 'value': county} for county in sorted(data["County"].unique())
                                                 ],
@@ -121,19 +129,19 @@ def layout():
                                                 className="dropdown"
                                             ),
                                             html.Br(),
-                                            html.Label("Select Crop:"),
+                                            html.Label("Select Crop:", className="dropdown-label"),
                                             dcc.Dropdown(
-                                                id='crop-dropdown2',
+                                                id='crop-dropdown2',  # Updated ID
                                                 options=[
                                                     {'label': crop, 'value': crop} for crop in sorted(data["Crop Name"].unique())
                                                 ],
-                                                value=sorted(data["Crop Name"].unique())[0],
+                                                value=sorted(data["Crop Name"].unique())[1],
                                                 className="dropdown"
                                             ),
                                             html.Br(),
-                                            html.Label("Select Target Variable:"),
+                                            html.Label("Select Target Variable:", className="dropdown-label"),
                                             dcc.RadioItems(
-                                                id='target-variable',
+                                                id='target-variable',  # Updated ID
                                                 options=[
                                                     {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
                                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
@@ -142,9 +150,9 @@ def layout():
                                                 labelStyle={'display': 'inline-block', 'margin-right': '10px'}
                                             ),
                                             html.Br(),
-                                            html.Label("Select Model:"),
+                                            html.Label("Select Model:", className="dropdown-label"),
                                             dcc.RadioItems(
-                                                id='model-name',
+                                                id='model-name',  # Updated ID
                                                 options=[
                                                     {'label': model, 'value': model} for model in ['KNN', 'DecisionTree', 'GradientBoosting']
                                                 ],
@@ -152,14 +160,14 @@ def layout():
                                                 labelStyle={'display': 'inline-block', 'margin-right': '10px'}
                                             ),
                                             html.Br(),
-                                            html.H4("Input Features:"),
-                                            html.Div(id='feature-inputs'),
+                                            html.H4("Input Features:", className="features-title"),
+                                            html.Div(id='feature-inputs', className="feature-inputs"),
                                             html.Br(),
                                             dbc.Button("Randomize Input", id='randomize-button', color='secondary', className='me-2'),
                                             dbc.Button("Predict", id='predict-button', color='primary'),
                                             html.Br(),
                                             html.Br(),
-                                            html.Div(id='prediction-output')
+                                            html.Div(id='prediction-output', className="prediction-output")
                                         ]
                                     )
                                 ]

@@ -49,38 +49,59 @@ filtered_counties = {
 }
 
 def layout():
-    return html.Div(className="main-container", children=[
-        html.H1("California Crop and Weather Analysis", className="main-title"),
+    return html.Div(
+        className="main-container",
+        children=[
+            # Main Title
+            html.H1(
+                "California Crop and Weather Analysis",
+                className="main-title"
+            ),
 
-        # Project Objective
-        html.P(
-            "This project aims to analyze the correlation between extreme weather conditions "
-            "and crop yield, production, and harvested acres in various California counties. "
-            "By examining historical weather patterns and crop data, we seek to understand how "
-            "extreme weather events affect agricultural productivity and inform decision-making "
-            "in climate adaptation strategies for California’s agricultural sector.",
-            className="project-objective"
-        ),
+            # Project Objective Section
+            html.Div(
+                className="project-objective-section",
+                children=[
+                    html.P(
+                        "This project aims to analyze the correlation between extreme weather conditions "
+                        "and crop yield, production, and harvested acres in various California counties. "
+                        "By examining historical weather patterns and crop data, we seek to understand how "
+                        "extreme weather events affect agricultural productivity and inform decision-making "
+                        "in climate adaptation strategies for California’s agricultural sector.",
+                        className="project-objective-text"
+                    ),
+                    html.Img(
+                        src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
+                        alt="Illustration of weather impact on crops",
+                        className="project-objective-image"
+                    )
+                ]
+            ),
 
-        # Stock Image
-        html.Img(
-            src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
-            alt="Illustration of weather impact on crops",
-            style={"width": "100%", "height": "auto", "margin-top": "20px"},
-            className="stock-image"
-        ),
+            html.Hr(className="divider"),
 
-        html.H1("Geographical Locations Used in Analysis", className="section-title"),
-
-        # Map of California
-        html.Div(className="map-container", children=[
-            dcc.Graph(
-                id="california-map",
-                figure=california_map(),
-                className="california-map-graph"
+            # Geographical Analysis Section
+            html.Div(
+                className="geographical-analysis-section",
+                children=[
+                    html.H2(
+                        "Geographical Locations Used in Analysis",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="map-container",
+                        children=[
+                            dcc.Graph(
+                                id="california-map",
+                                figure=california_map(),  # Assuming this function generates the map figure
+                                className="california-map-graph"
+                            )
+                        ]
+                    )
+                ]
             )
-        ], style={"margin-top": "20px", "height": "500px"}),
-    ])
+        ]
+    )
 
 def california_map():
     fig = go.Figure()
