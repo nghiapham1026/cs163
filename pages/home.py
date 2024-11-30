@@ -104,7 +104,7 @@ def layout():
     )
 
 def california_map():
-# Initialize the map figure
+    # Initialize the map figure
     fig = go.Figure()
 
     # Add GeoJSON polygons for each selected county with a semi-transparent fill
@@ -124,20 +124,21 @@ def california_map():
     ])
 
     # Add city markers with labels
-    for city in city_data:
+    for i, city in enumerate(city_data):
         fig.add_trace(go.Scattermapbox(
             lat=[city["lat"]],
             lon=[city["lon"]],
             mode="markers+text",
-            marker=go.scattermapbox.Marker(size=10, color="blue"),
+            marker=go.scattermapbox.Marker(size=10, color="blue", symbol="circle"),
             text=city["name"],
             textposition="top right",
             hoverinfo="text",
-            name="Cities"
+            name="City Markers" if i == 0 else None,  # Show legend only once
+            showlegend=i == 0  # Show legend for the first trace only
         ))
 
     # Add county markers for farming techniques
-    for county_item in county_data:
+    for i, county_item in enumerate(county_data):
         county_name = county_item["name"]
 
         # Filter techniques for this county
@@ -168,13 +169,25 @@ def california_map():
                 ),
                 text=hover_text,
                 hoverinfo="text",
-                name=county_name
+                name="County Markers" if i == 0 else None,  # Show legend only once
+                showlegend=i == 0  # Show legend for the first trace only
             ))
 
     # Update layout settings
     fig.update_layout(
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        showlegend=False
+        showlegend=True,
+        legend=dict(
+            title="Legend",
+            orientation="h",
+            yanchor="bottom",
+            y=0.01,
+            xanchor="center",
+            x=0.5,
+            bgcolor="rgba(255, 255, 255, 0.7)",
+            bordercolor="rgba(200, 200, 200, 0.5)",
+            borderwidth=1
+        )
     )
 
     return fig
