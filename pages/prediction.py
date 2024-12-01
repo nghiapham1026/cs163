@@ -492,7 +492,6 @@ def update_feature_inputs(county, crop, target, model_name):
     else:
         return html.Div("Model not available for the selected combination.")
 
-
 @callback(
     [Output('prediction-text-output', 'children'),
      Output('feature-importance-graph', 'figure')],
@@ -506,7 +505,7 @@ def update_feature_inputs(county, crop, target, model_name):
 )
 def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_name, input_values, input_ids):
     if n_clicks is None:
-        return "", go.Figure()
+        return "Please click the Predict button.", go.Figure()
 
     model_key = f"{model_name}_{county}_{crop}_{target}"
     if model_key not in all_models:
@@ -520,6 +519,15 @@ def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_na
 
         if all_features is None:
             return ("Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training.", go.Figure())
+
+        # Check if all input values are filled
+        if None in input_values or "" in input_values:
+            return "Please fill in all input features before making a prediction.", go.Figure()
+
+        # Count the number of non-zero inputs
+        non_zero_count = sum(1 for value in input_values if value and float(value) != 0.0)
+        if non_zero_count > 5:
+            return "Prediction requires no more than 5 non-zero input features.", go.Figure()
 
         # Initialize feature values for all features
         feature_values = {feature: 0.0 for feature in all_features}
