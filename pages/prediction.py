@@ -249,7 +249,12 @@ def layout():
                                         ]
                                     )
                                 ]
-                            )
+                            ),
+                            html.Div(
+    id='randomized-info-output',
+    className="randomized-info",
+    style={"margin-top": "20px"}
+)
                         ]
                     )
                 ]
@@ -398,7 +403,8 @@ def update_yield_and_production_plots(selected_county, selected_crop):
     return yield_fig, production_fig
 
 @callback(
-    [Output({'type': 'feature-input', 'index': ALL}, 'value')],
+    [Output({'type': 'feature-input', 'index': ALL}, 'value'),
+     Output('randomized-info-output', 'children')],
     [Input('randomize-button', 'n_clicks')],
     [State('county-dropdown2', 'value'),
      State('crop-dropdown2', 'value'),
@@ -407,25 +413,41 @@ def update_yield_and_production_plots(selected_county, selected_crop):
      State({'type': 'feature-input', 'index': ALL}, 'id')]
 )
 def randomize_input(n_clicks, county, crop, target, model_name, input_ids):
+    data = pd.read_csv('./data/data.csv')
+
     if n_clicks is None:
         raise dash.exceptions.PreventUpdate
 
-    model_key = f"{model_name}_{county}_{crop}_{target}"
-    if model_key not in all_models:
-        return [[]]  # No randomization if model is not found
+    # Filter dataset for the specified county, crop, and year range
+    filtered_data = data[
+        (data["County"] == county) &
+        (data["Crop Name"] == crop) &
+        (data["Year"] >= 1990) & (data["Year"] <= 2020)
+    ]
 
-    # Generate random values
-    random_values = []
-    for id_dict in input_ids:
-        feature = id_dict['index']
-        if "days" in feature:  # Extreme weather variables
-            random_values.append(random.randint(10, 100))
-        elif "crop" in feature or "lag" in feature:  # Crop variables
-            random_values.append(round(random.uniform(0.1, 1), 2))
-        else:
-            random_values.append(0.0)  # Default for other features
+    if filtered_data.empty:
+        return [None] * len(input_ids), "No data available for the selected county, crop, and year range."
 
-    return [random_values]
+    # Randomly sample a row
+    sampled_row = filtered_data.sample(n=1).iloc[0]
+
+    # Generate random values for the feature inputs based on the sampled row
+    random_values = [
+        sampled_row.get(id_dict['index'], 0.0) for id_dict in input_ids
+    ]
+
+    # Retrieve the actual target variable value
+    actual_target_value = sampled_row["Yield Per Acre"] if target == "Yield Per Acre" else sampled_row["Production Per Acre"]
+
+    # Prepare display information
+    randomized_info = html.Div([
+        html.P(f"Randomized from Year: {int(sampled_row['Year'])}"),
+        html.P(f"County: {sampled_row['County']}"),
+        html.P(f"Crop: {sampled_row['Crop Name']}"),
+        html.P(f"Actual {target}: {actual_target_value}")
+    ])
+
+    return random_values, randomized_info
 
 @callback(
     Output('feature-inputs', 'children'),
