@@ -5,9 +5,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import joblib
-import random
 
-# Load data
 results_df = pd.read_csv('./data/results.csv')
 all_models = joblib.load("./data/all_models.joblib")
 df = pd.read_csv('./data/merged_yearly.csv')
@@ -111,21 +109,33 @@ def layout():
                 className="section prediction-demo-section",
                 children=[
                     # Section Title
-                    html.H2(
-                        "Crop Yield and Production Prediction Demo",
-                        className="section-title"
+                    html.Div(
+                        className="section-header",
+                        children=[
+                            html.H2(
+                                "Crop Yield and Production Prediction Demo",
+                                className="section-title"
+                            ),
+                            html.P(
+                                "Use the controls below to select parameters for crop yield prediction. "
+                                "Adjust features, randomize inputs, and analyze feature importance.",
+                                className="section-description"
+                            )
+                        ]
                     ),
                     html.Br(),
 
                     # Input and Output Row
                     dbc.Row(
+                        className="prediction-demo-row",
                         children=[
+                            # Input Section
                             dbc.Col(
                                 width=6,
+                                className="input-section",
                                 children=[
-                                    # Input Section
                                     html.Div(
-                                        className="dropdown-container",
+                                        className="input-container",
                                         children=[
                                             html.Label(
                                                 "Select County:",
@@ -168,10 +178,6 @@ def layout():
                                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
                                                 ],
                                                 value='Yield Per Acre',
-                                                labelStyle={
-                                                    'display': 'inline-block',
-                                                    'margin-right': '10px'
-                                                },
                                                 className="radio-items"
                                             ),
                                             html.Br(),
@@ -187,36 +193,43 @@ def layout():
                                                     for model in ['KNN', 'DecisionTree', 'GradientBoosting']
                                                 ],
                                                 value='GradientBoosting',
-                                                labelStyle={
-                                                    'display': 'inline-block',
-                                                    'margin-right': '10px'
-                                                },
                                                 className="radio-items"
                                             ),
                                             html.Br(),
 
                                             # Input Features
-                                            html.H4(
-                                                "Input Features:",
-                                                className="features-title"
-                                            ),
                                             html.Div(
-                                                id='feature-inputs',
-                                                className="feature-inputs"
+                                                className="feature-section",
+                                                children=[
+                                                    html.H4(
+                                                        "Input Features:",
+                                                        className="features-title"
+                                                    ),
+                                                    html.Div(
+                                                        id='feature-inputs',
+                                                        className="feature-inputs"
+                                                    )
+                                                ]
                                             ),
                                             html.Br(),
 
                                             # Buttons
-                                            dbc.Button(
-                                                "Randomize Input",
-                                                id='randomize-button',
-                                                color='secondary',
-                                                className='me-2'
-                                            ),
-                                            dbc.Button(
-                                                "Predict",
-                                                id='predict-button',
-                                                color='primary'
+                                            html.Div(
+                                                className="button-container",
+                                                children=[
+                                                    dbc.Button(
+                                                        "Randomize Input",
+                                                        id='randomize-button',
+                                                        color='secondary',
+                                                        className='me-2 randomize-button'
+                                                    ),
+                                                    dbc.Button(
+                                                        "Predict",
+                                                        id='predict-button',
+                                                        color='primary',
+                                                        className='predict-button'
+                                                    )
+                                                ]
                                             ),
                                             html.Br(),
                                             html.Br(),
@@ -225,6 +238,11 @@ def layout():
                                             html.Div(
                                                 id='prediction-text-output',
                                                 className="prediction-output"
+                                            ),
+                                            html.Div(
+                                                id='randomized-info-output',
+                                                className="randomized-info",
+                                                style={"margin-top": "20px"}
                                             )
                                         ]
                                     )
@@ -234,6 +252,7 @@ def layout():
                             # Feature Importance Graph Section
                             dbc.Col(
                                 width=6,
+                                className="graph-section",
                                 children=[
                                     html.Div(
                                         className="graph-container",
@@ -249,12 +268,7 @@ def layout():
                                         ]
                                     )
                                 ]
-                            ),
-                            html.Div(
-    id='randomized-info-output',
-    className="randomized-info",
-    style={"margin-top": "20px"}
-)
+                            )
                         ]
                     )
                 ]
