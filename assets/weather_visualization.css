@@ -1,101 +1,118 @@
-/* assets/styles.css */
-
 /* General Styles */
 body {
-    font-family: 'Lato', sans-serif;
-    background-color: #f5f7fa;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(145deg, #e8f1f6, #f5f7fa);
     margin: 0;
     padding: 0;
+    color: #2c3e50;
+    line-height: 1.6;
 }
 
 .weather-visualization-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 30px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.weather-visualization-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Page Title */
 .page-title {
     text-align: center;
-    font-size: 2.5em;
+    font-size: 3em;
+    font-weight: bold;
     color: #2c3e50;
-    margin-bottom: 40px;
-    border-bottom: 2px solid #2980b9;
-    padding-bottom: 10px;
+    margin-bottom: 50px;
+    border-bottom: 3px solid #3498db;
+    padding-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* City Dropdown */
 .city-dropdown-label {
-    font-size: 1.2em;
+    font-size: 1.3em;
     color: #34495e;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     display: block;
+    font-weight: bold;
 }
 
 .city-dropdown {
     width: 100%;
     max-width: 400px;
-    margin-bottom: 40px;
+    padding: 10px;
+    font-size: 1.1em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.city-dropdown:focus {
+    border-color: #3498db;
+    box-shadow: 0 0 8px rgba(52, 152, 219, 0.5);
 }
 
 /* Plot Containers */
-.temperature-plot-container,
-.extreme-weather-plot-container,
-.rainfall-plot-container,
-.dew-point-plot-container,
-.cloud-cover-plot-container {
+.plot-container {
     background-color: #ffffff;
     padding: 30px;
     margin-bottom: 40px;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.plot-container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 /* Plot Titles */
-.temperature-plot-title,
-.extreme-weather-plot-title,
-.rainfall-plot-title,
-.dew-point-plot-title,
-.cloud-cover-plot-title {
-    font-size: 1.8em;
+.plot-title {
+    font-size: 2em;
+    font-weight: bold;
     color: #2c3e50;
-    margin-bottom: 20px;
-    border-left: 5px solid #2980b9;
+    margin-bottom: 25px;
+    border-left: 5px solid #3498db;
     padding-left: 15px;
+    text-transform: capitalize;
 }
 
 /* Graphs */
-.temperature-plot-graph,
-.extreme-weather-plot-graph,
-.rainfall-plot-graph,
-.dew-point-plot-graph,
-.cloud-cover-plot-graph {
+.graph {
     height: 500px;
+    border-radius: 12px;
+    background: #f7f9fc;
+    padding: 20px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
     .page-title {
-        font-size: 2em;
+        font-size: 2.5em;
     }
 
     .city-dropdown-label {
-        font-size: 1em;
+        font-size: 1.1em;
     }
 
-    .temperature-plot-title,
-    .extreme-weather-plot-title,
-    .rainfall-plot-title,
-    .dew-point-plot-title,
-    .cloud-cover-plot-title {
-        font-size: 1.5em;
+    .plot-title {
+        font-size: 1.8em;
     }
 
-    .temperature-plot-graph,
-    .extreme-weather-plot-graph,
-    .rainfall-plot-graph,
-    .dew-point-plot-graph,
-    .cloud-cover-plot-graph {
+    .graph {
         height: 400px;
     }
 
@@ -105,14 +122,28 @@ body {
     }
 }
 
-.plot-container:hover {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: box-shadow 0.3s ease;
+/* Buttons */
+button {
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.city-dropdown {
-    transition: border 0.3s ease;
+button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
 }
-.city-dropdown:focus {
-    border-color: #2980b9;
+
+button.primary {
+    background-color: #3498db;
+    color: white;
+}
+
+button.secondary {
+    background-color: #6c757d;
+    color: white;
 }

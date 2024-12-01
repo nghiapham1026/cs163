@@ -1,13 +1,13 @@
-from dash import html, dcc, callback, Output, Input
+from dash import html, dcc
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.express as px
 import pandas as pd
 import json
 
 # Load California county boundaries GeoJSON
 with open('./data/California_County_Boundaries.geojson') as f:
     california_counties = json.load(f)
+
+techniques_df = pd.read_csv('./data/techniques.csv')
 
 # City coordinates
 city_data = [
@@ -49,50 +49,71 @@ filtered_counties = {
 }
 
 def layout():
-    return html.Div(className="main-container", children=[
-        html.H1("California Crop and Weather Analysis", className="main-title"),
+    return html.Div(
+        className="main-container",
+        children=[
+            # Main Title
+            html.H1(
+                "California Crop and Weather Analysis",
+                className="main-title"
+            ),
 
-        # Project Objective
-        html.P(
-            "This project aims to analyze the correlation between extreme weather conditions "
-            "and crop yield, production, and harvested acres in various California counties. "
-            "By examining historical weather patterns and crop data, we seek to understand how "
-            "extreme weather events affect agricultural productivity and inform decision-making "
-            "in climate adaptation strategies for California’s agricultural sector.",
-            className="project-objective"
-        ),
+            # Project Objective Section
+            html.Div(
+                className="project-objective-section",
+                children=[
+                    html.P(
+                        "This project aims to analyze the correlation between extreme weather conditions "
+                        "and crop yield, production, and harvested acres in various California counties. "
+                        "By examining historical weather patterns and crop data, we seek to understand how "
+                        "extreme weather events affect agricultural productivity and inform decision-making "
+                        "in climate adaptation strategies for California’s agricultural sector.",
+                        className="project-objective-text"
+                    ),
+                    html.Img(
+                        src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
+                        alt="Illustration of weather impact on crops",
+                        className="project-objective-image"
+                    )
+                ]
+            ),
 
-        # Stock Image
-        html.Img(
-            src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
-            alt="Illustration of weather impact on crops",
-            style={"width": "100%", "height": "auto", "margin-top": "20px"},
-            className="stock-image"
-        ),
+            html.Hr(className="divider"),
 
-        html.H1("Geographical Locations Used in Analysis", className="section-title"),
-
-        # Map of California
-        html.Div(className="map-container", children=[
-            dcc.Graph(
-                id="california-map",
-                figure=california_map(),
-                className="california-map-graph"
+            # Geographical Analysis Section
+            html.Div(
+                className="geographical-analysis-section",
+                children=[
+                    html.H2(
+                        "Geographical Locations Used in Analysis",
+                        className="section-title"
+                    ),
+                    html.Div(
+                        className="map-container",
+                        children=[
+                            dcc.Graph(
+                                id="california-map",
+                                figure=california_map(),
+                                className="california-map-graph"
+                            )
+                        ]
+                    )
+                ]
             )
-        ], style={"margin-top": "20px", "height": "500px"}),
-    ])
+        ]
+    )
 
 def california_map():
+    # Initialize the map figure
     fig = go.Figure()
 
-    # Add county boundaries as filled areas from the filtered GeoJSON
+    # Add GeoJSON polygons for each selected county with a semi-transparent fill
     fig.update_layout(mapbox=dict(
         style="carto-positron",
         center={"lat": 37.5, "lon": -119.5},
         zoom=5
     ))
 
-    # Add GeoJSON polygons for each selected county with a semi-transparent fill
     fig.update_layout(mapbox_layers=[
         {
             "source": filtered_counties,
@@ -103,35 +124,70 @@ def california_map():
     ])
 
     # Add city markers with labels
-    for city in city_data:
+    for i, city in enumerate(city_data):
         fig.add_trace(go.Scattermapbox(
             lat=[city["lat"]],
             lon=[city["lon"]],
             mode="markers+text",
-            marker=go.scattermapbox.Marker(size=10, color="blue"),
+            marker=go.scattermapbox.Marker(size=10, color="blue", symbol="circle"),
             text=city["name"],
             textposition="top right",
             hoverinfo="text",
-            name="Cities"
+            name="City Markers" if i == 0 else None,  # Show legend only once
+            showlegend=i == 0  # Show legend for the first trace only
         ))
 
-    # Add county labels at the centroids
-    for county_item in county_data:
-        fig.add_trace(go.Scattermapbox(
-            lat=[county_item["lat"]],
-            lon=[county_item["lon"]],
-            mode="text",
-            text=county_item["name"],
-            textposition="middle center",
-            textfont=dict(size=12, color="green"),
-            hoverinfo="none",
-            name="Counties"
-        ))
+    # Add county markers for farming techniques
+    for i, county_item in enumerate(county_data):
+        county_name = county_item["name"]
+
+        # Filter techniques for this county
+        county_techniques = techniques_df[techniques_df["County"] == county_name]
+
+        if not county_techniques.empty:
+            # Create hover text for techniques
+            hover_text = (
+                f"<b>{county_name}</b><br>" +
+                "<br>".join([
+                    f"<b>Crop:</b> {row['Primary Crops']}<br>"
+                    f"<b>Farming:</b> {row['Farming Methods']}<br>"
+                    f"<b>Irrigation:</b> {row['Irrigation Techniques']}<br>"
+                    f"<b>Pesticide:</b> {row['Pesticide Usage']}"
+                    for _, row in county_techniques.iterrows()
+                ])
+            )
+
+            # Add marker for the county
+            fig.add_trace(go.Scattermapbox(
+                lat=[county_item["lat"]],
+                lon=[county_item["lon"]],
+                mode="markers",
+                marker=go.scattermapbox.Marker(
+                    size=15,
+                    color="rgba(255, 100, 0, 0.7)",
+                    symbol="circle"
+                ),
+                text=hover_text,
+                hoverinfo="text",
+                name="County Markers" if i == 0 else None,  # Show legend only once
+                showlegend=i == 0  # Show legend for the first trace only
+            ))
 
     # Update layout settings
     fig.update_layout(
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        showlegend=False
+        showlegend=True,
+        legend=dict(
+            title="Legend",
+            orientation="h",
+            yanchor="bottom",
+            y=0.01,
+            xanchor="center",
+            x=0.5,
+            bgcolor="rgba(255, 255, 255, 0.7)",
+            bordercolor="rgba(200, 200, 200, 0.5)",
+            borderwidth=1
+        )
     )
 
     return fig
