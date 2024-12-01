@@ -15,7 +15,6 @@ app.title = "Weather & Crop Data Analysis"
 app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
-            html.H2("Navigation"),
             dbc.Nav([
                 dbc.NavLink("Home", href="/", active="exact"),
                 dbc.NavLink("Data", href="/data", active="exact"),

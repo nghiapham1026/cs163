@@ -284,7 +284,6 @@ def layout():
      Input('performance-crop-dropdown', 'value')]
 )
 def update_plots(selected_target, selected_crop):
-    # Filter the dataframe for the selected target and crop
     filtered_df = results_df[
         (results_df['Target'] == selected_target) &
         (results_df['Crop'] == selected_crop)
@@ -436,7 +435,7 @@ def randomize_input(n_clicks, county, crop, target, model_name, input_ids):
     filtered_data = data[
         (data["County"] == county) &
         (data["Crop Name"] == crop) &
-        (data["Year"] >= 1990) & (data["Year"] <= 2020)
+        (data["Year"] >= 1983) & (data["Year"] <= 2020)
     ]
 
     if filtered_data.empty:
