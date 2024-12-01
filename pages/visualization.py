@@ -46,9 +46,8 @@ def layout():
                 "Visualization of The Impact of Weather on Crop Yield",
                 className="page-title"
             ),
-            
             html.Hr(className="divider"),
-
+            
             # Section 1: Impact of Extreme Weather on Crop Yield
             html.Div(
                 className="section impact-weather-section",
@@ -56,6 +55,11 @@ def layout():
                     html.H2(
                         "Impact of Extreme Weather on Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "Placeholder: Explore how extreme weather variables such as high temperatures, heavy rain, and strong winds "
+                        "impact crop yields. Use the dropdowns to select specific crops and weather variables for detailed visualizations.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -82,9 +86,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 2: Weather Impact on Crop Yield
             html.Div(
                 className="section weather-impact-section",
@@ -92,6 +95,11 @@ def layout():
                     html.H2(
                         "Weather Impact on Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "Placeholder: Analyze how specific weather variables over time influence crop yield and production per acre. "
+                        "The graphs below provide a comparison of yield and production under varying weather conditions.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -121,9 +129,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 3: Weather Anomalies and Crop Yield
             html.Div(
                 className="section weather-anomalies-section",
@@ -131,6 +138,11 @@ def layout():
                     html.H2(
                         "Weather Anomalies and Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "Placeholder: Discover how deviations from normal weather patterns, such as anomalies in rainfall or temperature, "
+                        "affect crop yields and production across counties.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -160,9 +172,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 4: Crop Yield and Production by Farming Method
             html.Div(
                 className="section yield-production-section",
@@ -170,6 +181,11 @@ def layout():
                     html.H2(
                         "Crop Yield and Production by Farming Method Under Different Weather Conditions",
                         className="section-title"
+                    ),
+                    html.P(
+                        "Placeholder: Examine the relationship between farming practices and crop outcomes under various weather conditions. "
+                        "Identify which methods yield the best results during extreme weather.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -189,9 +205,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 5: Weather Impact on Crop Yields by County
             html.Div(
                 className="section county-impact-section",
@@ -199,6 +214,11 @@ def layout():
                     html.H2(
                         "Impact of Extreme Weather on Crop Yields",
                         className="section-title"
+                    ),
+                    html.P(
+                        "Placeholder: Focus on specific counties to understand how localized extreme weather events impact crop yields. "
+                        "This section allows granular analysis of regional effects.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",

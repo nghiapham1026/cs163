@@ -37,12 +37,27 @@ body {
 }
 
 /* County Selection */
+.dropdown-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dropdown-section:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
 .county-label {
     font-size: 1.3em;
     margin-bottom: 10px;
     display: block;
     color: #555;
     font-weight: bold;
+    text-align: center;
 }
 
 .county-dropdown {
@@ -60,6 +75,13 @@ body {
 .county-dropdown:focus {
     border-color: #007bff;
     box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+.dropdown-description {
+    font-size: 1em;
+    color: #7f8c8d;
+    margin-top: 10px;
+    text-align: center;
 }
 
 /* Plot Containers */
@@ -95,6 +117,18 @@ body {
     text-transform: uppercase;
 }
 
+/* Plot Descriptions */
+.yield-description,
+.production-description,
+.harvested-acres-description {
+    font-size: 1em;
+    color: #7f8c8d;
+    margin-top: 15px;
+    text-align: center;
+    padding: 0 20px;
+    line-height: 1.6;
+}
+
 /* Graphs */
 .yield-graph,
 .production-graph,
@@ -123,32 +157,6 @@ body {
     margin: 50px 0;
 }
 
-/* Buttons */
-button {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 1em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-
-button:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
-}
-
-button.primary {
-    background-color: #007bff;
-    color: white;
-}
-
-button.secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .main-container {
@@ -169,5 +177,12 @@ button.secondary {
     .production-graph,
     .harvested-acres-graph {
         height: 400px;
+    }
+
+    .dropdown-description,
+    .yield-description,
+    .production-description,
+    .harvested-acres-description {
+        font-size: 0.9em;
     }
 }

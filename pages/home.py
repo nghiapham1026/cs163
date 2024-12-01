@@ -62,6 +62,10 @@ def layout():
             html.Div(
                 className="project-objective-section",
                 children=[
+                    html.H2(
+                        "Project Objective",
+                        className="section-title"
+                    ),
                     html.P(
                         "This project aims to analyze the correlation between extreme weather conditions "
                         "and crop yield, production, and harvested acres in various California counties. "
@@ -69,6 +73,20 @@ def layout():
                         "extreme weather events affect agricultural productivity and inform decision-making "
                         "in climate adaptation strategies for California’s agricultural sector.",
                         className="project-objective-text"
+                    ),
+                    html.Div(
+                        className="project-description-placeholder",
+                        children=[
+                            html.H3(
+                                "Description Placeholder",
+                                className="description-placeholder-title"
+                            ),
+                            html.P(
+                                "Placeholder for a more detailed description of the project objectives, "
+                                "highlighting key goals, data sources, and potential insights derived from the analysis.",
+                                className="description-placeholder-text"
+                            )
+                        ]
                     ),
                     html.Img(
                         src="https://d17ocfn2f5o4rl.cloudfront.net/wp-content/uploads/2020/02/weather-monitoring-technologies-to-save-crops-from-mother-nature_optimized_optimized-1920x600.jpg",
@@ -89,12 +107,40 @@ def layout():
                         className="section-title"
                     ),
                     html.Div(
+                        className="geographical-description-placeholder",
+                        children=[
+                            html.H3(
+                                "Geographical Analysis Placeholder",
+                                className="description-placeholder-title"
+                            ),
+                            html.P(
+                                "Placeholder for describing how geographical data is incorporated into the analysis. "
+                                "Discuss the significance of selected counties and their agricultural characteristics.",
+                                className="description-placeholder-text"
+                            )
+                        ]
+                    ),
+                    html.Div(
                         className="map-container",
                         children=[
                             dcc.Graph(
                                 id="california-map",
                                 figure=california_map(),
                                 className="california-map-graph"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="map-description-placeholder",
+                        children=[
+                            html.H3(
+                                "Map Description Placeholder",
+                                className="description-placeholder-title"
+                            ),
+                            html.P(
+                                "Placeholder for a detailed explanation of the map visualization, "
+                                "highlighting county-level features, weather variables, and other key components.",
+                                className="description-placeholder-text"
                             )
                         ]
                     )

@@ -28,12 +28,17 @@ def layout():
                 className="section performance-metrics-section",
                 children=[
                     html.H2("Performance Metrics", className="section-title"),
+                    html.P(
+                        "Placeholder: This section shows performance metrics such as MAE and RMSE for the selected target variables. "
+                        "Use the dropdowns to filter by crop and target variable.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label("Select Target Variable:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='target-dropdown',  # Updated ID
+                                id='target-dropdown',
                                 options=[
                                     {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
@@ -48,7 +53,7 @@ def layout():
                         children=[
                             html.Label("Select Crop (Performance Metrics):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='performance-crop-dropdown',  # Updated ID
+                                id='performance-crop-dropdown',
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -69,12 +74,17 @@ def layout():
                 className="section training-data-section",
                 children=[
                     html.H2("Training Data Visualization", className="section-title"),
+                    html.P(
+                        "Placeholder: This section visualizes the training data used to build the models. "
+                        "You can explore yield and production data for different counties and crops.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label("Select County (Training Data):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-county-dropdown',  # Updated ID
+                                id='training-county-dropdown',
                                 options=[
                                     {'label': county, 'value': county} for county in results_df['County'].unique()
                                 ],
@@ -88,7 +98,7 @@ def layout():
                         children=[
                             html.Label("Select Crop (Training Data):", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-crop-dropdown',  # Updated ID
+                                id='training-crop-dropdown',
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -108,7 +118,6 @@ def layout():
             dbc.Container(
                 className="section prediction-demo-section",
                 children=[
-                    # Section Title
                     html.Div(
                         className="section-header",
                         children=[
@@ -117,8 +126,8 @@ def layout():
                                 className="section-title"
                             ),
                             html.P(
-                                "Use the controls below to select parameters for crop yield prediction. "
-                                "Adjust features, randomize inputs, and analyze feature importance.",
+                                "Placeholder: Use this interactive demo to make predictions for crop yield or production. "
+                                "Select a county, crop, and target variable, then either input features manually or randomize them.",
                                 className="section-description"
                             )
                         ]
@@ -137,10 +146,7 @@ def layout():
                                     html.Div(
                                         className="input-container",
                                         children=[
-                                            html.Label(
-                                                "Select County:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select County:", className="dropdown-label"),
                                             dcc.Dropdown(
                                                 id='county-dropdown2',
                                                 options=[
@@ -152,10 +158,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Crop:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Crop:", className="dropdown-label"),
                                             dcc.Dropdown(
                                                 id='crop-dropdown2',
                                                 options=[
@@ -167,10 +170,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Target Variable:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Target Variable:", className="dropdown-label"),
                                             dcc.RadioItems(
                                                 id='target-variable',
                                                 options=[
@@ -182,10 +182,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Model:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Model:", className="dropdown-label"),
                                             dcc.RadioItems(
                                                 id='model-name',
                                                 options=[
@@ -197,23 +194,20 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            # Input Features
                                             html.Div(
                                                 className="feature-section",
                                                 children=[
-                                                    html.H4(
-                                                        "Input Features:",
-                                                        className="features-title"
+                                                    html.H4("Input Features:", className="features-title"),
+                                                    html.P(
+                                                        "Placeholder: List of input features for the prediction model. "
+                                                        "You can edit these manually or randomize them.",
+                                                        className="feature-description"
                                                     ),
-                                                    html.Div(
-                                                        id='feature-inputs',
-                                                        className="feature-inputs"
-                                                    )
+                                                    html.Div(id='feature-inputs', className="feature-inputs")
                                                 ]
                                             ),
                                             html.Br(),
 
-                                            # Buttons
                                             html.Div(
                                                 className="button-container",
                                                 children=[
@@ -232,13 +226,7 @@ def layout():
                                                 ]
                                             ),
                                             html.Br(),
-                                            html.Br(),
-
-                                            # Prediction Output
-                                            html.Div(
-                                                id='prediction-text-output',
-                                                className="prediction-output"
-                                            ),
+                                            html.Div(id='prediction-text-output', className="prediction-output"),
                                             html.Div(
                                                 id='randomized-info-output',
                                                 className="randomized-info",
@@ -257,14 +245,12 @@ def layout():
                                     html.Div(
                                         className="graph-container",
                                         children=[
-                                            html.H4(
-                                                "Feature Importance",
-                                                className="graph-title"
+                                            html.H4("Feature Importance", className="graph-title"),
+                                            html.P(
+                                                "Placeholder: Bar chart showing the importance of each feature used in the model.",
+                                                className="graph-description"
                                             ),
-                                            dcc.Graph(
-                                                id='feature-importance-graph',
-                                                className="feature-importance-graph"
-                                            )
+                                            dcc.Graph(id='feature-importance-graph', className="feature-importance-graph")
                                         ]
                                     )
                                 ]
@@ -523,11 +509,6 @@ def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_na
         # Check if all input values are filled
         if None in input_values or "" in input_values:
             return "Please fill in all input features before making a prediction.", go.Figure()
-
-        # Count the number of non-zero inputs
-        non_zero_count = sum(1 for value in input_values if value and float(value) != 0.0)
-        if non_zero_count > 5:
-            return "Prediction requires no more than 5 non-zero input features.", go.Figure()
 
         # Initialize feature values for all features
         feature_values = {feature: 0.0 for feature in all_features}

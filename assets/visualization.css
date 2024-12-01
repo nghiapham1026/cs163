@@ -47,6 +47,20 @@
     padding-bottom: 10px;
 }
 
+/* Section description styling */
+.section-description {
+    font-size: 16px;
+    color: #6c757d;
+    margin-bottom: 20px;
+    text-align: justify;
+    line-height: 1.8;
+    padding: 10px 20px;
+    background-color: #f9fbfd;
+    border-radius: 8px;
+    border-left: 5px solid #007bff;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
 /* Dropdown container */
 .dropdown-container {
     display: flex;
@@ -148,5 +162,13 @@ button.secondary {
 
     .section {
         padding: 20px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .section-description {
+        font-size: 14px;
     }
 }

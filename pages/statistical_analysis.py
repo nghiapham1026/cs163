@@ -60,6 +60,11 @@ def layout():
                         "Extreme Weather Threshold Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "Analyze the impact of extreme weather variables such as temperature, rain, and dew point "
+                        "on agricultural outcomes across different counties.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
@@ -112,6 +117,11 @@ def layout():
                         "County-Crop Correlation Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "Explore the relationships between specific crops and county-level weather patterns using "
+                        "correlation matrices.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
@@ -159,6 +169,11 @@ def layout():
                         "Weather Variable Frequency Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "Visualize the frequency of different weather conditions across counties and assess their "
+                        "potential impact on agricultural outputs.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
@@ -197,6 +212,11 @@ def layout():
                         "OLS Regression Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "Perform regression analysis to model the relationship between weather variables and "
+                        "crop yield or production.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
@@ -226,6 +246,11 @@ def layout():
                     html.H2(
                         "OLS Regression Heatmap",
                         className="section-title"
+                    ),
+                    html.P(
+                        "View heatmaps that highlight the strength and direction of relationships between weather "
+                        "conditions and crop performance across various counties.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
