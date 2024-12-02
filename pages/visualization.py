@@ -233,19 +233,10 @@ def layout():
                     ),
                     html.P(
                         "This section explores external factors influencing crop outcomes beyond extreme weather variables by examining the relationship between different farming methods and crop performance under varying weather conditions. "
-                        "Using data from the **2023 California Department of Food and Agriculture Statistics Report**, we have identified four major farming techniques in California: **Conventional**, **Organic**, **Sustainable**, and **Urban Farming**. "
+                        "Using data from the 2023 California Department of Food and Agriculture Statistics Report, we have identified four major farming techniques in California: Conventional, Organic, Sustainable, and Urban Farming. "
                         "Each county in our dataset is mapped to its corresponding farming method. "
                         "From our Correlation Analysis, regions in Central California showed the highest correlation scores with crop outcomes, while precipitation variables like `cloudy_days` and `heavy_rain_days` surprisingly showed poor correlations. "
                         "This suggests that factors other than weather, such as farming practices, may significantly influence crop yields and production.",
-                        className="section-description"
-                    ),
-                    html.P(
-                        "By selecting an extreme weather variable from the dropdown menu below, you can generate bar charts that compare the average yield per acre and production per acre across different farming methods during low, moderate, and high occurrences of the selected weather condition. "
-                        "Focusing on `cloudy_days` and `heavy_rain_days`, the visualizations reveal that most farming methods do not exhibit improved outcomes during years with higher occurrences of these weather variables, confirming their non-correlation. "
-                        "An exception is observed in **Conventional Farming** for yield, where some improvement is noted. "
-                        "Additionally, **Urban Farming** shows a significant increase in outcomes, with the highest yield and production per acre, indicating its effectiveness regardless of weather variations. "
-                        "Notably, **Conventional Farming** typically exhibits higher production than yield, suggesting that it requires more land to achieve the same yield as other methods. "
-                        "These observations highlight the significant role that farming methods play in determining crop outcomes, potentially overshadowing the influence of certain extreme weather conditions.",
                         className="section-description"
                     ),
                     html.Div(
@@ -260,41 +251,47 @@ def layout():
                             )
                         ]
                     ),
-                    dcc.Graph(
-                        id='yield-production-graph',
-                        className="graph"
+                    # Wrap the graph in its own container
+                    html.Div(
+                        className="graph-container",
+                        children=[
+                            dcc.Graph(
+                                id='yield-production-graph',
+                                className="graph"
+                            )
+                        ]
                     ),
                     html.Div(
                         className="analysis-section",
                         children=[
                             html.H3(
-                                "Analysis of Farming Methods and Crop Outcomes",
+                                "Interest Finds on Farming Method as Possible Factor in Crop Outcomes",
                                 className="analysis-title"
                             ),
                             html.P(
                                 "The visualizations in this section help us understand the impact of different farming methods on crop yield and production under various weather conditions. "
-                                "Our analysis indicates that regions in Central California, which predominantly use **Conventional Farming** methods, have high correlation scores with crop outcomes. "
+                                "Our analysis indicates that regions in Central California, which predominantly use Conventional Farming methods, have high correlation scores with crop outcomes. "
                                 "However, precipitation-related variables such as `cloudy_days` and `heavy_rain_days` show poor correlation with crop performance across most farming methods, confirming that these weather factors have minimal direct impact. "
                                 "This suggests that other factors, particularly farming practices, significantly influence agricultural productivity in these regions.",
                                 className="analysis-text"
                             ),
                             html.P(
                                 "When examining the effects of `cloudy_days` and `heavy_rain_days`, we observe that increased occurrences of these weather conditions do not lead to improved crop outcomes for most farming methods. "
-                                "An exception is noted in **Conventional Farming** for yield, where some improvement is seen. "
+                                "An exception is noted in Conventional Farming for yield, where some improvement is seen. "
                                 "This could be due to the use of specific agricultural inputs or practices that enhance crop resilience in conventional systems. "
                                 "Overall, the lack of significant improvement across other farming methods reinforces the non-correlation between these weather variables and crop outcomes.",
                                 className="analysis-text"
                             ),
                             html.P(
-                                "Additionally, the data reveals that **Urban Farming** consistently achieves the highest increases in both yield and production per acre. "
+                                "Additionally, the data reveals that Urban Farming consistently achieves the highest increases in both yield and production per acre. "
                                 "This can be attributed to the use of advanced technologies, controlled environments, and optimized resource utilization inherent in urban agricultural practices. "
                                 "Urban farming often employs vertical farming, hydroponics, and other innovative methods that enhance efficiency and mitigate the impact of adverse weather conditions.",
                                 className="analysis-text"
                             ),
                             html.P(
-                                "In contrast, **Conventional Farming** shows higher production levels but lower yield per acre compared to other methods. "
+                                "In contrast, Conventional Farming shows higher production levels but lower yield per acre compared to other methods. "
                                 "This indicates that conventional practices may rely on larger land areas to achieve similar output levels, potentially due to less intensive farming techniques or lower efficiency in resource use. "
-                                "The efficiency gap highlights the potential benefits of adopting more sustainable and intensive farming practices, such as those used in **Organic** and **Sustainable Farming**, to improve yield without expanding agricultural land.",
+                                "The efficiency gap highlights the potential benefits of adopting more sustainable and intensive farming practices, such as those used in Organic and Sustainable Farming, to improve yield without expanding agricultural land.",
                                 className="analysis-text"
                             ),
                             html.P(
@@ -626,8 +623,8 @@ def update_yield_production_graph(selected_var):
         title_text=f"Crop Yield and Production by Farming Method Under Different Levels of {selected_var.replace('_', ' ').title()}",
         barmode='group',
         legend_title_text='Weather Level',
-        height=600,
-        width=1000
+        autosize=True,
+        height=None
     )
 
     # Update axes titles

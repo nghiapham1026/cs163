@@ -92,24 +92,11 @@ def layout():
                     ),
                     html.Ul(
                         children=[
-                            html.Li("R-squared (R²): Measures the proportion of variance explained by the model."),
                             html.Li("Root Mean Squared Error (RMSE): Evaluates prediction accuracy in original units."),
                             html.Li("Mean Absolute Error (MAE): Quantifies average prediction errors.")
                         ],
                         className="metrics-list"
                     ),
-                    html.H3(
-                        "Training and Validation",
-                        className="subsection-title"
-                    ),
-                    html.P(
-                        "We applied time-based train-test splits for each County-Crop combination to ensure models were trained and tested on appropriate data subsets. "
-                        "Cross-validation scores were computed for R², RMSE, and MAE to evaluate model stability and performance. "
-                        "Feature impact was assessed using Recursive Feature Elimination with Cross-Validation (RFECV) to identify the most significant predictors. "
-                        "Learning curves were generated to detect overfitting and underfitting issues. "
-                        "All trained models and associated metadata, such as evaluation metrics and learning curves, were saved using `joblib` for future use.",
-                        className="subsection-text"
-                    )
                 ]
             ),
             html.Hr(className="divider"),
