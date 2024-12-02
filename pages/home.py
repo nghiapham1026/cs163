@@ -92,21 +92,21 @@ def layout():
                                 className="methodologies-list",
                                 children=[
                                     html.Li(
-                                        "🗂️ **Data Integration and Feature Engineering**: Merged historical weather data with crop yield data "
+                                        "🗂️ Data Integration and Feature Engineering: Merged historical weather data with crop yield data "
                                         "to create a comprehensive dataset. Engineered new features to quantify extreme weather events "
                                         "using location-specific thresholds based on historical weather statistics."
                                     ),
                                     html.Li(
-                                        "📊 **Statistical Analysis**: Conducted correlation analyses and hypothesis testing to identify significant "
+                                        "📊 Statistical Analysis: Conducted correlation analyses and hypothesis testing to identify significant "
                                         "weather variables affecting crop yields, harvested acres, and production per acre for each county-crop combination."
                                     ),
                                     html.Li(
-                                        "🤖 **Predictive Modeling**: Developed machine learning models, including Random Forest and Ridge Regression, "
+                                        "🤖 Predictive Modeling: Developed machine learning models, including Random Forest and Ridge Regression, "
                                         "incorporating significant weather features and lagged variables to predict future crop yields. Evaluated model "
                                         "performance using metrics like R-squared and RMSE."
                                     ),
                                     html.Li(
-                                        "📈 **Visualization**: Created heatmaps, coefficient plots, and time series charts to visualize relationships "
+                                        "📈 Visualization: Created heatmaps, coefficient plots, and time series charts to visualize relationships "
                                         "between weather variables and crop outcomes, aiding in interpretation and decision-making."
                                     ),
                                 ]

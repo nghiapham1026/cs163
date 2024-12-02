@@ -71,7 +71,7 @@ def layout():
                             dcc.Dropdown(
                                 id='impact-weather-crop-dropdown',
                                 options=[{'label': crop, 'value': crop} for crop in df["Crop Name"].unique()],
-                                value=df["Crop Name"].unique()[0],
+                                value=df["Crop Name"].unique()[-1],
                                 className="dropdown"
                             ),
                             html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
