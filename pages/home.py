@@ -74,18 +74,100 @@ def layout():
                         "in climate adaptation strategies for California’s agricultural sector.",
                         className="project-objective-text"
                     ),
+                    # Methodologies Section
                     html.Div(
-                        className="project-description-placeholder",
+                        className="project-methodologies-section",
                         children=[
-                            html.H3(
-                                "Description Placeholder",
-                                className="description-placeholder-title"
+                            html.H2(
+                                "Methodologies Used",
+                                className="section-title"
                             ),
                             html.P(
-                                "Placeholder for a more detailed description of the project objectives, "
-                                "highlighting key goals, data sources, and potential insights derived from the analysis.",
-                                className="description-placeholder-text"
-                            )
+                                "We employed a combination of data integration, statistical analysis, predictive modeling, "
+                                "and visualization techniques to assess the impact of extreme weather on crop outcomes. "
+                                "Our methodologies include:",
+                                className="methodologies-intro-text"
+                            ),
+                            html.Ul(
+                                className="methodologies-list",
+                                children=[
+                                    html.Li(
+                                        "🗂️ **Data Integration and Feature Engineering**: Merged historical weather data with crop yield data "
+                                        "to create a comprehensive dataset. Engineered new features to quantify extreme weather events "
+                                        "using location-specific thresholds based on historical weather statistics."
+                                    ),
+                                    html.Li(
+                                        "📊 **Statistical Analysis**: Conducted correlation analyses and hypothesis testing to identify significant "
+                                        "weather variables affecting crop yields, harvested acres, and production per acre for each county-crop combination."
+                                    ),
+                                    html.Li(
+                                        "🤖 **Predictive Modeling**: Developed machine learning models, including Random Forest and Ridge Regression, "
+                                        "incorporating significant weather features and lagged variables to predict future crop yields. Evaluated model "
+                                        "performance using metrics like R-squared and RMSE."
+                                    ),
+                                    html.Li(
+                                        "📈 **Visualization**: Created heatmaps, coefficient plots, and time series charts to visualize relationships "
+                                        "between weather variables and crop outcomes, aiding in interpretation and decision-making."
+                                    ),
+                                ]
+                            ),
+                        ]
+                    ),
+                    # Website Layout Section
+                    html.Div(
+                        className="website-layout-section",
+                        children=[
+                            html.H2(
+                                "Website Layout",
+                                className="section-title"
+                            ),
+                            html.P(
+                                "Our website is structured into several pages to facilitate exploration of the data and findings:",
+                                className="layout-intro-text"
+                            ),
+                            html.Ul(
+                                className="layout-list",
+                                children=[
+                                    html.Li(
+                                        [
+                                            html.B("🏠 Home Page: "),
+                                            "An overview of the project objectives and methodologies."
+                                        ]
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.B("📄 Data Overview Page: "),
+                                            "Summary and exploration of the datasets used, including data sources and preprocessing steps."
+                                        ]
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.B("🌾 Crops Visualization Page: "),
+                                            "Interactive visualizations of the crops dataset, allowing users to explore crop yields, production, "
+                                            "and harvested acres across different counties and years."
+                                        ]
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.B("☁️ Weather Visualization Page: "),
+                                            "Visualizations of the weather dataset, showcasing trends and patterns in extreme weather events across California counties."
+                                        ]
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.B("📊 Visualization Page: "),
+                                            "Combined visualizations illustrating the relationships between crop outcomes and extreme weather variables."
+                                        ]
+                                    ),
+                                    html.Li(
+                                        [
+                                            html.B("🔮 Prediction Page: "),
+                                            "Presentation of the predictive models' performance, including training results and a model demonstration "
+                                            "for forecasting crop yields based on weather inputs."
+                                        ]
+                                    ),
+                                ]
+                            ),
                         ]
                     ),
                     html.Img(
@@ -107,16 +189,21 @@ def layout():
                         className="section-title"
                     ),
                     html.Div(
-                        className="geographical-description-placeholder",
+                        className="geographical-description",
                         children=[
                             html.H3(
-                                "Geographical Analysis Placeholder",
-                                className="description-placeholder-title"
+                                "Incorporating Geographical Data into the Analysis",
+                                className="description-title"
                             ),
                             html.P(
-                                "Placeholder for describing how geographical data is incorporated into the analysis. "
-                                "Discuss the significance of selected counties and their agricultural characteristics.",
-                                className="description-placeholder-text"
+                                "Geographical data plays a crucial role in our analysis by enabling us to assess "
+                                "the impact of extreme weather conditions on crop yields across different regions "
+                                "in California. We have selected key counties known for their significant production "
+                                "of almonds, wine grapes, and processing tomatoes. By focusing on these areas, "
+                                "we capture a diverse range of climatic conditions and agricultural practices, "
+                                "providing a comprehensive understanding of how location-specific factors influence "
+                                "crop performance.",
+                                className="description-text"
                             )
                         ]
                     ),
@@ -131,16 +218,20 @@ def layout():
                         ]
                     ),
                     html.Div(
-                        className="map-description-placeholder",
+                        className="map-description",
                         children=[
                             html.H3(
-                                "Map Description Placeholder",
-                                className="description-placeholder-title"
+                                "Map Visualization Details",
+                                className="description-title"
                             ),
                             html.P(
-                                "Placeholder for a detailed explanation of the map visualization, "
-                                "highlighting county-level features, weather variables, and other key components.",
-                                className="description-placeholder-text"
+                                "This interactive map highlights the California counties (in yellow) and cities (in blue) "
+                                "included in our study. Hover over each county to view detailed information about its primary crops, "
+                                "irrigation and farming methods, and pesticide usage levels. This visualization showcases the "
+                                "geographical distribution of agricultural practices and crop types, offering insights into regional "
+                                "differences in farming techniques, environmental factors, and how they may relate to crop yields "
+                                "and weather impacts.",
+                                className="description-text"
                             )
                         ]
                     )
