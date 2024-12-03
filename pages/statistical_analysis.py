@@ -60,11 +60,20 @@ def layout():
                         "Extreme Weather Threshold Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "This section allows you to explore how extreme weather variables are determined using a percentile-based system. "
+                        "By selecting a county and a specific weather variable, you can visualize the distribution of that variable over time "
+                        "and identify the thresholds that define extreme conditions. The 10th and 90th percentiles are used to represent the lower "
+                        "and upper extremes, respectively. Data points falling below the 10th percentile are considered 'Low (10th percentile)', "
+                        "while those above the 90th percentile are labeled 'High (90th percentile)'. This analysis helps you understand the variability "
+                        "of weather parameters in different regions and how they might contribute to agricultural outcomes.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label(
-                                "Select a County (Extreme Weather):",
+                                "Select a County:",
                                 className="dropdown-label"
                             ),
                             dcc.Dropdown(
@@ -112,11 +121,22 @@ def layout():
                         "County-Crop Correlation Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "In this section, you can explore the extent of the correlation between extreme weather variables and crop outcomes for each county. "
+                        "By selecting a county and a specific crop from the dropdown menus below, you can generate a correlation matrix that visualizes the relationships "
+                        "between various weather factors and crop performance indicators such as yield per acre, production per acre, and harvested acres. "
+                        "Correlation coefficients range from -1 to 1, where values closer to 1 or -1 indicate a strong positive or negative correlation, respectively. "
+                        "A coefficient above 0.4 is considered a good correlation, suggesting a meaningful relationship between the variables. "
+                        "Values near 0 indicate little to no linear relationship. "
+                        "This analysis helps you identify which weather conditions significantly impact crop outcomes in different regions, "
+                        "providing valuable insights for agricultural planning and risk management.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label(
-                                "Select a County (Correlation Matrix):",
+                                "Select a County:",
                                 className="dropdown-label"
                             ),
                             dcc.Dropdown(
@@ -159,17 +179,17 @@ def layout():
                         "Weather Variable Frequency Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "This section aggregates counties based on the number of strong correlations between extreme weather variables and crop outcomes. "
+                        "By selecting a weather variable from the dropdown menu, you can visualize how frequently that variable exhibits a significant correlation "
+                        "with agricultural outputs across different counties. A correlation coefficient above 0.4 is considered strong and suggests a meaningful relationship. "
+                        "The bar plot generated displays the number of strong correlations per county, allowing you to assess regional patterns and identify areas where weather conditions "
+                        "have a pronounced impact on crop performance. This analysis reveals that the impact of weather on crops is complex and highly subjective to specific counties and crops.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select County:", className="dropdown-label"),
-                            dcc.Dropdown(
-                                id='county-dropdown3',
-                                options=[{'label': 'All Counties', 'value': 'All Counties'}] +
-                                        [{'label': county, 'value': county} for county in correlation_df['County'].unique()],
-                                value='All Counties',
-                                className="dropdown"
-                            ),
                             html.Label("Select Weather Variable:", className="dropdown-label"),
                             dcc.Dropdown(
                                 id='weather-variable-dropdown',
@@ -183,6 +203,41 @@ def layout():
                     dcc.Graph(
                         id='frequency-plot',
                         className="graph"
+                    ),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3(
+                                "Analysis of Correlation Patterns",
+                                className="analysis-title"
+                            ),
+                            html.P(
+                                "The bar plot above illustrates that most strong correlations are concentrated in Central California counties such as Kings, Tulare, and Fresno. "
+                                "These regions exhibit a higher frequency of significant relationships between extreme weather variables and crop outcomes, indicating that weather conditions "
+                                "in these areas have a more pronounced effect on agricultural productivity. Conversely, some counties, like Santa Clara, lack sufficient data to compute "
+                                "correlation coefficients, leading to incomplete matrices and suggesting negligible relationships between weather variables and crop outcomes. "
+                                "For instance, in the case of grapes, counties like Santa Clara, Sonoma, and Alameda show invalid correlations for variables like snow_days "
+                                "and low_visibility_days. However, Sonoma still exhibits a decent correlation with high_wind_days (0.58), indicating that despite incomplete data, "
+                                "certain weather factors can significantly impact crop yields in these regions.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "This analysis underscores that the impact of weather on crops is complex and highly dependent on both the county and the specific crops grown. "
+                                "For example, in Fresno, high_wind_days and low_visibility_days have a stronger correlation with yield for almonds (0.6 and -0.58, respectively) "
+                                "than for grapes (0.13 and -0.12). Similarly, for grapes, these weather variables have a stronger relationship with yield in Tulare County "
+                                "(-0.47 and 0.61) compared to Fresno County, despite their geographical proximity. This suggests that local factors, such as crop type and farming practices, "
+                                "influence how weather conditions affect agricultural outcomes.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "The counties with the highest number of strong correlations are predominantly located in Central California, with El Dorado in the Lake Tahoe region being a notable exception. "
+                                "Interestingly, variables like snow_days are not good indicators of crop yield, likely because snowfall is relatively rare in most of California's agricultural regions. "
+                                "Similarly, the low frequency of strong correlations for heavy_rain_days and cloudy_days is surprising, suggesting that these weather conditions may have less impact "
+                                "on crop yields than expected. This could be attributed to the highly industrialized and climate-controlled nature of agriculture in Central California, where advanced farming techniques "
+                                "mitigate the influence of external weather conditions.",
+                                className="analysis-text"
+                            )
+                        ]
                     )
                 ]
             ),
@@ -197,10 +252,22 @@ def layout():
                         "OLS Regression Analysis",
                         className="section-title"
                     ),
+                    html.P(
+                        "In this section, we perform Ordinary Least Squares (OLS) regression analysis to validate our hypothesis that crop outcomes are determined by at least one extreme weather variable. "
+                        "The null hypothesis (H₀) states that extreme weather variables do not significantly impact crop outcomes, while the alternative hypothesis (H₁) suggests that they do. "
+                        "We reject H₀ if any predictor variable has a p-value below 0.05, indicating a statistically significant impact on crop outcomes.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "We define our dependent variables (targets) as Yield Per Acre and Production Per Acre, and our independent variables (predictors) as various extreme weather metrics such as high_temp_days and low_visibility_days. "
+                        "The data is grouped by county and crop to conduct a localized analysis, allowing us to assess the impact of weather variables within specific regions and for specific crops. "
+                        "For each County-Crop-Target combination, we perform an OLS regression and evaluate the coefficients (measure of predictor impact), p-values (statistical significance), and confidence intervals (reliability of coefficient estimates).",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select County (OLS Regression):", className="dropdown-label"),
+                            html.Label("Select County:", className="dropdown-label"),
                             dcc.Dropdown(
                                 id='county-dropdown',
                                 options=[{'label': 'All Counties', 'value': 'All Counties'}] +
@@ -213,6 +280,34 @@ def layout():
                     dcc.Graph(
                         id='ols-regression-plot',
                         className="graph"
+                    ),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3(
+                                "Analysis of Regression Results",
+                                className="analysis-title"
+                            ),
+                            html.P(
+                                "The box plot above visualizes the distribution of p-values for each predictor variable across the selected county or all counties. "
+                                "A p-value below the significance threshold of 0.05 (indicated by the dashed red line) suggests that we can reject the null hypothesis for that predictor, "
+                                "indicating a statistically significant impact on the crop outcome. "
+                                "By analyzing the p-values, we can identify which extreme weather variables significantly influence crop yields and production.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "Our findings indicate that in many counties, at least one extreme weather variable significantly affects crop outcomes. "
+                                "For example, in Fresno County, predictors like high_temp_days and low_visibility_days show p-values below 0.05 for almonds, "
+                                "implying a significant impact on yield per acre. "
+                                "However, for grapes in the same county, these predictors may not exhibit significant p-values, highlighting the variability of weather impacts across different crops within the same region.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "In some counties, such as Santa Clara, the regression analysis may not yield significant predictors due to insufficient data or negligible relationships between weather variables and crop outcomes. "
+                                "This underscores the importance of localized analysis, as the influence of extreme weather conditions can vary greatly depending on regional characteristics and agricultural practices.",
+                                className="analysis-text"
+                            )
+                        ]
                     )
                 ]
             ),
@@ -227,10 +322,28 @@ def layout():
                         "OLS Regression Heatmap",
                         className="section-title"
                     ),
+                    html.P(
+                        "In this section, we extend our OLS regression analysis by mapping the p-values of each extreme weather variable into a heatmap for each county and crop combination. "
+                        "This visualization allows us to determine which counties and crops have lower p-values, indicating a stronger statistical impact of specific weather variables on crop outcomes in those regions. "
+                        "By analyzing the heatmap, we can assess the significance of each predictor across different crops and counties, gaining insights into the localized effects of extreme weather on agricultural productivity.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "Our hypothesis testing results show that 75% of all county-crop combinations succeeded in rejecting the Null Hypothesis, meaning that at least one extreme weather variable significantly impacts crop yield or production in those regions. "
+                        "Conversely, 25% failed to reject the Null Hypothesis, indicating no significant impact detected. "
+                        "These findings align with those obtained in the correlation heatmaps, reinforcing the importance of extreme weather variables in influencing crop outcomes.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "The heatmap reveals that variables like snow_days, cloudy_days, and heavy_rain_days generally have the highest p-values, suggesting they are less significant predictors of crop outcomes in most counties. "
+                        "On the other hand, low_visibility_days and high_wind_days have the lowest p-values, indicating a stronger and more consistent impact on crops across different regions. "
+                        "Variables such as low_temp_days and high_temp_days fall somewhere in between, with their significance varying by county and crop.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select County (OLS Heatmap):", className="dropdown-label"),
+                            html.Label("Select County:", className="dropdown-label"),
                             dcc.Dropdown(
                                 id='county-dropdown2',
                                 options=[{'label': 'All Counties', 'value': 'All Counties'}] +
@@ -243,6 +356,38 @@ def layout():
                     dcc.Graph(
                         id='ols-heatmap',
                         className="graph"
+                    ),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3(
+                                "Analysis of OLS Regression Heatmap",
+                                className="analysis-title"
+                            ),
+                            html.P(
+                                "The OLS Regression Heatmap visualizes the median p-values of each predictor variable (extreme weather metrics) across different crops. "
+                                "The color intensity represents the magnitude of the p-values, with darker colors indicating lower p-values and thus stronger statistical significance. "
+                                "This allows for a quick assessment of which weather variables are significant predictors for specific crops in various counties.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "From the heatmap, we observe that the majority of county-crop combinations have at least one extreme weather variable with a low p-value (below 0.05), reinforcing our conclusion that extreme weather significantly impacts crop outcomes in most regions. "
+                                "Specifically, low_visibility_days and high_wind_days consistently show low p-values across various crops and counties, highlighting their importance as predictors. "
+                                "These variables may affect pollination, evapotranspiration rates, and physical damage to crops, thereby influencing yield and production.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "In contrast, variables like snow_days, cloudy_days, and heavy_rain_days exhibit higher p-values, suggesting they are less influential on crop performance in the regions analyzed. "
+                                "This could be due to the climatic characteristics of California, where snowfall is rare, and modern agricultural practices mitigate the effects of rainfall and cloud cover. "
+                                "Additionally, irrigation and controlled environments may reduce the crops' dependence on natural precipitation, diminishing the impact of these weather variables.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "Variables such as low_temp_days and high_temp_days have p-values that vary between low and moderate, indicating that temperature extremes impact crop outcomes in some counties and for certain crops. "
+                                "This variability underscores the importance of localized analysis, as the significance of temperature-related variables may depend on the specific temperature thresholds that affect different crops.",
+                                className="analysis-text"
+                            )
+                        ]
                     )
                 ]
             )

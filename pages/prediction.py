@@ -17,10 +17,88 @@ def layout():
         children=[
             # Page Title
             html.H1(
-                "Visualization Dashboard: Weather Impact on Crop Yields",
+                "Prediction Dashboard: Weather Impact on Crop Yields",
                 className="page-title"
             ),
-            
+
+            html.Hr(className="divider"),
+
+            # Model Workflow Description Section
+            html.Div(
+                className="section model-workflow-section",
+                children=[
+                    html.H2(
+                        "Model Workflow Description",
+                        className="section-title"
+                    ),
+                    html.P(
+                        "In this section, we outline the machine learning model workflow developed to predict crop outcomes based on extreme weather variables and other influencing factors. "
+                        "Our objective is to create predictive models that estimate:",
+                        className="section-description"
+                    ),
+                    html.Ul(
+                        children=[
+                            html.Li("Yield Per Acre: Crop productivity efficiency."),
+                            html.Li("Production Per Acre: Land usage efficiency for crop production.")
+                        ],
+                        className="objective-list"
+                    ),
+                    html.H3(
+                        "Feature Engineering: Lagged Weather and Crop Features",
+                        className="subsection-title"
+                    ),
+                    html.P(
+                        "To capture delayed impacts of weather on crop outcomes, we incorporated 1-year and 2-year lagged features for extreme weather variables such as `high_temp_days`, `heavy_rain_days`, and `cloudy_days`. "
+                        "We also added 1-year and 2-year lagged metrics for `Yield Per Acre` and `Production Per Acre` to account for historical crop performance influence. "
+                        "Missing values were imputed with zeros for both weather and crop features to maintain data integrity.",
+                        className="subsection-text"
+                    ),
+                    html.H3(
+                        "Scaling",
+                        className="subsection-title"
+                    ),
+                    html.P(
+                        "All features were standardized using StandardScaler to ensure consistent input to the models and to improve model performance. "
+                        "Data was grouped by County-Crop-Target combinations to conduct localized analyses and account for regional variations.",
+                        className="subsection-text"
+                    ),
+                    html.H3(
+                        "Model Selection",
+                        className="subsection-title"
+                    ),
+                    html.P(
+                        "We experimented with several machine learning algorithms to capture complex relationships and improve prediction accuracy:",
+                        className="subsection-text"
+                    ),
+                    html.Ul(
+                        children=[
+                            html.Li("Gradient Boosting Regressor: Captures complex non-linear relationships."),
+                            html.Li("Decision Tree Regressor: Provides interpretable models for feature importance."),
+                            html.Li("K-Nearest Neighbors: Non-parametric approach sensitive to local data structures.")
+                        ],
+                        className="model-list"
+                    ),
+                    html.P(
+                        "A time-based train-test split was applied, using the first 80% of observations for training and the remaining 20% for testing to respect the chronological order of data.",
+                        className="subsection-text"
+                    ),
+                    html.H3(
+                        "Model Evaluation Metrics",
+                        className="subsection-title"
+                    ),
+                    html.P(
+                        "Models were evaluated using the following metrics to assess performance:",
+                        className="subsection-text"
+                    ),
+                    html.Ul(
+                        children=[
+                            html.Li("Root Mean Squared Error (RMSE): Evaluates prediction accuracy in original units."),
+                            html.Li("Mean Absolute Error (MAE): Quantifies average prediction errors.")
+                        ],
+                        className="metrics-list"
+                    ),
+                ]
+            ),
             html.Hr(className="divider"),
 
             # Section 1: Performance Metrics
@@ -28,12 +106,59 @@ def layout():
                 className="section performance-metrics-section",
                 children=[
                     html.H2("Performance Metrics", className="section-title"),
+                    html.P(
+                        "In this section, we compare the performance of different machine learning models used to predict crop outcomes. "
+                        "By selecting a target variable (Yield Per Acre or Production Per Acre) and a specific crop from the dropdown menus below, "
+                        "you can view bar charts displaying the Mean Absolute Error (MAE) and Root Mean Squared Error (RMSE) for each model across different counties. "
+                        "These metrics help evaluate the accuracy of the models' predictions and assess their suitability for forecasting crop yields and production.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "The ideal ranges for learning have been determined based on the statistical properties of the target variables:",
+                        className="section-description"
+                    ),
+                    html.Ul(
+                        children=[
+                            html.Li([
+                                html.Strong("Yield Per Acre: "),
+                                "The mean is 0.01 and the median is 0.00, indicating extremely small values skewed towards zero. "
+                                "An acceptable MAE is set at 0.01 (the mean), and RMSE at 0.015, slightly higher to account for RMSE's sensitivity to larger errors."
+                            ]),
+                            html.Li([
+                                html.Strong("Production Per Acre: "),
+                                "The mean is 11.53 and the median is 4.01, showing right-skewed data with a wide range up to 66.80 and a standard deviation of 15.51. "
+                                "An acceptable MAE is set at 1.5 (approximately 13% of the mean), and RMSE at 2, roughly 17% of the mean."
+                            ])
+                        ],
+                        className="section-description"
+                    ),
+                    html.P(
+                        "From the analysis of results, we observe that:",
+                        className="section-description"
+                    ),
+                    html.Ul(
+                        children=[
+                            html.Li(
+                                "The impact of extreme weather on crop yields and production is nonlinear, as evidenced by the better performance of nonlinear models like the Gradient Boosting Regressor."
+                            ),
+                            html.Li(
+                                "Lagged extreme weather variables are the second most important predictors but are only half as influential as lagged crop features. This indicates that while weather impacts crops, its effect may interact with other factors."
+                            ),
+                            html.Li(
+                                "Predictions for Production Per Acre are less accurate, possibly due to higher variability and a less consistent relationship with the predictors."
+                            ),
+                            html.Li(
+                                "Small datasets limit the ability to capture general patterns, leading to overfitting and poor test performance. The models quickly exhaust available information, as shown by learning curves plateauing."
+                            )
+                        ],
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
                             html.Label("Select Target Variable:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='target-dropdown',  # Updated ID
+                                id='target-dropdown',
                                 options=[
                                     {'label': 'Yield Per Acre', 'value': 'Yield Per Acre'},
                                     {'label': 'Production Per Acre', 'value': 'Production Per Acre'}
@@ -46,9 +171,9 @@ def layout():
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select Crop (Performance Metrics):", className="dropdown-label"),
+                            html.Label("Select Crop:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='performance-crop-dropdown',  # Updated ID
+                                id='performance-crop-dropdown',
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -64,17 +189,35 @@ def layout():
 
             html.Hr(className="divider"),
 
-            # Section 2: Training Data Visualization
+            # Section 2: Learning Curve Analysis
             html.Div(
-                className="section training-data-section",
+                className="section learning-curve-section",
                 children=[
-                    html.H2("Training Data Visualization", className="section-title"),
+                    html.H2("Learning Curve Analysis", className="section-title"),
+                    html.P(
+                        "In this section, we analyze the learning curves of different machine learning models for each county-crop combination. "
+                        "By selecting a county and a crop from the dropdown menus below, you can visualize how the model's performance evolves with increasing training data. "
+                        "The learning curves display the Mean Squared Error (MSE) for the training and validation sets as the training set size increases.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "The analysis of the learning curves reveals that while the models show declining MSE over time, indicating potential convergence given more data, "
+                        "the performance on the test sets remains poor. The MSE declines slowly before abruptly plateauing, suggesting that the models quickly exhaust the available information in the dataset. "
+                        "This behavior indicates that with the small datasets available, the models tend to capture noise and patterns specific to the training set, failing to generalize well to new data.",
+                        className="section-description"
+                    ),
+                    html.P(
+                        "Furthermore, the fact that lagged crop features contribute the most to the model's predictions suggests that the models heavily rely on historical crop data. "
+                        "Lagged weather variables are the second most important predictors but are only about half as influential as the lagged crop features. "
+                        "This implies that while weather impacts crops, the models depend more on historical performance, possibly due to limited data capturing the complex interactions between weather and crop outcomes.",
+                        className="section-description"
+                    ),
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select County (Training Data):", className="dropdown-label"),
+                            html.Label("Select County:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-county-dropdown',  # Updated ID
+                                id='training-county-dropdown',
                                 options=[
                                     {'label': county, 'value': county} for county in results_df['County'].unique()
                                 ],
@@ -86,9 +229,9 @@ def layout():
                     html.Div(
                         className="dropdown-container",
                         children=[
-                            html.Label("Select Crop (Training Data):", className="dropdown-label"),
+                            html.Label("Select Crop:", className="dropdown-label"),
                             dcc.Dropdown(
-                                id='training-crop-dropdown',  # Updated ID
+                                id='training-crop-dropdown',
                                 options=[
                                     {'label': crop, 'value': crop} for crop in results_df['Crop'].unique()
                                 ],
@@ -98,7 +241,30 @@ def layout():
                         ]
                     ),
                     dcc.Graph(id='yield-per-acre-plot', className="training-graph"),
-                    dcc.Graph(id='production-per-acre-plot', className="training-graph")
+                    dcc.Graph(id='production-per-acre-plot', className="training-graph"),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3("Analysis of Learning Curves", className="analysis-title"),
+                            html.P(
+                                "The learning curves for the models demonstrate that although the Mean Squared Error (MSE) decreases with more training data, the decrease is gradual and eventually plateaus. "
+                                "This suggests that the models are quickly reaching the limit of the information available in the data. "
+                                "The poor performance on the test sets indicates that the models may be overfitting to the training data, capturing noise and patterns that do not generalize well.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "The reliance on lagged crop features as the most significant predictors shows that the models depend heavily on historical crop performance to make predictions. "
+                                "While lagged weather variables are the second most important, their influence is significantly less, suggesting that the models are not effectively capturing the impact of weather on crop outcomes. "
+                                "This could be due to the complexity of the relationships or the limited size of the dataset, which makes it challenging for the models to learn the intricate patterns.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "Overall, the learning curve analysis indicates that to improve model performance, larger and more comprehensive datasets are needed. "
+                                "This would provide the models with more information to learn from and potentially capture the nonlinear interactions between weather variables and crop outcomes.",
+                                className="analysis-text"
+                            )
+                        ]
+                    )
                 ]
             ),
 
@@ -108,7 +274,6 @@ def layout():
             dbc.Container(
                 className="section prediction-demo-section",
                 children=[
-                    # Section Title
                     html.Div(
                         className="section-header",
                         children=[
@@ -117,8 +282,10 @@ def layout():
                                 className="section-title"
                             ),
                             html.P(
-                                "Use the controls below to select parameters for crop yield prediction. "
-                                "Adjust features, randomize inputs, and analyze feature importance.",
+                                "In this final section, you can interactively predict crop yield or production using our trained machine learning models. "
+                                "By selecting a county, crop, target variable, and model, you can input specific feature values to generate a prediction. "
+                                "Alternatively, you can randomize the input features based on historical data for a more dynamic experience. "
+                                "This demo provides insights into how different factors influence crop outcomes and allows you to see the importance of each feature in the prediction process.",
                                 className="section-description"
                             )
                         ]
@@ -137,10 +304,7 @@ def layout():
                                     html.Div(
                                         className="input-container",
                                         children=[
-                                            html.Label(
-                                                "Select County:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select County:", className="dropdown-label"),
                                             dcc.Dropdown(
                                                 id='county-dropdown2',
                                                 options=[
@@ -152,10 +316,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Crop:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Crop:", className="dropdown-label"),
                                             dcc.Dropdown(
                                                 id='crop-dropdown2',
                                                 options=[
@@ -167,10 +328,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Target Variable:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Target Variable:", className="dropdown-label"),
                                             dcc.RadioItems(
                                                 id='target-variable',
                                                 options=[
@@ -182,10 +340,7 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            html.Label(
-                                                "Select Model:",
-                                                className="dropdown-label"
-                                            ),
+                                            html.Label("Select Model:", className="dropdown-label"),
                                             dcc.RadioItems(
                                                 id='model-name',
                                                 options=[
@@ -197,23 +352,20 @@ def layout():
                                             ),
                                             html.Br(),
 
-                                            # Input Features
                                             html.Div(
                                                 className="feature-section",
                                                 children=[
-                                                    html.H4(
-                                                        "Input Features:",
-                                                        className="features-title"
+                                                    html.H4("Input Features:", className="features-title"),
+                                                    html.P(
+                                                        "Enter values for the features used by the model to make predictions. "
+                                                        "You can manually input values for each feature or click the 'Randomize Input' button to fill them with random historical data from the selected county and crop.",
+                                                        className="feature-description"
                                                     ),
-                                                    html.Div(
-                                                        id='feature-inputs',
-                                                        className="feature-inputs"
-                                                    )
+                                                    html.Div(id='feature-inputs', className="feature-inputs")
                                                 ]
                                             ),
                                             html.Br(),
 
-                                            # Buttons
                                             html.Div(
                                                 className="button-container",
                                                 children=[
@@ -232,13 +384,7 @@ def layout():
                                                 ]
                                             ),
                                             html.Br(),
-                                            html.Br(),
-
-                                            # Prediction Output
-                                            html.Div(
-                                                id='prediction-text-output',
-                                                className="prediction-output"
-                                            ),
+                                            html.Div(id='prediction-text-output', className="prediction-output"),
                                             html.Div(
                                                 id='randomized-info-output',
                                                 className="randomized-info",
@@ -257,17 +403,38 @@ def layout():
                                     html.Div(
                                         className="graph-container",
                                         children=[
-                                            html.H4(
-                                                "Feature Importance",
-                                                className="graph-title"
+                                            html.H4("Feature Importance", className="graph-title"),
+                                            html.P(
+                                                "After making a prediction, a bar chart will display the importance of each feature used in the model. "
+                                                "This visualization helps you understand which factors have the most significant impact on the predicted crop yield or production.",
+                                                className="graph-description"
                                             ),
-                                            dcc.Graph(
-                                                id='feature-importance-graph',
-                                                className="feature-importance-graph"
-                                            )
+                                            dcc.Graph(id='feature-importance-graph', className="feature-importance-graph")
                                         ]
                                     )
                                 ]
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3("Prediction Demo", className="analysis-title"),
+                            html.P(
+                                "The Prediction Demo allows users to interact with the trained machine learning models by inputting custom values for the features or randomizing them based on historical data. "
+                                "This interactive approach provides a practical understanding of how different variables affect crop outcomes in specific counties and for specific crops.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "The feature importance graph helps identify which factors the model considers most significant in making predictions. "
+                                "Features with higher importance values have a greater impact on the outcome, indicating areas where farmers and agricultural planners might focus their attention to improve yields or production.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "However, it's important to note that the accuracy of predictions may be limited by the quality and quantity of data available. "
+                                "As discussed in previous sections, small datasets and the complexity of agricultural systems can affect model performance. "
+                                "Therefore, predictions should be interpreted cautiously and used as a supplementary tool alongside expert knowledge and other resources.",
+                                className="analysis-text"
                             )
                         ]
                     )
@@ -284,7 +451,6 @@ def layout():
      Input('performance-crop-dropdown', 'value')]
 )
 def update_plots(selected_target, selected_crop):
-    # Filter the dataframe for the selected target and crop
     filtered_df = results_df[
         (results_df['Target'] == selected_target) &
         (results_df['Crop'] == selected_crop)
@@ -436,7 +602,7 @@ def randomize_input(n_clicks, county, crop, target, model_name, input_ids):
     filtered_data = data[
         (data["County"] == county) &
         (data["Crop Name"] == crop) &
-        (data["Year"] >= 1990) & (data["Year"] <= 2020)
+        (data["Year"] >= 1983) & (data["Year"] <= 2020)
     ]
 
     if filtered_data.empty:
@@ -493,7 +659,6 @@ def update_feature_inputs(county, crop, target, model_name):
     else:
         return html.Div("Model not available for the selected combination.")
 
-
 @callback(
     [Output('prediction-text-output', 'children'),
      Output('feature-importance-graph', 'figure')],
@@ -507,7 +672,7 @@ def update_feature_inputs(county, crop, target, model_name):
 )
 def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_name, input_values, input_ids):
     if n_clicks is None:
-        return "", go.Figure()
+        return "Please click the Predict button.", go.Figure()
 
     model_key = f"{model_name}_{county}_{crop}_{target}"
     if model_key not in all_models:
@@ -521,6 +686,10 @@ def make_prediction_and_plot_importance(n_clicks, county, crop, target, model_na
 
         if all_features is None:
             return ("Error: Missing feature metadata in the model. Please ensure 'selected_features' is saved during training.", go.Figure())
+
+        # Check if all input values are filled
+        if None in input_values or "" in input_values:
+            return "Please fill in all input features before making a prediction.", go.Figure()
 
         # Initialize feature values for all features
         feature_values = {feature: 0.0 for feature in all_features}

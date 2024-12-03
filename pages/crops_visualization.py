@@ -14,31 +14,52 @@ def layout():
         html.H1("Crop Data Visualization", className="page-title"),
 
         # Dropdown for county selection
-        html.Label("Select a County:", className="county-label"),
-        dcc.Dropdown(
-            id="county-dropdown",
-            options=[{"label": county, "value": county} for county in counties],
-            value=counties[0],  # Default value set to the first county
-            clearable=False,
-            className="county-dropdown"
+        html.Div(
+            className="dropdown-section",
+            children=[
+                html.Label("Select a County:", className="county-label"),
+                dcc.Dropdown(
+                    id="county-dropdown",
+                    options=[{"label": county, "value": county} for county in counties],
+                    value=counties[0],  # Default value set to the first county
+                    clearable=False,
+                    className="county-dropdown"
+                ),
+                html.P(
+                    "Use the dropdown menu above to select a county. The visualizations below will update based on your selection, providing insights into the county's crop data over time.",
+                    className="dropdown-description"
+                )
+            ]
         ),
 
         # Yield Per Acre plot
         html.Div([
             html.H3("Yield Per Acre Over Time by Crop", className="yield-title"),
-            dcc.Graph(id="yield-plot", className="yield-graph")
+            dcc.Graph(id="yield-plot", className="yield-graph"),
+            html.P(
+                "This plot illustrates the trends in crop yield (measured per acre) over time for the selected county. The data provides insights into the efficiency of crop production under varying conditions.",
+                className="yield-description"
+            )
         ], className="yield-container"),
 
         # Production Per Acre plot
         html.Div([
             html.H3("Production Per Acre Over Time by Crop", className="production-title"),
-            dcc.Graph(id="production-plot", className="production-graph")
+            dcc.Graph(id="production-plot", className="production-graph"),
+            html.P(
+                "This visualization showcases production trends (measured per acre) for various crops in the selected county. It helps in understanding productivity changes over time.",
+                className="production-description"
+            )
         ], className="production-container"),
 
         # Harvested Acres plot
         html.Div([
             html.H3("Harvested Acres Over Time by Crop", className="harvested-acres-title"),
-            dcc.Graph(id="harvested-acres-plot", className="harvested-acres-graph")
+            dcc.Graph(id="harvested-acres-plot", className="harvested-acres-graph"),
+            html.P(
+                "This plot tracks the total harvested acres for different crops over time in the selected county. It provides an overview of agricultural land use trends.",
+                className="harvested-acres-description"
+            )
         ], className="harvested-acres-container"),
     ], className="main-container")
 

@@ -46,7 +46,6 @@ def layout():
                 "Visualization of The Impact of Weather on Crop Yield",
                 className="page-title"
             ),
-            
             html.Hr(className="divider"),
 
             # Section 1: Impact of Extreme Weather on Crop Yield
@@ -56,6 +55,14 @@ def layout():
                     html.H2(
                         "Impact of Extreme Weather on Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "This section allows you to explore how extreme weather variables, such as high temperatures, heavy rainfall, "
+                        "and strong winds, affect crop yields in different California counties. By selecting a specific crop and extreme "
+                        "weather variable from the dropdown menus below, you can view detailed visualizations that compare crop outcomes "
+                        "during normal years versus years with a high occurrence of extreme weather events. This comparison helps to "
+                        "illustrate whether years with a higher number of extreme weather days have differing crop yields than normal years.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -82,9 +89,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 2: Weather Impact on Crop Yield
             html.Div(
                 className="section weather-impact-section",
@@ -92,6 +98,14 @@ def layout():
                     html.H2(
                         "Weather Impact on Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "This section allows you to analyze how specific extreme weather variables influence crop yield and production per acre over time. "
+                        "By selecting a crop and an extreme weather variable from the dropdown menus below, you can generate scatter plots that display the relationship "
+                        "between the selected weather condition and crop outcomes across different California counties. The graphs include trendlines to help you discern patterns "
+                        "and correlations, providing insights into how weather conditions may affect agricultural productivity. This interactive exploration helps in understanding "
+                        "the potential impact of factors like high temperatures, heavy rainfall, and strong winds on crop performance.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -121,9 +135,8 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
+            
             # Section 3: Weather Anomalies and Crop Yield
             html.Div(
                 className="section weather-anomalies-section",
@@ -131,6 +144,15 @@ def layout():
                     html.H2(
                         "Weather Anomalies and Crop Yield",
                         className="section-title"
+                    ),
+                    html.P(
+                        "In this section, you can discover how deviations from normal weather patterns—such as anomalies in rainfall, temperature, "
+                        "and other extreme weather events—affect crop yields and production per acre across different counties in California. "
+                        "By selecting a county and a crop from the dropdown menus below, you can generate interactive line graphs that overlay crop performance data "
+                        "with markers indicating years when significant weather anomalies occurred. These visualizations help you understand the temporal relationship "
+                        "between extreme weather events and agricultural outcomes, providing insights into how unusual weather conditions may have impacted crop productivity "
+                        "in specific regions.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -160,45 +182,26 @@ def layout():
                     )
                 ]
             ),
-
             html.Hr(className="divider"),
-
-            # Section 4: Crop Yield and Production by Farming Method
-            html.Div(
-                className="section yield-production-section",
-                children=[
-                    html.H2(
-                        "Crop Yield and Production by Farming Method Under Different Weather Conditions",
-                        className="section-title"
-                    ),
-                    html.Div(
-                        className="dropdown-container",
-                        children=[
-                            html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
-                            dcc.Dropdown(
-                                id='yield-production-weather-variable-dropdown',
-                                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
-                                value=extreme_weather_features[0],
-                                className="dropdown"
-                            )
-                        ]
-                    ),
-                    dcc.Graph(
-                        id='yield-production-graph',
-                        className="graph"
-                    )
-                ]
-            ),
-
-            html.Hr(className="divider"),
-
-            # Section 5: Weather Impact on Crop Yields by County
+            
+            # Section 4: Weather Impact on Crop Yields by County
             html.Div(
                 className="section county-impact-section",
                 children=[
                     html.H2(
-                        "Impact of Extreme Weather on Crop Yields",
+                        "Weather Impact on Crop Yields by County",
                         className="section-title"
+                    ),
+                    html.P(
+                        "This section allows you to focus on specific counties to understand how localized extreme weather events "
+                        "impact crop yields for various crops. By selecting a county from the dropdown menu below, you can generate "
+                        "detailed bar charts that display the average yield per acre for different crops under varying levels of extreme "
+                        "weather conditions. The extreme weather variables are categorized into 'Low', 'Moderate', and 'High' severity "
+                        "based on historical data quantiles. The charts also include percentage changes relative to 'Low' severity levels, "
+                        "providing a clear visualization of how increased weather severity affects crop performance. This granular analysis "
+                        "helps identify which crops are more resilient or vulnerable to extreme weather in specific regions, supporting "
+                        "informed decision-making for farmers and agricultural planners.",
+                        className="section-description"
                     ),
                     html.Div(
                         className="dropdown-container",
@@ -218,7 +221,89 @@ def layout():
                         className="graph"
                     )
                 ]
-            )
+            ),
+
+            # Section 5: Crop Yield and Production by Farming Method Under Different Weather Conditions
+            html.Div(
+                className="section yield-production-section",
+                children=[
+                    html.H2(
+                        "Interesting Find: Crop Outcomes by Farming Method Under Different Weather Conditions",
+                        className="section-title"
+                    ),
+                    html.P(
+                        "This section explores external factors influencing crop outcomes beyond extreme weather variables by examining the relationship between different farming methods and crop performance under varying weather conditions. "
+                        "Using data from the 2023 California Department of Food and Agriculture Statistics Report, we have identified four major farming techniques in California: Conventional, Organic, Sustainable, and Urban Farming. "
+                        "Each county in our dataset is mapped to its corresponding farming method. "
+                        "From our Correlation Analysis, regions in Central California showed the highest correlation scores with crop outcomes, while precipitation variables like `cloudy_days` and `heavy_rain_days` surprisingly showed poor correlations. "
+                        "This suggests that factors other than weather, such as farming practices, may significantly influence crop yields and production.",
+                        className="section-description"
+                    ),
+                    html.Div(
+                        className="dropdown-container",
+                        children=[
+                            html.Label("Select Extreme Weather Variable:", className="dropdown-label"),
+                            dcc.Dropdown(
+                                id='yield-production-weather-variable-dropdown',
+                                options=[{'label': var.replace('_', ' ').title(), 'value': var} for var in extreme_weather_features],
+                                value=extreme_weather_features[0],
+                                className="dropdown"
+                            )
+                        ]
+                    ),
+                    # Wrap the graph in its own container
+                    html.Div(
+                        className="graph-container",
+                        children=[
+                            dcc.Graph(
+                                id='yield-production-graph',
+                                className="graph"
+                            )
+                        ]
+                    ),
+                    html.Div(
+                        className="analysis-section",
+                        children=[
+                            html.H3(
+                                "Interest Finds on Farming Method as Possible Factor in Crop Outcomes",
+                                className="analysis-title"
+                            ),
+                            html.P(
+                                "The visualizations in this section help us understand the impact of different farming methods on crop yield and production under various weather conditions. "
+                                "Our analysis indicates that regions in Central California, which predominantly use Conventional Farming methods, have high correlation scores with crop outcomes. "
+                                "However, precipitation-related variables such as `cloudy_days` and `heavy_rain_days` show poor correlation with crop performance across most farming methods, confirming that these weather factors have minimal direct impact. "
+                                "This suggests that other factors, particularly farming practices, significantly influence agricultural productivity in these regions.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "When examining the effects of `cloudy_days` and `heavy_rain_days`, we observe that increased occurrences of these weather conditions do not lead to improved crop outcomes for most farming methods. "
+                                "An exception is noted in Conventional Farming for yield, where some improvement is seen. "
+                                "This could be due to the use of specific agricultural inputs or practices that enhance crop resilience in conventional systems. "
+                                "Overall, the lack of significant improvement across other farming methods reinforces the non-correlation between these weather variables and crop outcomes.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "Additionally, the data reveals that Urban Farming consistently achieves the highest increases in both yield and production per acre. "
+                                "This can be attributed to the use of advanced technologies, controlled environments, and optimized resource utilization inherent in urban agricultural practices. "
+                                "Urban farming often employs vertical farming, hydroponics, and other innovative methods that enhance efficiency and mitigate the impact of adverse weather conditions.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "In contrast, Conventional Farming shows higher production levels but lower yield per acre compared to other methods. "
+                                "This indicates that conventional practices may rely on larger land areas to achieve similar output levels, potentially due to less intensive farming techniques or lower efficiency in resource use. "
+                                "The efficiency gap highlights the potential benefits of adopting more sustainable and intensive farming practices, such as those used in Organic and Sustainable Farming, to improve yield without expanding agricultural land.",
+                                className="analysis-text"
+                            ),
+                            html.P(
+                                "These observations suggest that farming methods play a significant role in determining crop outcomes, potentially even more so than certain extreme weather variables. "
+                                "By adopting innovative and sustainable farming techniques, it may be possible to enhance crop performance and resilience against adverse weather conditions, thereby improving agricultural productivity and sustainability.",
+                                className="analysis-text"
+                            )
+                        ]
+                    )
+                ]
+            ),
+            html.Hr(className="divider"),
         ]
     )
 
@@ -538,8 +623,8 @@ def update_yield_production_graph(selected_var):
         title_text=f"Crop Yield and Production by Farming Method Under Different Levels of {selected_var.replace('_', ' ').title()}",
         barmode='group',
         legend_title_text='Weather Level',
-        height=600,
-        width=1000
+        autosize=True,
+        height=None
     )
 
     # Update axes titles

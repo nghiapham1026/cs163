@@ -19,31 +19,47 @@ def layout():
     return html.Div(
         className="weather-visualization-container",
         children=[
+            # Page Title
             html.H1(
                 "Weather Data Visualization",
                 className="page-title"
             ),
             
-            # Dropdown for city selection
-            html.Label(
-                "Select a City:",
-                className="city-dropdown-label"
-            ),
-            dcc.Dropdown(
-                id="city-dropdown",  # Ensure this ID matches the callback
-                options=[{"label": city, "value": city} for city in cities],
-                value=cities[0],  # Default value set to the first city
-                clearable=False,
-                className="city-dropdown"
+            # City Selection Section
+            html.Div(
+                className="city-selection-section",
+                children=[
+                    html.Label(
+                        "Select a City:",
+                        className="city-dropdown-label"
+                    ),
+                    dcc.Dropdown(
+                        id="city-dropdown",
+                        options=[{"label": city, "value": city} for city in cities],
+                        value=cities[0],
+                        clearable=False,
+                        className="city-dropdown"
+                    ),
+                    html.P(
+                        "Use this dropdown to select a city and view its weather data visualizations. "
+                        "Each city includes data on temperature, extreme weather events, rainfall, dew point, and cloud cover over time.",
+                        className="city-selection-description"
+                    )
+                ]
             ),
             
-            # Temperature plot
+            # Temperature Plot Section
             html.Div(
                 className="temperature-plot-container",
                 children=[
                     html.H3(
                         "Temperature Over Time",
                         className="temperature-plot-title"
+                    ),
+                    html.P(
+                        "This graph displays the temperature trends over time for the selected city. "
+                        "You can use this visualization to understand seasonal variations and identify long-term patterns.",
+                        className="temperature-plot-description"
                     ),
                     dcc.Graph(
                         id="temp-plot",
@@ -52,13 +68,18 @@ def layout():
                 ]
             ),
             
-            # Extreme weather features plot
+            # Extreme Weather Plot Section
             html.Div(
                 className="extreme-weather-plot-container",
                 children=[
                     html.H3(
                         "Extreme Weather Events",
                         className="extreme-weather-plot-title"
+                    ),
+                    html.P(
+                        "This plot highlights extreme weather events, such as high wind days and heavy rain occurrences. "
+                        "It provides insights into the frequency and intensity of extreme conditions.",
+                        className="extreme-weather-plot-description"
                     ),
                     dcc.Graph(
                         id="extreme-weather-plot",
@@ -67,13 +88,17 @@ def layout():
                 ]
             ),
 
-            # Rainfall plot
+            # Rainfall Plot Section
             html.Div(
                 className="rainfall-plot-container",
                 children=[
                     html.H3(
                         "Rain (1 Hour) Over Time",
                         className="rainfall-plot-title"
+                    ),
+                    html.P(
+                        "Visualize hourly rainfall data over time to identify precipitation patterns and assess periods of drought or heavy rain.",
+                        className="rainfall-plot-description"
                     ),
                     dcc.Graph(
                         id="rain-plot",
@@ -82,13 +107,17 @@ def layout():
                 ]
             ),
             
-            # Dew point plot
+            # Dew Point Plot Section
             html.Div(
                 className="dew-point-plot-container",
                 children=[
                     html.H3(
                         "Dew Point Over Time",
                         className="dew-point-plot-title"
+                    ),
+                    html.P(
+                        "Explore dew point data to understand humidity levels and their implications on comfort and weather patterns in the selected city.",
+                        className="dew-point-plot-description"
                     ),
                     dcc.Graph(
                         id="dew-point-plot",
@@ -97,13 +126,17 @@ def layout():
                 ]
             ),
             
-            # Cloud cover plot
+            # Cloud Cover Plot Section
             html.Div(
                 className="cloud-cover-plot-container",
                 children=[
                     html.H3(
                         "Cloud Cover Over Time",
                         className="cloud-cover-plot-title"
+                    ),
+                    html.P(
+                        "This plot illustrates cloud cover data over time, providing insights into overcast days and periods of clear skies.",
+                        className="cloud-cover-plot-description"
                     ),
                     dcc.Graph(
                         id="cloud-cover-plot",
