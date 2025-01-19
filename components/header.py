@@ -11,10 +11,6 @@ def create_header():
             html.P(
                 "Explore visualizations, perform analysis, and predict crop outcomes.",
                 className="header-subtitle"
-            ),
-            html.P(
-                "This project is part of CS 163 - Data Science Senior Project, Fall 2024",
-                className="header-class-info"
             )
         ]
     )
